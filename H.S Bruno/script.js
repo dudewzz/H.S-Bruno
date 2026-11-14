@@ -32,7 +32,7 @@ const modulos = [
         area: "Software",
         titulo: "Software — Módulo 1",
         descricao: "Entenda os programas, sistemas operacionais e a organização de arquivos.",
-        imagem: "https://images.unsplash.com/photo-151 computer?auto=format&fit=crop&w=900&q=80",
+        imagem: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
         aulas: ["O que é software?", "Sistemas operacionais", "Arquivos e pastas", "Instalação e atualização de programas"]
     },
     {
