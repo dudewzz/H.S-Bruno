@@ -74,10 +74,20 @@ let indicePergunta = 0;
 let respostas = {};
 let filtroAtual = "Todos";
 
+function lerArmazenamento(chave) {
+    try {
+        return localStorage.getItem(chave);
+    } catch (erro) {
+        console.warn("Não foi possível acessar os dados salvos.", erro);
+        return null;
+    }
+}
+
 function carregarLista(chave) {
     try {
-        const valor = JSON.parse(localStorage.getItem(chave) || "[]");
-        return Array.isArray(valor) ? valor : [];
+        const valor = JSON.parse(lerArmazenamento(chave) || "[]");
+        if (!Array.isArray(valor)) return [];
+        return [...new Set(valor.filter(id => modulos.some(modulo => modulo.id === id)))];
     } catch (erro) {
         console.warn("Não foi possível ler os dados salvos.", erro);
         return [];
@@ -231,13 +241,16 @@ function abrirModulo(id) {
 
 function concluirModulo() {
     if (!moduloAtual) return;
+    let persistido = true;
     if (!concluidos.includes(moduloAtual.id)) {
         concluidos.push(moduloAtual.id);
-        salvar(STORAGE.progress, concluidos);
+        persistido = salvar(STORAGE.progress, concluidos);
     }
     atualizarResumo();
     abrirModulo(moduloAtual.id);
-    mostrarToast("Módulo marcado como concluído!");
+    mostrarToast(persistido
+        ? "Módulo marcado como concluído!"
+        : "Concluído nesta sessão, mas não foi possível salvar.");
 }
 
 function atualizarResumo() {
@@ -255,7 +268,7 @@ function atualizarResumo() {
 }
 
 function atualizarPainelProgresso() {
-    const pontuacao = localStorage.getItem(STORAGE.score);
+    const pontuacao = lerArmazenamento(STORAGE.score);
     const score = document.getElementById("score");
     const performance = document.getElementById("performance");
     if (score) score.textContent = pontuacao === null ? "—" : pontuacao + "%";
@@ -355,13 +368,13 @@ function finalizarQuiz() {
     }
     const acertos = perguntas.reduce((total, pergunta, indice) => total + (respostas[indice] === pergunta.correta ? 1 : 0), 0);
     const nota = Math.round((acertos / perguntas.length) * 100);
-    salvar(STORAGE.score, nota);
+    const pontuacaoSalva = salvar(STORAGE.score, nota);
     atualizarPainelProgresso();
     document.getElementById("question").textContent = `Você acertou ${acertos} de ${perguntas.length} questões!`;
     document.getElementById("answers").replaceChildren();
     const feedback = document.getElementById("feedback");
     feedback.className = "feedback " + (nota >= 70 ? "good" : "bad");
-    feedback.textContent = `Sua pontuação foi ${nota}%. ${nota >= 70 ? "Muito bem! Continue praticando." : "Revise os módulos e tente novamente."}`;
+    feedback.textContent = `Sua pontuação foi ${nota}%. ${nota >= 70 ? "Muito bem! Continue praticando." : "Revise os módulos e tente novamente."}${pontuacaoSalva ? "" : " A pontuação não pôde ser salva neste navegador."}`;
     document.getElementById("quizCount").textContent = "Resultado final";
     document.getElementById("quizNext").textContent = "Refazer quiz";
     document.getElementById("quizPrev").disabled = true;
