@@ -1,284 +1,425 @@
-
 /* =====================================================
    H.S. BRUNO — PORTAL DE ESTUDOS
-   JavaScript principal
+   Funcionalidades principais
 ===================================================== */
 
+"use strict";
 
-/* =====================================================
-   1. CONFIGURAÇÕES
-===================================================== */
+const STORAGE = {
+    progress: "hsbruno_modulos_concluidos_v2",
+    score: "hsbruno_ultima_pontuacao_v2"
+};
 
-const TOTAL_AULAS = 17;
-const CHAVE_PROGRESso = "hsbruno_aulas_concluidas";
+const modulos = [
+    {
+        id: "hardware-1",
+        area: "Hardware",
+        titulo: "Hardware — Módulo 1",
+        descricao: "Conheça os principais componentes e entenda como um computador funciona.",
+        imagem: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?auto=format&fit=crop&w=900&q=80",
+        aulas: ["Introdução ao hardware", "Memória RAM", "Armazenamento", "Placa-mãe", "Processador"]
+    },
+    {
+        id: "hardware-2",
+        area: "Hardware",
+        titulo: "Hardware — Módulo 2",
+        descricao: "Aprenda cuidados, montagem, limpeza e diagnóstico de computadores.",
+        imagem: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=900&q=80",
+        aulas: ["Ferramentas e segurança", "Montagem do computador", "Limpeza preventiva", "Diagnóstico de falhas"]
+    },
+    {
+        id: "software-1",
+        area: "Software",
+        titulo: "Software — Módulo 1",
+        descricao: "Entenda os programas, sistemas operacionais e a organização de arquivos.",
+        imagem: "https://images.unsplash.com/photo-151 computer?auto=format&fit=crop&w=900&q=80",
+        aulas: ["O que é software?", "Sistemas operacionais", "Arquivos e pastas", "Instalação e atualização de programas"]
+    },
+    {
+        id: "software-2",
+        area: "Software",
+        titulo: "Software — Módulo 2",
+        descricao: "Conheça aplicativos, segurança digital e boas práticas no uso do computador.",
+        imagem: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80",
+        aulas: ["Aplicativos e utilitários", "Segurança digital", "Antivírus e atualizações", "Solução de problemas de software"]
+    }
+];
 
-let aulasConcluidas = [];
+const perguntas = [
+    { area: "Hardware", pergunta: "Qual componente executa as instruções dos programas?", opcoes: ["Memória RAM", "Processador (CPU)", "SSD", "Fonte"], correta: 1, explicacao: "A CPU interpreta e executa as instruções dos programas." },
+    { area: "Hardware", pergunta: "Qual é a principal função da memória RAM?", opcoes: ["Armazenar arquivos permanentemente", "Exibir imagens", "Guardar temporariamente dados em uso", "Fornecer energia"], correta: 2, explicacao: "A RAM mantém temporariamente os dados necessários aos programas em execução." },
+    { area: "Hardware", pergunta: "Qual dispositivo normalmente armazena o sistema operacional mesmo após desligar o PC?", opcoes: ["RAM", "SSD ou HD", "Cooler", "Placa de vídeo"], correta: 1, explicacao: "SSD e HD são unidades de armazenamento não volátil." },
+    { area: "Hardware", pergunta: "A placa-mãe serve principalmente para:", opcoes: ["Conectar e permitir a comunicação entre componentes", "Resfriar o processador", "Armazenar energia", "Substituir a memória RAM"], correta: 0, explicacao: "A placa-mãe interliga os componentes e permite que se comuniquem." },
+    { area: "Hardware", pergunta: "Qual cuidado é importante antes de limpar o interior do computador?", opcoes: ["Deixá-lo ligado", "Molhar as peças", "Desligar e desconectar da energia", "Retirar o processador"], correta: 2, explicacao: "Desligar e desconectar o equipamento reduz riscos elétricos e danos." },
+    { area: "Hardware", pergunta: "Qual componente é responsável por fornecer energia aos componentes do computador?", opcoes: ["Fonte de alimentação", "Memória RAM", "SSD", "Cooler"], correta: 0, explicacao: "A fonte converte e distribui energia elétrica para o computador." },
+    { area: "Hardware", pergunta: "Um computador liga, mas apresenta temperatura muito alta. Qual pode ser uma causa?", opcoes: ["Pasta térmica ressecada ou ventilação obstruída", "Papel de parede", "Nome da pasta Documentos", "Brilho do monitor"], correta: 0, explicacao: "Problemas de refrigeração, poeira e pasta térmica podem elevar a temperatura." },
+    { area: "Hardware", pergunta: "Qual destes é um periférico de entrada?", opcoes: ["Monitor", "Impressora", "Teclado", "Caixa de som"], correta: 2, explicacao: "O teclado envia informações e comandos ao computador." },
+    { area: "Software", pergunta: "O que é software?", opcoes: ["Parte física do computador", "Conjunto de programas e instruções", "Somente o gabinete", "Um tipo de cabo"], correta: 1, explicacao: "Software é a parte lógica: programas, aplicativos e sistemas." },
+    { area: "Software", pergunta: "Qual alternativa apresenta um sistema operacional?", opcoes: ["Windows", "Google Chrome", "Microsoft Word", "Photoshop"], correta: 0, explicacao: "Windows é um sistema operacional que gerencia o computador." },
+    { area: "Software", pergunta: "Qual é a função de uma extensão como .pdf ou .jpg?", opcoes: ["Indicar o tipo/formato do arquivo", "Aumentar a memória RAM", "Ligar o computador", "Proteger contra quedas"], correta: 0, explicacao: "A extensão ajuda a identificar o formato e os aplicativos compatíveis." },
+    { area: "Software", pergunta: "Qual prática ajuda a manter o sistema mais seguro?", opcoes: ["Desativar todas as atualizações", "Usar a mesma senha em tudo", "Manter sistema e programas atualizados", "Baixar qualquer arquivo desconhecido"], correta: 2, explicacao: "Atualizações corrigem falhas e podem melhorar a segurança." },
+    { area: "Software", pergunta: "Para que serve um antivírus?", opcoes: ["Aumentar o tamanho da tela", "Detectar, bloquear ou remover ameaças", "Criar peças físicas", "Substituir o sistema operacional"], correta: 1, explicacao: "Antivírus ajuda a identificar e lidar com softwares maliciosos." },
+    { area: "Software", pergunta: "O que acontece ao excluir um atalho da área de trabalho?", opcoes: ["O programa é sempre desinstalado", "O computador é formatado", "Normalmente apenas o atalho é removido", "A memória RAM é apagada"], correta: 2, explicacao: "Apagar um atalho não costuma desinstalar o aplicativo original." },
+    { area: "Software", pergunta: "Qual atitude é mais segura ao receber um anexo inesperado?", opcoes: ["Abrir imediatamente", "Verificar remetente e contexto antes de abrir", "Encaminhar para todos", "Desativar o antivírus"], correta: 1, explicacao: "Anexos inesperados podem conter golpes ou arquivos maliciosos." },
+    { area: "Software", pergunta: "Qual programa é usado principalmente para navegar na internet?", opcoes: ["Navegador", "Calculadora", "Bloco de Notas", "Gerenciador de tarefas"], correta: 0, explicacao: "Navegadores, como Firefox e Chrome, acessam páginas e serviços da web." }
+];
 
+let concluidos = carregarLista(STORAGE.progress);
+let moduloAtual = null;
+let indicePergunta = 0;
+let respostas = {};
+let filtroAtual = "Todos";
 
-/* =====================================================
-   2. CARREGAR PROGRESSO SALVO
-===================================================== */
-
-function carregarProgresso() {
+function carregarLista(chave) {
     try {
-        const dados = localStorage.getItem(CHAVE_PROGRESso);
-
-        if (dados) {
-            const aulasSalvas = JSON.parse(dados);
-
-            if (Array.isArray(aulasSalvas)) {
-                aulasConcluidas = aulasSalvas;
-            }
-        }
+        const valor = JSON.parse(localStorage.getItem(chave) || "[]");
+        return Array.isArray(valor) ? valor : [];
     } catch (erro) {
-        console.error("Erro ao carregar progresso:", erro);
-        aulasConcluidas = [];
+        console.warn("Não foi possível ler os dados salvos.", erro);
+        return [];
     }
 }
 
-
-/* =====================================================
-   3. SALVAR PROGRESSO
-===================================================== */
-
-function salvarProgresso() {
+function salvar(chave, valor) {
     try {
-        localStorage.setItem(
-            CHAVE_PROGRESso,
-            JSON.stringify(aulasConcluidas)
-        );
+        localStorage.setItem(chave, JSON.stringify(valor));
+        return true;
     } catch (erro) {
-        console.error("Erro ao salvar progresso:", erro);
+        mostrarToast("Não foi possível salvar neste navegador.");
+        console.error(erro);
+        return false;
     }
 }
 
+function mostrarToast(mensagem) {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+    toast.textContent = mensagem;
+    toast.classList.add("show");
+    clearTimeout(mostrarToast.timer);
+    mostrarToast.timer = setTimeout(() => toast.classList.remove("show"), 2800);
+}
 
-/* =====================================================
-   4. ATUALIZAR BOTÕES DAS AULAS
-===================================================== */
+function navegar(pagina) {
+    const destino = document.getElementById(pagina);
+    if (!destino) return;
 
-function atualizarBotoes() {
+    document.querySelectorAll(".page").forEach(secao => secao.classList.remove("active"));
+    destino.classList.add("active");
 
-    const botoes = document.querySelectorAll(".botao-concluir");
+    document.querySelectorAll(".nav-link").forEach(link => {
+        const ativo = link.dataset.page === pagina;
+        link.classList.toggle("active", ativo);
+        if (ativo) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+    });
 
-    botoes.forEach(botao => {
+    if (pagina === "progresso") atualizarPainelProgresso();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
-        const idAula = botao.dataset.aula;
+function criarCard(modulo) {
+    const artigo = document.createElement("article");
+    artigo.className = "module-card";
+    artigo.dataset.area = modulo.area;
+    artigo.dataset.search = (modulo.titulo + " " + modulo.descricao + " " + modulo.aulas.join(" ")).toLocaleLowerCase("pt-BR");
 
-        const concluida = aulasConcluidas.includes(idAula);
+    const imagem = document.createElement("img");
+    imagem.src = modulo.imagem;
+    imagem.alt = "Imagem ilustrativa do tema " + modulo.area;
+    imagem.loading = "lazy";
+    imagem.onerror = () => { imagem.hidden = true; };
 
-        if (concluida) {
+    const corpo = document.createElement("div");
+    corpo.className = "module-body";
 
-            botao.textContent = "✓ Aula concluída";
+    const titulo = document.createElement("h3");
+    titulo.textContent = modulo.titulo;
 
-            botao.classList.add("concluida");
+    const descricao = document.createElement("p");
+    descricao.textContent = modulo.descricao;
 
-            botao.setAttribute("aria-pressed", "true");
+    const botao = document.createElement("button");
+    botao.className = "primary";
+    botao.type = "button";
+    botao.textContent = concluidos.includes(modulo.id) ? "Revisar módulo →" : "Começar módulo →";
+    botao.addEventListener("click", () => abrirModulo(modulo.id));
 
-        } else {
+    corpo.append(titulo, descricao, botao);
+    artigo.append(imagem, corpo);
+    return artigo;
+}
 
-            botao.textContent = "Marcar como concluída";
+function renderizarModulos() {
+    const inicio = document.getElementById("homeModules");
+    const todos = document.getElementById("allModules");
 
-            botao.classList.remove("concluida");
+    if (inicio) {
+        inicio.replaceChildren(...modulos.map(criarCard));
+    }
 
-            botao.setAttribute("aria-pressed", "false");
+    if (todos) {
+        const filtrados = filtroAtual === "Todos"
+            ? modulos
+            : modulos.filter(modulo => modulo.area === filtroAtual);
+        todos.replaceChildren(...filtrados.map(criarCard));
+    }
 
+    aplicarPesquisa();
+}
+
+function abrirModulo(id) {
+    const modulo = modulos.find(item => item.id === id);
+    if (!modulo) return;
+
+    moduloAtual = modulo;
+    document.getElementById("lessonArea").textContent = modulo.area.toUpperCase();
+    document.getElementById("lessonTitle").textContent = modulo.titulo;
+    document.getElementById("moduleDescription").textContent = modulo.descricao;
+
+    const video = document.getElementById("moduleVideo");
+    video.innerHTML = "";
+    const bloco = document.createElement("div");
+    bloco.className = "video-placeholder";
+    const titulo = document.createElement("h3");
+    titulo.textContent = "Conteúdo do módulo";
+    const lista = document.createElement("ol");
+    modulo.aulas.forEach(aula => {
+        const item = document.createElement("li");
+        item.textContent = aula;
+        lista.appendChild(item);
+    });
+    bloco.append(titulo, lista);
+    video.appendChild(bloco);
+
+    const botao = document.getElementById("completeModule");
+    const concluido = concluidos.includes(modulo.id);
+    botao.textContent = concluido ? "✓ Módulo concluído" : "Marcar módulo como concluído ✓";
+    botao.disabled = concluido;
+    navegar("aula");
+}
+
+function concluirModulo() {
+    if (!moduloAtual) return;
+    if (!concluidos.includes(moduloAtual.id)) {
+        concluidos.push(moduloAtual.id);
+        salvar(STORAGE.progress, concluidos);
+    }
+    atualizarResumo();
+    abrirModulo(moduloAtual.id);
+    mostrarToast("Módulo marcado como concluído!");
+}
+
+function atualizarResumo() {
+    const percentual = Math.round((concluidos.length / modulos.length) * 100);
+    const percent = document.getElementById("percent");
+    const ring = document.getElementById("ring");
+    const done = document.getElementById("doneCount");
+
+    if (percent) percent.textContent = percentual + "%";
+    if (ring) ring.style.background = `conic-gradient(#19b7a2 ${percentual * 3.6}deg, #dfe7f8 0deg)`;
+    if (done) done.textContent = concluidos.length;
+
+    renderizarModulos();
+    atualizarPainelProgresso();
+}
+
+function atualizarPainelProgresso() {
+    const pontuacao = localStorage.getItem(STORAGE.score);
+    const score = document.getElementById("score");
+    const performance = document.getElementById("performance");
+    if (score) score.textContent = pontuacao === null ? "—" : pontuacao + "%";
+
+    if (!performance) return;
+    performance.replaceChildren();
+    modulos.forEach(modulo => {
+        const linha = document.createElement("div");
+        linha.className = "performance-row";
+        const nome = document.createElement("span");
+        nome.textContent = modulo.titulo;
+        const trilho = document.createElement("div");
+        trilho.className = "track";
+        const barra = document.createElement("span");
+        const feito = concluidos.includes(modulo.id);
+        barra.style.width = feito ? "100%" : "0%";
+        trilho.appendChild(barra);
+        const estado = document.createElement("span");
+        estado.textContent = feito ? "Concluído" : "Pendente";
+        linha.append(nome, trilho, estado);
+        performance.appendChild(linha);
+    });
+}
+
+function normalizar(texto) {
+    return texto.toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function aplicarPesquisa() {
+    const campo = document.getElementById("search");
+    if (!campo) return;
+    const termo = normalizar(campo.value.trim());
+    document.querySelectorAll(".module-card").forEach(card => {
+        card.hidden = termo !== "" && !normalizar(card.dataset.search || card.textContent).includes(termo);
+    });
+}
+
+function configurarFiltros() {
+    document.querySelectorAll(".filter").forEach(botao => {
+        botao.addEventListener("click", () => {
+            filtroAtual = botao.dataset.filter || "Todos";
+            document.querySelectorAll(".filter").forEach(item => item.classList.toggle("active", item === botao));
+            renderizarModulos();
+        });
+    });
+}
+
+function renderizarPergunta() {
+    const pergunta = perguntas[indicePergunta];
+    if (!pergunta) return;
+
+    document.getElementById("quizCount").textContent = `Questão ${indicePergunta + 1} de ${perguntas.length}`;
+    document.getElementById("question").textContent = pergunta.pergunta;
+    document.getElementById("quizBar").style.width = `${((indicePergunta + 1) / perguntas.length) * 100}%`;
+
+    const respostasEl = document.getElementById("answers");
+    respostasEl.replaceChildren();
+
+    pergunta.opcoes.forEach((opcao, indice) => {
+        const label = document.createElement("label");
+        label.className = "answer";
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "resposta";
+        input.value = indice;
+        input.checked = respostas[indicePergunta] === indice;
+        input.addEventListener("change", () => {
+            respostas[indicePergunta] = indice;
+            renderizarPergunta();
+        });
+        const texto = document.createElement("span");
+        texto.textContent = opcao;
+        label.classList.toggle("selected", input.checked);
+        label.append(input, texto);
+        respostasEl.appendChild(label);
+    });
+
+    const feedback = document.getElementById("feedback");
+    feedback.replaceChildren();
+    if (respostas[indicePergunta] !== undefined) {
+        const correta = respostas[indicePergunta] === pergunta.correta;
+        feedback.className = "feedback " + (correta ? "good" : "bad");
+        feedback.textContent = (correta ? "Correto! " : "Ainda não. ") + pergunta.explicacao;
+    } else {
+        feedback.className = "";
+    }
+
+    document.getElementById("quizPrev").disabled = indicePergunta === 0;
+    document.getElementById("quizNext").textContent = indicePergunta === perguntas.length - 1 ? "Finalizar quiz ✓" : "Próxima questão →";
+}
+
+function finalizarQuiz() {
+    const respondidas = Object.keys(respostas).length;
+    if (respondidas < perguntas.length) {
+        mostrarToast("Responda todas as questões antes de finalizar.");
+        return;
+    }
+    const acertos = perguntas.reduce((total, pergunta, indice) => total + (respostas[indice] === pergunta.correta ? 1 : 0), 0);
+    const nota = Math.round((acertos / perguntas.length) * 100);
+    salvar(STORAGE.score, nota);
+    atualizarPainelProgresso();
+    document.getElementById("question").textContent = `Você acertou ${acertos} de ${perguntas.length} questões!`;
+    document.getElementById("answers").replaceChildren();
+    const feedback = document.getElementById("feedback");
+    feedback.className = "feedback " + (nota >= 70 ? "good" : "bad");
+    feedback.textContent = `Sua pontuação foi ${nota}%. ${nota >= 70 ? "Muito bem! Continue praticando." : "Revise os módulos e tente novamente."}`;
+    document.getElementById("quizCount").textContent = "Resultado final";
+    document.getElementById("quizNext").textContent = "Refazer quiz";
+    document.getElementById("quizPrev").disabled = true;
+    document.getElementById("quizNext").dataset.resultado = "true";
+}
+
+function configurarQuiz() {
+    document.getElementById("quizPrev").addEventListener("click", () => {
+        indicePergunta = Math.max(0, indicePergunta - 1);
+        renderizarPergunta();
+    });
+    document.getElementById("quizNext").addEventListener("click", () => {
+        const botao = document.getElementById("quizNext");
+        if (botao.dataset.resultado === "true") {
+            indicePergunta = 0;
+            respostas = {};
+            delete botao.dataset.resultado;
+            renderizarPergunta();
+            return;
         }
+        if (respostas[indicePergunta] === undefined) {
+            mostrarToast("Selecione uma alternativa para continuar.");
+            return;
+        }
+        if (indicePergunta === perguntas.length - 1) finalizarQuiz();
+        else {
+            indicePergunta++;
+            renderizarPergunta();
+        }
+    });
+    renderizarPergunta();
+}
 
+function configurarNavegacao() {
+    document.querySelectorAll("[data-page]").forEach(botao => {
+        botao.addEventListener("click", evento => {
+            evento.preventDefault();
+            navegar(botao.dataset.page);
+        });
     });
 }
 
+function configurarChat() {
+    const form = document.getElementById("chatForm");
+    const campo = document.getElementById("chatInput");
+    const mensagens = document.getElementById("messages");
 
-/* =====================================================
-   5. CALCULAR PROGRESSO GERAL
-===================================================== */
+    form.addEventListener("submit", evento => {
+        evento.preventDefault();
+        const texto = campo.value.trim();
+        if (!texto) return;
 
-function atualizarProgresso() {
+        const usuario = document.createElement("div");
+        usuario.className = "bubble user";
+        usuario.textContent = texto;
+        mensagens.appendChild(usuario);
+        campo.value = "";
 
-    const quantidade = aulasConcluidas.length;
-
-    const porcentagem = Math.round(
-        (quantidade / TOTAL_AULAS) * 100
-    );
-
-    const barra = document.getElementById("progressoGeral");
-
-    const texto = document.getElementById("textoProgresso");
-
-    if (barra) {
-
-        barra.style.width = porcentagem + "%";
-
-        barra.setAttribute("role", "progressbar");
-
-        barra.setAttribute("aria-valuemin", "0");
-
-        barra.setAttribute("aria-valuemax", "100");
-
-        barra.setAttribute("aria-valuenow", porcentagem);
-
-    }
-
-    if (texto) {
-
-        texto.textContent =
-            porcentagem + "% concluído (" +
-            quantidade + " de " + TOTAL_AULAS + " aulas)";
-
-    }
-
-}
-
-
-/* =====================================================
-   6. MARCAR E DESMARCAR AULAS
-===================================================== */
-
-function configurarConclusao() {
-
-    const botoes = document.querySelectorAll(".botao-concluir");
-
-    botoes.forEach(botao => {
-
-        botao.addEventListener("click", function() {
-
-            const idAula = this.dataset.aula;
-
-            if (!idAula) return;
-
-            if (aulasConcluidas.includes(idAula)) {
-
-                aulasConcluidas = aulasConcluidas.filter(
-                    id => id !== idAula
-                );
-
-            } else {
-
-                aulasConcluidas.push(idAula);
-
-            }
-
-            salvarProgresso();
-
-            atualizarBotoes();
-
-            atualizarProgresso();
-
-        });
-
+        const resposta = document.createElement("div");
+        resposta.className = "bubble bot";
+        resposta.textContent = "Este é o modo demonstrativo do Professor Virtual. A integração com uma IA ainda será implementada. Enquanto isso, você pode estudar pelos módulos de Hardware e Software e praticar no Quiz.";
+        mensagens.appendChild(resposta);
+        mensagens.scrollTop = mensagens.scrollHeight;
     });
-
 }
 
-
-/* =====================================================
-   7. SISTEMA DE PESQUISA
-===================================================== */
-
-function configurarPesquisa() {
-
-    const campoPesquisa = document.getElementById("pesquisa");
-
-    if (!campoPesquisa) return;
-
-    campoPesquisa.addEventListener("input", function() {
-
-        const termo = this.value
-            .toLowerCase()
-            .trim()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-
-        // Pesquisar módulos
-
-        const cursos = document.querySelectorAll(".card-curso");
-
-        cursos.forEach(curso => {
-
-            const conteudo = curso.textContent
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "");
-
-            curso.style.display =
-                conteudo.includes(termo) ? "" : "none";
-
-        });
-
-
-        // Pesquisar aulas
-
-        const aulas = document.querySelectorAll(".aula");
-
-        aulas.forEach(aula => {
-
-            const conteudo = aula.textContent
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "");
-
-            aula.style.display =
-                conteudo.includes(termo) ? "" : "none";
-
-        });
-
+function configurarContato() {
+    const form = document.getElementById("contactForm");
+    form.addEventListener("submit", evento => {
+        evento.preventDefault();
+        mostrarToast("Formulário demonstrativo: o envio de mensagens ainda não está conectado.");
+        form.reset();
     });
-
 }
-
-
-/* =====================================================
-   8. MENU DE NAVEGAÇÃO
-===================================================== */
-
-function configurarMenu() {
-
-    const links = document.querySelectorAll(".menu-item");
-
-    links.forEach(link => {
-
-        link.addEventListener("click", function() {
-
-            links.forEach(item => {
-
-                item.classList.remove("ativo");
-
-            });
-
-            this.classList.add("ativo");
-
-        });
-
-    });
-
-}
-
-
-/* =====================================================
-   9. INICIALIZAÇÃO DO PORTAL
-===================================================== */
 
 function iniciarPortal() {
+    configurarNavegacao();
+    configurarFiltros();
+    configurarQuiz();
+    configurarChat();
+    configurarContato();
 
-    carregarProgresso();
+    document.getElementById("search").addEventListener("input", aplicarPesquisa);
+    document.getElementById("completeModule").addEventListener("click", concluirModulo);
 
-    configurarConclusao();
-
-    configurarPesquisa();
-
-    configurarMenu();
-
-    atualizarBotoes();
-
-    atualizarProgresso();
-
-    console.log("H.S. Bruno iniciado com sucesso!");
-
+    renderizarModulos();
+    atualizarResumo();
+    console.log("H.S. Bruno iniciado.");
 }
-
-
-/* =====================================================
-   10. EXECUTAR QUANDO A PÁGINA CARREGAR
-===================================================== */
 
 document.addEventListener("DOMContentLoaded", iniciarPortal);
