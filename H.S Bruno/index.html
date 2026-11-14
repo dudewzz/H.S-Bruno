@@ -1,0 +1,625 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>H.S Bruno | Centro de Aprendizado Tecnológico</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar">
+
+        <a class="brand" href="#" data-page="inicio">
+
+            <span class="logo-mark">
+                <svg viewBox="0 0 64 64">
+                    <path d="M4 21.5 31.8 7 60 21.5 32 37 4 21.5Z" fill="#1765ed"/>
+                    <path d="M13 28.5v14.2c10.8 8.7 26.3 8.7 37 0V28.5L32 42 13 28.5Z" fill="#193f9e"/>
+                    <path d="M53 25v15" stroke="#f0b84b" stroke-width="3.5" stroke-linecap="round"/>
+                    <circle cx="53" cy="42.5" r="3.5" fill="#f0b84b"/>
+                    <path d="M9 21.5 31.8 9.8 55 21.5 32 34.2 9 21.5Z" fill="#4d8cf4"/>
+                    <path d="M20 16.2 31.8 10l13.6 7-13.4 7.3-12-6.2Z" fill="#dceaff" opacity=".8"/>
+                </svg>
+            </span>
+
+            <span>
+                <strong>H.S Bruno</strong>
+                <small>Centro de Aprendizado Tecnológico</small>
+            </span>
+
+        </a>
+
+        <nav>
+
+            <button class="nav-link active" data-page="inicio">
+                ⌂ <span>Início</span>
+            </button>
+
+            <button class="nav-link" data-page="cursos">
+                ▤ <span>Cursos</span>
+            </button>
+
+            <button class="nav-link" data-page="professor">
+                ◉ <span>Professor Virtual</span>
+                <i>IA</i>
+            </button>
+
+            <button class="nav-link" data-page="progresso">
+                ▥ <span>Meu Progresso</span>
+            </button>
+
+            <button class="nav-link" data-page="quiz">
+                ☑ <span>Quiz</span>
+            </button>
+
+            <button class="nav-link" data-page="sobre">
+                ⓘ <span>Sobre</span>
+            </button>
+
+            <button class="nav-link" data-page="contato">
+                ✉ <span>Contato</span>
+            </button>
+
+        </nav>
+
+        <div class="promo">
+            <small>H.S BRUNO</small>
+
+            <h2>
+                Aprenda.<br>
+                Pratique.<br>
+                Evolua.
+            </h2>
+
+            <p>Domine a tecnologia com conhecimento e prática.</p>
+
+            <button data-page="sobre">
+                Sobre o projeto →
+            </button>
+        </div>
+
+    </aside>
+
+
+    <!-- CABEÇALHO -->
+    <header class="topbar">
+
+        <label class="search">
+            ⌕
+            <input id="search" placeholder="Pesquisar cursos, aulas...">
+        </label>
+
+        <button class="bell">♧</button>
+
+        <button class="profile" data-page="progresso">
+            V
+        </button>
+
+    </header>
+
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="content">
+
+
+        <!-- INÍCIO -->
+        <section class="page active" id="inicio">
+
+            <div class="hero">
+
+                <div class="hero-copy">
+
+                    <small>APRENDA. PRATIQUE. EVOLUA.</small>
+
+                    <h1>
+                        Sua jornada na<br>
+                        tecnologia começa <em>aqui.</em>
+                    </h1>
+
+                    <p>
+                        Aprenda, pratique e evolua com o H.S Bruno.<br>
+                        Conhecimento na palma da sua mão!
+                    </p>
+
+                    <button class="primary" data-page="cursos">
+                        Explorar Cursos <b>→</b>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="section-head">
+
+                <div>
+                    <h2>Nossos Módulos</h2>
+                    <p>Escolha um módulo para começar seus estudos!</p>
+                </div>
+
+                <button class="outline" data-page="cursos">
+                    Ver todos os módulos →
+                </button>
+
+            </div>
+
+            <div class="module-grid" id="homeModules"></div>
+
+
+            <div class="dashboard">
+
+                <article class="panel">
+
+                    <h3>⚡ Acesso Rápido</h3>
+
+                    <div class="quick">
+
+                        <button data-page="cursos">
+                            ▶
+                            <small>Aulas recentes</small>
+                        </button>
+
+                        <button data-page="quiz">
+                            ☑
+                            <small>Meus exercícios</small>
+                        </button>
+
+                        <button data-page="progresso">
+                            ♜
+                            <small>Meu progresso</small>
+                        </button>
+
+                        <button data-page="professor">
+                            ◉
+                            <small>Professor Virtual</small>
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <h3>▥ Seu Progresso</h3>
+
+                    <div class="progress-area">
+
+                        <div class="ring" id="ring">
+                            <b id="percent">0%</b>
+                        </div>
+
+                        <div>
+                            <h4>Continue assim!</h4>
+
+                            <p>
+                                Você está construindo seu conhecimento
+                                a cada aula.
+                            </p>
+
+                            <button class="primary small" data-page="progresso">
+                                Ver detalhes →
+                            </button>
+                        </div>
+
+                        <div class="bars">
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="panel teacher-promo">
+
+                    <div>
+
+                        <h3>
+                            Professor Virtual
+                            <i>IA</i>
+                        </h3>
+
+                        <p>
+                            Tire suas dúvidas, peça explicações e muito mais!
+                        </p>
+
+                        <button class="dark small" data-page="professor">
+                            Conversar agora →
+                        </button>
+
+                    </div>
+
+                    <b class="chat-icon">•••</b>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- CURSOS -->
+        <section class="page" id="cursos">
+
+            <div class="page-title">
+
+                <small>TRILHAS DE APRENDIZADO</small>
+
+                <h1>Nossos Cursos</h1>
+
+                <p>
+                    Explore os módulos de Hardware e Software.
+                </p>
+
+            </div>
+
+
+            <div class="filters">
+
+                <button class="filter active" data-filter="Todos">
+                    Todos
+                </button>
+
+                <button class="filter" data-filter="Hardware">
+                    Hardware
+                </button>
+
+                <button class="filter" data-filter="Software">
+                    Software
+                </button>
+
+            </div>
+
+
+            <div class="module-grid" id="allModules"></div>
+
+        </section>
+
+
+
+        <!-- AULA / VIDEOAULA -->
+        <section class="page" id="aula">
+
+            <button class="back" data-page="cursos">
+                ← Voltar para os módulos
+            </button>
+
+
+            <div class="page-title module-detail-title">
+
+                <small id="lessonArea">
+                    MÓDULO
+                </small>
+
+                <h1 id="lessonTitle">
+                    Nome do módulo
+                </h1>
+
+                <p id="moduleDescription">
+                    Assista ao conteúdo preparado pela equipe.
+                </p>
+
+            </div>
+
+
+            <article class="panel module-video-panel">
+
+                <div class="video-heading">
+
+                    <div>
+                        <small>VIDEOAULA DO MÓDULO</small>
+                        <h2>Conteúdo em vídeo</h2>
+                    </div>
+
+                    <span class="video-tag">
+                        H.S Bruno
+                    </span>
+
+                </div>
+
+
+                <div class="video-slot" id="moduleVideo">
+
+                    <div class="video-placeholder">
+
+                        <span class="play-symbol">▶</span>
+
+                        <h3>Espaço reservado para o vídeo</h3>
+
+                        <p>
+                            O vídeo gravado pela equipe será exibido aqui.
+                        </p>
+
+                        <small>
+                            Adicione o arquivo de vídeo na pasta do projeto
+                            e informe o caminho no script.js.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="module-video-footer">
+
+                    <p>
+                        Depois de assistir, acompanhe seu avanço em
+                        <b>Meu Progresso</b>.
+                    </p>
+
+                    <button class="primary" id="completeModule">
+                        Marcar módulo como concluído ✓
+                    </button>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- QUIZ -->
+        <section class="page" id="quiz">
+
+            <div class="page-title">
+
+                <small>PRATIQUE O QUE APRENDEU</small>
+
+                <h1>Quiz de conhecimentos</h1>
+
+                <p>
+                    Questões sobre hardware e software.
+                </p>
+
+            </div>
+
+
+            <article class="panel quiz">
+
+                <div class="quiz-top">
+
+                    <span id="quizCount"></span>
+
+                    <div class="track">
+                        <span id="quizBar"></span>
+                    </div>
+
+                </div>
+
+
+                <h2 id="question"></h2>
+
+                <div id="answers"></div>
+
+                <div id="feedback"></div>
+
+
+                <div class="lesson-actions">
+
+                    <button class="secondary" id="quizPrev">
+                        ← Anterior
+                    </button>
+
+                    <button class="primary" id="quizNext">
+                        Próxima questão →
+                    </button>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- PROFESSOR VIRTUAL -->
+        <section class="page" id="professor">
+
+            <div class="page-title">
+
+                <small>APOIO AO APRENDIZADO</small>
+
+                <h1>Professor Virtual</h1>
+
+                <p>
+                    Um espaço para tirar dúvidas sobre Hardware e Software.
+                </p>
+
+            </div>
+
+
+            <article class="panel chat">
+
+                <div class="chat-head">
+
+                    <b>✦</b>
+
+                    <div>
+                        <h3>Professor H.S Bruno</h3>
+
+                        <small>
+                            Assistente demonstrativo • IA em etapa futura
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div id="messages" class="messages">
+
+                    <div class="bubble bot">
+                        Olá! Posso ajudar com componentes, manutenção,
+                        sistemas operacionais e programas.
+                        Qual assunto você gostaria de estudar?
+                    </div>
+
+                </div>
+
+
+                <form id="chatForm">
+
+                    <input
+                        id="chatInput"
+                        placeholder="Digite sua pergunta..."
+                    >
+
+                    <button class="primary">
+                        Enviar ↑
+                    </button>
+
+                </form>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- PROGRESSO -->
+        <section class="page" id="progresso">
+
+            <div class="page-title">
+
+                <small>ACOMPANHE SUA EVOLUÇÃO</small>
+
+                <h1>Meu Progresso</h1>
+
+                <p>
+                    Veja suas atividades e acompanhe seu desenvolvimento.
+                </p>
+
+            </div>
+
+
+            <div class="stats">
+
+                <article class="panel">
+                    <b id="doneCount">0</b>
+                    <small>Módulos concluídos</small>
+                </article>
+
+                <article class="panel">
+                    <b id="score">—</b>
+                    <small>Última pontuação</small>
+                </article>
+
+                <article class="panel">
+                    <b>2</b>
+                    <small>Áreas de estudo</small>
+                </article>
+
+            </div>
+
+
+            <article class="panel">
+
+                <h2>Desempenho por módulo</h2>
+
+                <div id="performance"></div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- SOBRE -->
+        <section class="page" id="sobre">
+
+            <article class="panel info">
+
+                <small>SOBRE O PROJETO</small>
+
+                <h1>
+                    Tecnologia na palma da sua mão.
+                </h1>
+
+                <p>
+                    O H.S Bruno é uma plataforma educacional criada
+                    para apoiar o aprendizado de informática, com
+                    conteúdos de Hardware e Software, aulas organizadas,
+                    exercícios e acompanhamento de progresso.
+                </p>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- CONTATO -->
+        <section class="page" id="contato">
+
+            <article class="panel info">
+
+                <small>FALE CONOSCO</small>
+
+                <h1>Contato</h1>
+
+
+                <form id="contactForm">
+
+                    <label>
+                        Nome
+                        <input required placeholder="Seu nome">
+                    </label>
+
+                    <label>
+                        E-mail
+                        <input
+                            type="email"
+                            required
+                            placeholder="seu@email.com"
+                        >
+                    </label>
+
+                    <label>
+                        Mensagem
+                        <textarea
+                            required
+                            rows="5"
+                            placeholder="Como podemos ajudar?"
+                        ></textarea>
+                    </label>
+
+                    <button class="primary">
+                        Enviar mensagem →
+                    </button>
+
+                </form>
+
+            </article>
+
+        </section>
+
+    </main>
+
+
+    <!-- NOTIFICAÇÕES -->
+    <div id="toast"></div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+</html>
