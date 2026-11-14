@@ -13,6 +13,7 @@ const STORAGE = {
 const modulos = [
     {
         id: "hardware-1",
+        video: "videos/hardware-1.mp4",
         area: "Hardware",
         titulo: "Hardware — Módulo 1",
         descricao: "Conheça os principais componentes e entenda como um computador funciona.",
@@ -21,6 +22,7 @@ const modulos = [
     },
     {
         id: "hardware-2",
+        video: "videos/hardware-2.mp4",
         area: "Hardware",
         titulo: "Hardware — Módulo 2",
         descricao: "Aprenda cuidados, montagem, limpeza e diagnóstico de computadores.",
@@ -29,6 +31,7 @@ const modulos = [
     },
     {
         id: "software-1",
+        video: "videos/software-1.mp4",
         area: "Software",
         titulo: "Software — Módulo 1",
         descricao: "Entenda os programas, sistemas operacionais e a organização de arquivos.",
@@ -37,6 +40,7 @@ const modulos = [
     },
     {
         id: "software-2",
+        video: "videos/software-2.mp4",
         area: "Software",
         titulo: "Software — Módulo 2",
         descricao: "Conheça aplicativos, segurança digital e boas práticas no uso do computador.",
@@ -177,20 +181,46 @@ function abrirModulo(id) {
     document.getElementById("lessonTitle").textContent = modulo.titulo;
     document.getElementById("moduleDescription").textContent = modulo.descricao;
 
-    const video = document.getElementById("moduleVideo");
-    video.innerHTML = "";
-    const bloco = document.createElement("div");
-    bloco.className = "video-placeholder";
-    const titulo = document.createElement("h3");
-    titulo.textContent = "Conteúdo do módulo";
-    const lista = document.createElement("ol");
-    modulo.aulas.forEach(aula => {
-        const item = document.createElement("li");
-        item.textContent = aula;
-        lista.appendChild(item);
+    const videoContainer = document.getElementById("moduleVideo");
+    videoContainer.replaceChildren();
+
+    const player = document.createElement("video");
+    player.className = "module-player";
+    player.controls = true;
+    player.preload = "metadata";
+    player.playsInline = true;
+    player.setAttribute("aria-label", "Videoaula: " + modulo.titulo);
+    player.style.width = "100%";
+    player.style.maxHeight = "480px";
+    player.style.aspectRatio = "16 / 9";
+    player.style.display = "block";
+    player.style.background = "#101010";
+    player.style.borderRadius = "12px";
+    player.style.objectFit = "contain";
+
+    const fonte = document.createElement("source");
+    fonte.src = modulo.video;
+    fonte.type = "video/mp4";
+    player.appendChild(fonte);
+
+    const aviso = document.createElement("p");
+    aviso.textContent = "Seu navegador não conseguiu carregar este vídeo. Confira se o arquivo existe em: " + modulo.video;
+    player.appendChild(aviso);
+
+    player.addEventListener("error", () => {
+        const placeholder = document.createElement("div");
+        placeholder.className = "video-placeholder";
+        const tituloAviso = document.createElement("h3");
+        tituloAviso.textContent = "Vídeo ainda não adicionado";
+        const descricaoAviso = document.createElement("p");
+        descricaoAviso.textContent = "Coloque o arquivo MP4 neste caminho dentro da pasta do projeto:";
+        const caminho = document.createElement("small");
+        caminho.textContent = modulo.video;
+        placeholder.append(tituloAviso, descricaoAviso, caminho);
+        videoContainer.replaceChildren(placeholder);
     });
-    bloco.append(titulo, lista);
-    video.appendChild(bloco);
+
+    videoContainer.appendChild(player);
 
     const botao = document.getElementById("completeModule");
     const concluido = concluidos.includes(modulo.id);
