@@ -417,30 +417,6 @@ function configurarNavegacao() {
     });
 }
 
-function configurarChat() {
-    const form = document.getElementById("chatForm");
-    const campo = document.getElementById("chatInput");
-    const mensagens = document.getElementById("messages");
-
-    form.addEventListener("submit", evento => {
-        evento.preventDefault();
-        const texto = campo.value.trim();
-        if (!texto) return;
-
-        const usuario = document.createElement("div");
-        usuario.className = "bubble user";
-        usuario.textContent = texto;
-        mensagens.appendChild(usuario);
-        campo.value = "";
-
-        const resposta = document.createElement("div");
-        resposta.className = "bubble bot";
-        resposta.textContent = "Este é o modo demonstrativo do Professor Virtual. A integração com uma IA ainda será implementada. Enquanto isso, você pode estudar pelos módulos de Hardware e Software e praticar no Quiz.";
-        mensagens.appendChild(resposta);
-        mensagens.scrollTop = mensagens.scrollHeight;
-    });
-}
-
 function configurarContato() {
     const form = document.getElementById("contactForm");
     form.addEventListener("submit", evento => {
@@ -454,7 +430,6 @@ function iniciarPortal() {
     configurarNavegacao();
     configurarFiltros();
     configurarQuiz();
-    configurarChat();
     configurarContato();
 
     document.getElementById("search").addEventListener("input", aplicarPesquisa);
