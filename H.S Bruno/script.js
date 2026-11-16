@@ -1070,7 +1070,6 @@ async function carregarProgressoDaConta() {
     aulasConcluidas = [];
     atividadesSemanais = [];
     pontuacaoAtual = null;
-        atividadesSemanais = [];
 
     if (!sessaoAtual) {
         atualizarResumo();
@@ -1227,6 +1226,7 @@ function configurarAcesso() {
         aulasConcluidas = [];
         pontuacaoAtual = null;
         atividadesSemanais = [];
+        try { localStorage.removeItem(chaveAtividadeSemanal()); } catch (_) {}
         atualizarResumo();
         if (moduloAtual) renderizarListaAulas(moduloAtual);
         mostrarToast("Seu progresso foi resetado para 0%.");
@@ -1271,7 +1271,7 @@ async function iniciarPortal() {
             concluidos = [];
             aulasConcluidas = [];
             pontuacaoAtual = null;
-        atividadesSemanais = [];
+            atividadesSemanais = [];
             atualizarResumo();
             mostrarAcesso();
         } else {
