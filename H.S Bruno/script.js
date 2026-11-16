@@ -177,14 +177,8 @@ function atualizarWidgetsDeMeta(percentual) {
     const feitasSemana = new Set(atividades.map(item => item.id)).size;
     const weeklyDone = document.getElementById("weeklyDone");
     const weeklyBar = document.getElementById("weeklyBar");
-    const certificateBar = document.getElementById("certificateBar");
-    const certificateMessage = document.getElementById("certificateMessage");
     if (weeklyDone) weeklyDone.textContent = Math.min(feitasSemana, 3);
     if (weeklyBar) weeklyBar.style.width = Math.min(feitasSemana / 3 * 100, 100) + "%";
-    if (certificateBar) certificateBar.style.width = percentual + "%";
-    if (certificateMessage) certificateMessage.textContent = percentual >= 100
-        ? "Parabéns! Seu certificado está liberado."
-        : "Conclua " + (100 - percentual) + "% restante para liberar seu certificado.";
 }
 
 function proximaAulaPendente() {
@@ -635,7 +629,7 @@ function atualizarResumo() {
     const proxima = document.getElementById("homeNextLesson");
     if (homeDone) homeDone.textContent = aulasConcluidas.length;
     if (homeLessons) homeLessons.textContent = aulasConcluidas.length + " de " + totalAulas;
-    if (homeScore) homeScore.textContent = aulasConcluidas.length === 0 ? "N/A" : (pontuacaoAtual === null ? "—" : pontuacaoAtual + "%");
+    if (homeScore) homeScore.textContent = pontuacaoAtual === null ? "N/A" : pontuacaoAtual + "%";
     if (mensagem) mensagem.textContent = percentual === 0
         ? "Pronto para começar sua jornada!"
         : percentual === 100 ? "Jornada concluída. Parabéns!" : "Você está indo muito bem!";
@@ -684,13 +678,36 @@ function normalizar(texto) {
 
 function aplicarPesquisa() {
     const campo = document.getElementById("search");
-    if (!campo) return;
+    const grade = document.getElementById("allModules");
+    const feedback = document.getElementById("searchFeedback");
+    if (!campo || !grade) return;
 
-    const termo = normalizar(campo.value.trim());
-    document.querySelectorAll("#allModules .module-card").forEach(card => {
+    const textoDigitado = campo.value.trim();
+    const termo = normalizar(textoDigitado);
+    let encontrados = 0;
+
+    grade.querySelectorAll(".module-card").forEach(card => {
         const conteudo = normalizar(card.dataset.search || card.textContent);
-        card.hidden = termo !== "" && !conteudo.includes(termo);
+        const corresponde = termo === "" || conteudo.includes(termo);
+        card.hidden = !corresponde;
+        if (corresponde) encontrados++;
     });
+
+    if (feedback) {
+        if (textoDigitado && encontrados === 0) {
+            feedback.hidden = false;
+            feedback.textContent = 'Nenhum resultado encontrado para "' + textoDigitado + '". Confira a escrita ou tente outro termo.';
+        } else if (textoDigitado) {
+            feedback.hidden = false;
+            feedback.textContent = encontrados + (encontrados === 1 ? ' resultado encontrado para "' : ' resultados encontrados para "') + textoDigitado + '".';
+        } else if (grade.querySelectorAll(".module-card").length === 0) {
+            feedback.hidden = false;
+            feedback.textContent = "Nenhum módulo encontrado neste filtro.";
+        } else {
+            feedback.hidden = true;
+            feedback.textContent = "";
+        }
+    }
 }
 
 function pesquisarCursos() {
@@ -799,7 +816,7 @@ async function finalizarQuiz() {
     }
 
     pontuacaoAtual = nota;
-    atualizarPainelProgresso();
+    atualizarResumo();
     document.getElementById("question").textContent = `Você acertou ${acertos} de ${perguntas.length} questões!`;
     document.getElementById("answers").replaceChildren();
     const feedback = document.getElementById("feedback");
