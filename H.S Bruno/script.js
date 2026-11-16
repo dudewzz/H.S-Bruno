@@ -602,7 +602,13 @@ function configurarAcesso() {
 
         try {
             if (modoCadastro) {
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        emailRedirectTo: window.location.origin + window.location.pathname
+                    }
+                });
                 if (error) throw error;
                 if (data.session) {
                     sessaoAtual = data.session;
