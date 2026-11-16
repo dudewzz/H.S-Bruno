@@ -415,7 +415,7 @@ function atualizarResumo() {
     if (percent) percent.textContent = percentual + "%";
     if (ring) {
         const angulo = percentual * 3.6;
-        ring.style.background = "conic-gradient(#19b7a2 0deg " + angulo + "deg, #dfe7f8 " + angulo + "deg 360deg)";
+        ring.style.background = "conic-gradient(#20aee9 0deg, #3864e8 " + angulo + "deg, #dfe7f8 " + angulo + "deg 360deg)";
     }
     if (done) done.textContent = aulasConcluidas.length;
     const homeLessons = document.getElementById("homeLessons");
