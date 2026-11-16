@@ -36,7 +36,7 @@
 
             <span>
                 <strong>H.S Bruno</strong>
-                <small>Centro de Aprendizado Tecnológico</small>
+                <small>Aprender. Evoluir. Conquistar.</small>
             </span>
 
         </a>
@@ -48,7 +48,7 @@
             </button>
 
             <button class="nav-link" data-page="cursos">
-                ▤ <span>Cursos</span>
+                ▤ <span>Módulos</span>
             </button>
 
             <button class="nav-link" data-page="progresso">
@@ -56,7 +56,7 @@
             </button>
 
             <button class="nav-link" data-page="quiz">
-                ☑ <span>Quiz</span>
+                ☑ <span>Avaliações</span>
             </button>
 
             <button class="nav-link" data-page="sobre">
@@ -107,117 +107,56 @@
 
         <!-- INÍCIO -->
         <section class="page active" id="inicio">
-
-            <div class="hero">
-
-                <div class="hero-copy">
-
-                    <small>APRENDA. PRATIQUE. EVOLUA.</small>
-
-                    <h1>
-                        Sua jornada na<br>
-                        tecnologia começa <em>aqui.</em>
-                    </h1>
-
-                    <p>
-                        Aprenda, pratique e evolua com o H.S Bruno.<br>
-                        Conhecimento na palma da sua mão!
-                    </p>
-
-                    <button class="primary" data-page="cursos">
-                        Explorar Cursos <b>→</b>
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="section-head">
-
-                <div>
-                    <h2>Nossos Módulos</h2>
-                    <p>Escolha um módulo para começar seus estudos!</p>
-                </div>
-
-                <button class="outline" data-page="cursos">
-                    Ver todos os módulos →
-                </button>
-
-            </div>
-
-            <div class="module-grid" id="homeModules"></div>
-
-
-            <div class="dashboard">
-
-                <article class="panel">
-
-                    <h3>⚡ Acesso Rápido</h3>
-
-                    <div class="quick">
-
-                        <button data-page="cursos">
-                            ▶
-                            <small>Aulas recentes</small>
-                        </button>
-
-                        <button data-page="quiz">
-                            ☑
-                            <small>Meus exercícios</small>
-                        </button>
-
-                        <button data-page="progresso">
-                            ♜
-                            <small>Meu progresso</small>
-                        </button>
-
+            <div class="home-top-grid">
+                <section class="home-welcome">
+                    <div class="home-welcome-copy">
+                        <span class="welcome-wave">👋</span>
+                        <h1>Olá, aluno(a)!</h1>
+                        <p>Continue seus estudos e<br>conquiste novos conhecimentos!</p>
+                        <button class="home-resume" data-page="cursos">▶ <span>Retomar Estudos</span></button>
                     </div>
+                    <div class="welcome-image" aria-hidden="true"></div>
+                </section>
 
-                </article>
-
-
-                <article class="panel">
-
-                    <h3>▥ Seu Progresso</h3>
-
-                    <div class="progress-area">
-
-                        <div class="ring" id="ring">
-                            <b id="percent">0%</b>
+                <article class="home-progress-card">
+                    <h2><span>🏆</span> Seu Progresso Geral</h2>
+                    <div class="home-progress-content">
+                        <div class="home-progress-ring" id="ring"><b id="percent">0%</b></div>
+                        <div class="home-progress-message">
+                            <strong>Você está indo<br>muito bem!</strong>
+                            <span>⭐</span>
                         </div>
-
-                        <div>
-                            <h4>Continue assim!</h4>
-
-                            <p>
-                                Você está construindo seu conhecimento
-                                a cada aula.
-                            </p>
-
-                            <button class="primary small" data-page="progresso">
-                                Ver detalhes →
-                            </button>
-                        </div>
-
-                        <div class="bars">
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                        </div>
-
                     </div>
-
+                    <p class="home-progress-count"><b id="doneCount">0</b> de 17 aulas</p>
                 </article>
-
-
             </div>
 
+            <div class="home-lower-grid">
+                <section class="home-modules-section">
+                    <div class="home-section-heading">
+                        <h2><span>▣</span> Seus Módulos</h2>
+                        <button class="home-view-all" data-page="cursos">Ver todos os módulos <b>→</b></button>
+                    </div>
+                    <div class="home-module-grid" id="homeModules"></div>
+                </section>
+
+                <aside class="home-performance">
+                    <h2><span>▥</span> Seu Desempenho</h2>
+                    <div class="home-performance-item">
+                        <span class="performance-icon star">★</span>
+                        <div><small>Última Nota</small><strong id="homeScore">—</strong></div>
+                    </div>
+                    <div class="home-performance-item">
+                        <span class="performance-icon check">✓</span>
+                        <div><small>Aulas Concluídas</small><strong id="homeLessons">0 de 17</strong></div>
+                    </div>
+                    <div class="home-performance-item">
+                        <span class="performance-icon calendar">▦</span>
+                        <div><small>Área de estudo</small><strong>Hardware e Software</strong></div>
+                    </div>
+                </aside>
+            </div>
         </section>
-
-
 
         <!-- CURSOS -->
         <section class="page" id="cursos">
