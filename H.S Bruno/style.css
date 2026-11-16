@@ -267,3 +267,97 @@ body{background:linear-gradient(135deg,#f8faff 0%,#edf2ff 58%,#f5f3ff 100%);colo
 .profile-footer button{padding:9px 16px;border-radius:22px}
 @media(max-width:850px){.profile-content-grid{grid-template-columns:1fr}.student-profile-hero{flex-wrap:wrap}.profile-level{margin-left:auto}}
 @media(max-width:560px){.profile-page-heading{align-items:flex-start;flex-direction:column}.student-profile-hero{gap:15px;padding:20px}.student-avatar-large{width:72px;height:72px;font-size:37px}.student-profile-identity h2{font-size:20px}.profile-level{width:100%;margin:0;padding:14px 0 0;border-left:0;border-top:1px solid #d3def5;text-align:left}.profile-stats-grid{grid-template-columns:1fr;gap:10px}.profile-achievements-grid{grid-template-columns:1fr}.profile-footer{align-items:flex-start;flex-direction:column}}
+
+
+/* PALETA B — EDUCACIONAL MODERNO
+   Somente cores: estrutura, medidas e posicionamento preservados. */
+:root{
+  --ink:#172B4D;
+  --muted:#64748B;
+  --blue:#2875D8;
+  --line:#DCE4F0;
+  --bg:#F7F9FC;
+  --home-ink:#172B4D;
+  --home-blue:#2875D8;
+  --home-line:#DCE4F0;
+}
+body{background:#F7F9FC;color:#172B4D}
+.sidebar{background:#FFFFFF;border-color:#DCE4F0}
+.brand,.brand strong{color:#172B4D}
+.brand small{color:#64748B}
+.nav-link{color:#425875}
+.nav-link i,.teacher-promo i{background:#2875D8}
+.nav-link.active{background:#EAF2FC;color:#2166B8;box-shadow:inset 3px 0 #2875D8}
+.promo{background:linear-gradient(145deg,#244B78,#172B4D);color:#FFFFFF}
+.promo small{color:#C9DDF5}
+.promo p{color:#E1EAF5}
+.topbar{background:rgba(255,255,255,.92);border-color:#DCE4F0}
+.search{background:#FFFFFF;border-color:#DCE4F0;color:#2875D8}
+.search input{color:#172B4D}
+.bell{color:#2875D8}
+.profile{background:#2875D8;color:#FFFFFF}
+.hero{background-color:#EAF2FC}
+button{color:inherit}
+.primary,.auth-submit,.confirm-accept{background:#2875D8;color:#FFFFFF}
+a{color:#2875D8}
+.panel,.info,.quiz,.module-card,.profile-edit-card,.profile-achievements-card,
+.home-module-card,.home-performance,.profile-stat-card{
+  background:#FFFFFF;border-color:#DCE4F0;color:#172B4D
+}
+.section-head h2,.module-body h3,.profile-page-heading h1,
+.student-profile-identity h2,.profile-card-heading h2,
+.home-section-heading h2,.home-progress-card h2,
+.home-performance h2{color:#172B4D}
+.section-head p,.module-body p,.profile-page-heading p,
+.profile-edit-card label,.profile-footer p{color:#64748B}
+.track,.progress-track,.home-module-progress>span{background:#E5EAF2}
+.track i,.progress-track i,.home-module-progress i{background:#2875D8}
+.lesson-item.completed,.lesson-item.done,.completed,.success,
+.home-module-done,.performance-icon.check{background:#32A67A;color:#FFFFFF}
+.progress-fill,.progress-bar,.home-progress-ring{background-color:#32A67A}
+.home-progress-ring{background:conic-gradient(#32A67A 0deg,#32A67A 0deg,#E5EAF2 0deg)}
+.home-welcome{background:linear-gradient(110deg,#244B78 0%,#2875D8 58%,#6C91C9 100%);color:#FFFFFF}
+.home-welcome h1,.home-welcome p{color:#FFFFFF}
+.home-resume{background:#2875D8;color:#FFFFFF}
+.home-progress-card,.home-performance{background:#FFFFFF;border-color:#DCE4F0}
+.home-progress-card h2,.home-performance h2{color:#172B4D}
+.home-progress-ring:before{background:#FFFFFF}
+.home-progress-ring b{color:#172B4D}
+.home-progress-message strong,.home-module-body h3,
+.home-performance-item strong{color:#172B4D}
+.home-progress-message{border-color:#DCE4F0}
+.home-module-body p,.home-performance-item small{color:#64748B}
+.home-module-progress i{background:#32A67A}
+.home-module-button,.home-view-all{background:#F7F9FC;border-color:#DCE4F0;color:#28547F}
+.home-module-button:hover,.home-view-all:hover{background:#EAF2FC}
+.home-section-heading h2 span,.home-performance h2 span{color:#7865C7}
+.performance-icon.calendar{background:#F0EDFF;color:#7865C7}
+.profile-page-heading small,.profile-kicker,.profile-card-heading small{color:#2875D8}
+.student-profile-hero{background:linear-gradient(115deg,#FFFFFF 0%,#F2F6FB 100%);border-color:#DCE4F0}
+.student-avatar-large{background:#EAF2FC}
+.profile-level{border-color:#DCE4F0}
+.profile-level strong{color:#2875D8}
+.profile-stat-card>span{background:#EAF2FC}
+.profile-stat-card strong{color:#172B4D}
+.profile-stat-card small,.student-profile-identity small{color:#64748B}
+.profile-edit-card input{border-color:#DCE4F0;color:#172B4D}
+.profile-edit-card input:focus{border-color:#2875D8;box-shadow:0 0 0 3px #2875D81A}
+.profile-avatar-options button{border-color:#DCE4F0;background:#F7F9FC}
+.profile-avatar-options button:hover{background:#EAF2FC}
+.profile-avatar-options button.selected{border-color:#2875D8;background:#EAF2FC;box-shadow:0 0 0 3px #2875D81C}
+.profile-achievement{border-color:#DCE4F0;background:#F7F9FC}
+.profile-achievement-icon{background:#F0EDFF}
+.profile-achievement.unlocked .profile-achievement-icon{background:#F0EDFF;color:#7865C7}
+.confirm-dialog{border-color:#DCE4F0;color:#172B4D}
+.confirm-dialog h2{color:#172B4D}
+.confirm-dialog p{color:#64748B}
+.confirm-cancel{background:#F0F3F7;color:#425875}
+.confirm-cancel:hover{background:#E5EAF2}
+.confirm-accept{background:#2875D8;box-shadow:0 4px 12px #2875D833}
+.auth-card{background:#FFFFFF;color:#172B4D}
+.auth-description,.auth-switch{color:#64748B}
+.auth-card form input{border-color:#DCE4F0;color:#172B4D}
+.auth-card form input:focus{border-color:#2875D8;box-shadow:0 0 0 3px #2875D81F}
+.auth-switch button{color:#2875D8}
+.progress-controls button{border-color:#DCE4F0;background:#F7F9FC;color:#28547F}
+.progress-controls button:hover{background:#EAF2FC}
