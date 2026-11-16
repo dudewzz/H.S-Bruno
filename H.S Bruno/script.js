@@ -224,12 +224,52 @@ function criarCard(modulo) {
     return artigo;
 }
 
+function criarCardInicio(modulo) {
+    const artigo = document.createElement("article");
+    artigo.className = "home-module-card";
+    const imagem = document.createElement("div");
+    imagem.className = "home-module-image";
+    imagem.style.backgroundImage = "url('" + modulo.imagem + "')";
+    const corpo = document.createElement("div");
+    corpo.className = "home-module-body";
+    const titulo = document.createElement("h3");
+    titulo.textContent = modulo.area;
+    const subtitulo = document.createElement("p");
+    subtitulo.textContent = modulo.titulo.replace(modulo.area + " — ", "Módulo ");
+    const feitas = aulasConcluidasDoModulo(modulo);
+    const percentual = Math.round(feitas / modulo.aulas.length * 100);
+    const linha = document.createElement("div");
+    linha.className = "home-module-progress";
+    const trilho = document.createElement("span");
+    const barra = document.createElement("i");
+    barra.style.width = percentual + "%";
+    trilho.appendChild(barra);
+    const valor = document.createElement("b");
+    valor.textContent = percentual + "%";
+    linha.append(trilho, valor);
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "home-module-button";
+    botao.textContent = percentual === 0 ? "▶  Começar" : "▶  Continuar";
+    botao.addEventListener("click", () => abrirModulo(modulo.id));
+    if (percentual === 100) {
+        const selo = document.createElement("span");
+        selo.className = "home-module-done";
+        selo.textContent = "✓";
+        imagem.appendChild(selo);
+        botao.textContent = "✓  Revisar";
+    }
+    corpo.append(titulo, subtitulo, linha, botao);
+    artigo.append(imagem, corpo);
+    return artigo;
+}
+
 function renderizarModulos() {
     const inicio = document.getElementById("homeModules");
     const todos = document.getElementById("allModules");
 
     if (inicio) {
-        inicio.replaceChildren(...modulos.map(criarCard));
+        inicio.replaceChildren(...modulos.map(criarCardInicio));
     }
 
     if (todos) {
@@ -378,6 +418,10 @@ function atualizarResumo() {
         ring.style.background = "conic-gradient(#19b7a2 0deg " + angulo + "deg, #dfe7f8 " + angulo + "deg 360deg)";
     }
     if (done) done.textContent = aulasConcluidas.length;
+    const homeLessons = document.getElementById("homeLessons");
+    const homeScore = document.getElementById("homeScore");
+    if (homeLessons) homeLessons.textContent = aulasConcluidas.length + " de " + totalAulas;
+    if (homeScore) homeScore.textContent = pontuacaoAtual === null ? "—" : pontuacaoAtual + "%";
     renderizarModulos();
     atualizarPainelProgresso();
 }
