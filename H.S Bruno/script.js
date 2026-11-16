@@ -182,6 +182,38 @@ function renderizarModulos() {
     aplicarPesquisa();
 }
 
+function renderizarListaAulas(modulo) {
+    const lista = document.getElementById("lessonList");
+    const selecionado = document.getElementById("lessonSelected");
+    const contador = document.getElementById("lessonCount");
+    if (!lista || !selecionado || !contador) return;
+
+    lista.replaceChildren();
+    contador.textContent = modulo.aulas.length + (modulo.aulas.length === 1 ? " assunto" : " assuntos");
+
+    modulo.aulas.forEach((aula, indice) => {
+        const botao = document.createElement("button");
+        botao.type = "button";
+        botao.className = "lesson-item" + (indice === 0 ? " active" : "");
+        botao.textContent = String(indice + 1).padStart(2, "0") + " · " + aula;
+        botao.setAttribute("aria-pressed", indice === 0 ? "true" : "false");
+        botao.addEventListener("click", () => {
+            lista.querySelectorAll(".lesson-item").forEach(item => {
+                item.classList.remove("active");
+                item.setAttribute("aria-pressed", "false");
+            });
+            botao.classList.add("active");
+            botao.setAttribute("aria-pressed", "true");
+            selecionado.textContent = "Assunto selecionado: " + aula;
+        });
+        lista.appendChild(botao);
+    });
+
+    selecionado.textContent = modulo.aulas.length
+        ? "Assunto selecionado: " + modulo.aulas[0]
+        : "Nenhum assunto cadastrado neste módulo.";
+}
+
 function abrirModulo(id) {
     const modulo = modulos.find(item => item.id === id);
     if (!modulo) return;
@@ -190,6 +222,7 @@ function abrirModulo(id) {
     document.getElementById("lessonArea").textContent = modulo.area.toUpperCase();
     document.getElementById("lessonTitle").textContent = modulo.titulo;
     document.getElementById("moduleDescription").textContent = modulo.descricao;
+    renderizarListaAulas(modulo);
 
     const videoContainer = document.getElementById("moduleVideo");
     videoContainer.replaceChildren();
@@ -211,6 +244,7 @@ function abrirModulo(id) {
     const fonte = document.createElement("source");
     fonte.src = modulo.video;
     fonte.type = "video/mp4";
+    fonte.addEventListener("error", () => player.dispatchEvent(new Event("error")));
     player.appendChild(fonte);
 
     const aviso = document.createElement("p");
@@ -260,7 +294,10 @@ function atualizarResumo() {
     const done = document.getElementById("doneCount");
 
     if (percent) percent.textContent = percentual + "%";
-    if (ring) ring.style.background = `conic-gradient(#19b7a2 ${percentual * 3.6}deg, #dfe7f8 0deg)`;
+    if (ring) {
+        const angulo = percentual * 3.6;
+        ring.style.background = `conic-gradient(#19b7a2 0deg ${angulo}deg, #dfe7f8 ${angulo}deg 360deg)`;
+    }
     if (done) done.textContent = concluidos.length;
 
     renderizarModulos();
