@@ -84,6 +84,7 @@ let moduloAtual = null;
 let indicePergunta = 0;
 let respostas = {};
 let filtroAtual = "Todos";
+let avatarPerfilSelecionado = "🦊";
 
 function lerArmazenamento(chave) {
     try {
@@ -189,6 +190,7 @@ function navegar(pagina) {
     });
 
     if (pagina === "progresso") atualizarPainelProgresso();
+    if (pagina === "perfil") renderizarPerfilAluno();
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -426,6 +428,7 @@ function atualizarResumo() {
     if (homeScore) homeScore.textContent = pontuacaoAtual === null ? "—" : pontuacaoAtual + "%";
     renderizarModulos();
     atualizarPainelProgresso();
+    if (document.getElementById("perfil")?.classList.contains("active")) renderizarPerfilAluno();
 }
 
 function atualizarPainelProgresso() {
@@ -642,6 +645,128 @@ function atualizarBotaoConta() {
     if (botao) botao.textContent = sessaoAtual?.user?.email?.[0]?.toUpperCase() || "V";
 }
 
+function renderizarPerfilAluno() {
+    if (!sessaoAtual?.user) return;
+    const usuario = sessaoAtual.user;
+    const metadata = usuario.user_metadata || {};
+    const nomePadrao = usuario.email?.split("@")[0] || "Aluno(a)";
+    const nome = metadata.profile_name || nomePadrao;
+    avatarPerfilSelecionado = metadata.profile_avatar || "🦊";
+    const totalAulas = modulos.reduce((total, modulo) => total + modulo.aulas.length, 0);
+    const percentual = Math.round((aulasConcluidas.length / totalAulas) * 100);
+    const dataCadastro = usuario.created_at
+        ? new Date(usuario.created_at).toLocaleDateString("pt-BR", { month: "long", year: "numeric" })
+        : "—";
+
+    document.getElementById("profileAvatarPreview").textContent = avatarPerfilSelecionado;
+    document.getElementById("profileDisplayName").textContent = nome;
+    document.getElementById("profileDisplayEmail").textContent = usuario.email || "";
+    document.getElementById("profileJoinDate").textContent = "Membro desde " + dataCadastro;
+    document.getElementById("profilePercent").textContent = percentual + "%";
+    document.getElementById("profileLevelText").textContent =
+        percentual === 100 ? "Jornada concluída!" : percentual >= 50 ? "Você está evoluindo muito!" : percentual > 0 ? "Continue nesse ritmo!" : "Começando a jornada";
+    document.getElementById("profileLessons").textContent = aulasConcluidas.length + "/" + totalAulas;
+    document.getElementById("profileModules").textContent = concluidos.length + "/" + modulos.length;
+    document.getElementById("profileScore").textContent = pontuacaoAtual === null ? "—" : pontuacaoAtual + "%";
+    document.getElementById("profileNameInput").value = metadata.profile_name || "";
+    document.querySelectorAll("[data-profile-avatar]").forEach(botao => {
+        botao.classList.toggle("selected", botao.dataset.profileAvatar === avatarPerfilSelecionado);
+        botao.setAttribute("aria-pressed", botao.dataset.profileAvatar === avatarPerfilSelecionado ? "true" : "false");
+    });
+
+    const conquistas = [
+        { icone: "🌱", nome: "Primeiro passo", descricao: "Concluir 1 aula", meta: 1 },
+        { icone: "📘", nome: "Estudante dedicado", descricao: "Concluir 5 aulas", meta: 5 },
+        { icone: "🔥", nome: "Em evolução", descricao: "Concluir 10 aulas", meta: 10 },
+        { icone: "🏆", nome: "Mestre do conteúdo", descricao: "Concluir todas as aulas", meta: totalAulas }
+    ];
+    const lista = document.getElementById("profileAchievements");
+    lista.replaceChildren();
+    conquistas.forEach(conquista => {
+        const liberada = aulasConcluidas.length >= conquista.meta;
+        const item = document.createElement("div");
+        item.className = "profile-achievement" + (liberada ? " unlocked" : "");
+        const icone = document.createElement("span");
+        icone.className = "profile-achievement-icon";
+        icone.textContent = conquista.icone;
+        const texto = document.createElement("div");
+        const titulo = document.createElement("strong");
+        titulo.textContent = conquista.nome;
+        const descricao = document.createElement("small");
+        descricao.textContent = liberada ? "Conquista desbloqueada" : conquista.descricao;
+        texto.append(titulo, descricao);
+        item.append(icone, texto);
+        lista.appendChild(item);
+    });
+}
+
+function configurarPerfilAluno() {
+    document.getElementById("authToggle").addEventListener("click", () => {
+        if (sessaoAtual) {
+            renderizarPerfilAluno();
+            navegar("perfil");
+        } else {
+            mostrarAcesso();
+        }
+    });
+
+    document.getElementById("profileAvatarOptions").addEventListener("click", evento => {
+        const botao = evento.target.closest("[data-profile-avatar]");
+        if (!botao) return;
+        avatarPerfilSelecionado = botao.dataset.profileAvatar;
+        document.querySelectorAll("[data-profile-avatar]").forEach(opcao => {
+            const selecionado = opcao === botao;
+            opcao.classList.toggle("selected", selecionado);
+            opcao.setAttribute("aria-pressed", selecionado ? "true" : "false");
+        });
+        document.getElementById("profileAvatarPreview").textContent = avatarPerfilSelecionado;
+    });
+
+    document.getElementById("profileForm").addEventListener("submit", async evento => {
+        evento.preventDefault();
+        if (!sessaoAtual) return mostrarAcesso();
+        const nome = document.getElementById("profileNameInput").value.trim();
+        if (!nome) {
+            mostrarToast("Digite seu nome para salvar o perfil.");
+            return;
+        }
+        const botao = document.getElementById("profileSave");
+        botao.disabled = true;
+        botao.textContent = "Salvando...";
+        const metadataAtual = sessaoAtual.user.user_metadata || {};
+        const { data, error } = await supabaseClient.auth.updateUser({
+            data: { ...metadataAtual, profile_name: nome, profile_avatar: avatarPerfilSelecionado }
+        });
+        botao.disabled = false;
+        botao.textContent = "Salvar alterações";
+        if (error) {
+            console.error("Erro ao atualizar perfil:", error);
+            mostrarToast("Não foi possível salvar seu perfil. Tente novamente.");
+            return;
+        }
+        if (data?.user) sessaoAtual.user = data.user;
+        atualizarBotaoConta();
+        renderizarPerfilAluno();
+        mostrarToast("Perfil atualizado com sucesso!");
+    });
+
+    document.getElementById("profileSignOut").addEventListener("click", async () => {
+        if (!(await confirmarAcao("Deseja sair da sua conta?"))) return;
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) {
+            mostrarToast("Não foi possível sair da conta. Tente novamente.");
+            return;
+        }
+        sessaoAtual = null;
+        concluidos = [];
+        aulasConcluidas = [];
+        pontuacaoAtual = null;
+        atualizarResumo();
+        atualizarBotaoConta();
+        mostrarAcesso("Você saiu da sua conta.");
+    });
+}
+
 async function carregarProgressoDaConta() {
     concluidos = [];
     aulasConcluidas = [];
@@ -728,6 +853,7 @@ function configurarAcesso() {
                 sessaoAtual = data.session;
                 await carregarProgressoDaConta();
                 atualizarBotaoConta();
+                renderizarPerfilAluno();
                 ocultarAcesso();
                 mostrarToast("Login realizado. Seu progresso foi carregado!");
             }
@@ -737,23 +863,6 @@ function configurarAcesso() {
         } finally {
             submit.disabled = false;
             atualizarModoAcesso();
-        }
-    });
-
-    document.getElementById("authToggle").addEventListener("click", async () => {
-        if (sessaoAtual) {
-            if (await confirmarAcao("Deseja sair da sua conta?")) {
-                await supabaseClient.auth.signOut();
-                sessaoAtual = null;
-                concluidos = [];
-                aulasConcluidas = [];
-                pontuacaoAtual = null;
-                atualizarResumo();
-                atualizarBotaoConta();
-                mostrarAcesso("Você saiu da sua conta.");
-            }
-        } else {
-            mostrarAcesso();
         }
     });
 
@@ -803,6 +912,7 @@ async function iniciarPortal() {
     configurarAcesso();
 
     document.getElementById("search").addEventListener("input", pesquisarCursos);
+    configurarPerfilAluno();
 
     renderizarModulos();
 
