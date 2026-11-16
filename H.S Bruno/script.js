@@ -642,7 +642,12 @@ function ocultarAcesso() {
 
 function atualizarBotaoConta() {
     const botao = document.getElementById("authToggle");
-    if (botao) botao.textContent = sessaoAtual?.user?.email?.[0]?.toUpperCase() || "V";
+    if (botao) {
+        botao.textContent = sessaoAtual?.user?.user_metadata?.profile_avatar
+            || sessaoAtual?.user?.email?.[0]?.toUpperCase()
+            || "V";
+        botao.setAttribute("aria-label", sessaoAtual ? "Abrir meu perfil" : "Entrar na conta");
+    }
 }
 
 function renderizarPerfilAluno() {
