@@ -99,12 +99,6 @@ document.querySelectorAll("[data-section]").forEach((link) => {
   });
 });
 
-document.querySelectorAll('a[href="#students"][data-section="students"]').forEach((link) => {
-  link.addEventListener("click", (event) => {
-    event.preventDefault();
-    document.querySelector('[data-section="students"]').click();
-  });
-});
 byId("studentSearch").addEventListener("input", renderStudents);
 byId("logoutButton").addEventListener("click", async () => {
   await client.auth.signOut();
