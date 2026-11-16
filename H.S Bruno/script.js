@@ -10,6 +10,12 @@ const STORAGE = {
     score: "hsbruno_ultima_pontuacao_v2"
 };
 
+const SUPABASE_URL = "https://iivvqoipxeuyatatzkmt.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_a4z_om77FoLDDkLsRlEJ9A_1zYFOLRG";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+
+
 const modulos = [
     {
         id: "hardware-1",
@@ -68,7 +74,10 @@ const perguntas = [
     { area: "Software", pergunta: "Qual programa é usado principalmente para navegar na internet?", opcoes: ["Navegador", "Calculadora", "Bloco de Notas", "Gerenciador de tarefas"], correta: 0, explicacao: "Navegadores, como Firefox e Chrome, acessam páginas e serviços da web." }
 ];
 
-let concluidos = carregarLista(STORAGE.progress);
+let concluidos = [];
+let pontuacaoAtual = null;
+let sessaoAtual = null;
+let modoCadastro = false;
 let moduloAtual = null;
 let indicePergunta = 0;
 let respostas = {};
@@ -273,18 +282,33 @@ function abrirModulo(id) {
     navegar("aula");
 }
 
-function concluirModulo() {
-    if (!moduloAtual) return;
-    let persistido = true;
-    if (!concluidos.includes(moduloAtual.id)) {
-        concluidos.push(moduloAtual.id);
-        persistido = salvar(STORAGE.progress, concluidos);
+async function concluirModulo() {
+    if (!moduloAtual || !sessaoAtual) {
+        mostrarToast("Entre na sua conta para salvar seu progresso.");
+        return;
     }
+    if (concluidos.includes(moduloAtual.id)) return;
+
+    const novosConcluidos = [...concluidos, moduloAtual.id];
+    const { error } = await supabaseClient
+        .from("student_progress")
+        .upsert({
+            user_id: sessaoAtual.user.id,
+            completed_modules: novosConcluidos,
+            quiz_score: pontuacaoAtual,
+            updated_at: new Date().toISOString()
+        }, { onConflict: "user_id" });
+
+    if (error) {
+        console.error("Erro ao salvar progresso:", error);
+        mostrarToast("Não foi possível salvar seu progresso. Tente novamente.");
+        return;
+    }
+
+    concluidos = novosConcluidos;
     atualizarResumo();
     abrirModulo(moduloAtual.id);
-    mostrarToast(persistido
-        ? "Módulo marcado como concluído!"
-        : "Concluído nesta sessão, mas não foi possível salvar.");
+    mostrarToast("Módulo marcado como concluído e salvo na sua conta!");
 }
 
 function atualizarResumo() {
@@ -305,10 +329,9 @@ function atualizarResumo() {
 }
 
 function atualizarPainelProgresso() {
-    const pontuacao = lerArmazenamento(STORAGE.score);
     const score = document.getElementById("score");
     const performance = document.getElementById("performance");
-    if (score) score.textContent = pontuacao === null ? "—" : pontuacao + "%";
+    if (score) score.textContent = pontuacaoAtual === null ? "—" : pontuacaoAtual + "%";
 
     if (!performance) return;
     performance.replaceChildren();
@@ -426,21 +449,40 @@ function renderizarPergunta() {
     document.getElementById("quizNext").textContent = indicePergunta === perguntas.length - 1 ? "Finalizar quiz ✓" : "Próxima questão →";
 }
 
-function finalizarQuiz() {
+async function finalizarQuiz() {
     const respondidas = Object.keys(respostas).length;
     if (respondidas < perguntas.length) {
         mostrarToast("Responda todas as questões antes de finalizar.");
         return;
     }
+    if (!sessaoAtual) {
+        mostrarToast("Entre na sua conta para salvar sua pontuação.");
+        return;
+    }
     const acertos = perguntas.reduce((total, pergunta, indice) => total + (respostas[indice] === pergunta.correta ? 1 : 0), 0);
     const nota = Math.round((acertos / perguntas.length) * 100);
-    const pontuacaoSalva = salvar(STORAGE.score, nota);
+    const { error } = await supabaseClient
+        .from("student_progress")
+        .upsert({
+            user_id: sessaoAtual.user.id,
+            completed_modules: concluidos,
+            quiz_score: nota,
+            updated_at: new Date().toISOString()
+        }, { onConflict: "user_id" });
+
+    if (error) {
+        console.error("Erro ao salvar pontuação:", error);
+        mostrarToast("Não foi possível salvar sua pontuação. Tente novamente.");
+        return;
+    }
+
+    pontuacaoAtual = nota;
     atualizarPainelProgresso();
     document.getElementById("question").textContent = `Você acertou ${acertos} de ${perguntas.length} questões!`;
     document.getElementById("answers").replaceChildren();
     const feedback = document.getElementById("feedback");
     feedback.className = "feedback " + (nota >= 70 ? "good" : "bad");
-    feedback.textContent = `Sua pontuação foi ${nota}%. ${nota >= 70 ? "Muito bem! Continue praticando." : "Revise os módulos e tente novamente."}${pontuacaoSalva ? "" : " A pontuação não pôde ser salva neste navegador."}`;
+    feedback.textContent = `Sua pontuação foi ${nota}%. ${nota >= 70 ? "Muito bem! Continue praticando." : "Revise os módulos e tente novamente."}`;
     document.getElementById("quizCount").textContent = "Resultado final";
     document.getElementById("quizNext").textContent = "Refazer quiz";
     document.getElementById("quizPrev").disabled = true;
@@ -483,16 +525,207 @@ function configurarNavegacao() {
     });
 }
 
-function iniciarPortal() {
+function mostrarAcesso(mensagem = "") {
+    const overlay = document.getElementById("authOverlay");
+    const message = document.getElementById("authMessage");
+    if (message) message.textContent = mensagem;
+    if (overlay) overlay.classList.remove("hidden");
+}
+
+function ocultarAcesso() {
+    document.getElementById("authOverlay")?.classList.add("hidden");
+    document.getElementById("authMessage").textContent = "";
+}
+
+function atualizarBotaoConta() {
+    const botao = document.getElementById("authToggle");
+    if (botao) botao.textContent = sessaoAtual?.user?.email?.[0]?.toUpperCase() || "V";
+}
+
+async function carregarProgressoDaConta() {
+    concluidos = [];
+    pontuacaoAtual = null;
+    if (!sessaoAtual) {
+        atualizarResumo();
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("student_progress")
+        .select("completed_modules, quiz_score")
+        .eq("user_id", sessaoAtual.user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Erro ao carregar progresso:", error);
+        mostrarToast("Não foi possível carregar seu progresso.");
+        atualizarResumo();
+        return;
+    }
+
+    if (data) {
+        concluidos = Array.isArray(data.completed_modules)
+            ? data.completed_modules.filter(id => modulos.some(modulo => modulo.id === id))
+            : [];
+        pontuacaoAtual = data.quiz_score ?? null;
+    }
+
+    atualizarResumo();
+}
+
+function atualizarModoAcesso() {
+    const titulo = document.getElementById("authTitle");
+    const submit = document.getElementById("authSubmit");
+    const switchText = document.getElementById("authSwitchText");
+    const password = document.getElementById("authPassword");
+    titulo.textContent = modoCadastro ? "Criar sua conta" : "Acesse sua conta";
+    submit.textContent = modoCadastro ? "Criar conta" : "Entrar";
+    password.autocomplete = modoCadastro ? "new-password" : "current-password";
+    switchText.firstChild.textContent = modoCadastro ? "Já tem uma conta? " : "Ainda não tem conta? ";
+    document.getElementById("authSwitch").textContent = modoCadastro ? "Fazer login" : "Criar conta";
+}
+
+function configurarAcesso() {
+    document.getElementById("authSwitch").addEventListener("click", () => {
+        modoCadastro = !modoCadastro;
+        document.getElementById("authMessage").textContent = "";
+        atualizarModoAcesso();
+    });
+
+    document.getElementById("authForm").addEventListener("submit", async evento => {
+        evento.preventDefault();
+        const email = document.getElementById("authEmail").value.trim();
+        const password = document.getElementById("authPassword").value;
+        const submit = document.getElementById("authSubmit");
+        submit.disabled = true;
+        submit.textContent = "Aguarde...";
+
+        try {
+            if (modoCadastro) {
+                const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                if (error) throw error;
+                if (data.session) {
+                    sessaoAtual = data.session;
+                    await carregarProgressoDaConta();
+                    atualizarBotaoConta();
+                    ocultarAcesso();
+                    mostrarToast("Conta criada com sucesso!");
+                } else {
+                    document.getElementById("authMessage").textContent =
+                        "Conta criada! Confira seu e-mail para confirmar o cadastro e depois faça login.";
+                }
+            } else {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                sessaoAtual = data.session;
+                await carregarProgressoDaConta();
+                atualizarBotaoConta();
+                ocultarAcesso();
+                mostrarToast("Login realizado. Seu progresso foi carregado!");
+            }
+        } catch (erro) {
+            document.getElementById("authMessage").textContent =
+                erro.message || "Não foi possível concluir o acesso.";
+        } finally {
+            submit.disabled = false;
+            atualizarModoAcesso();
+        }
+    });
+
+    document.getElementById("authToggle").addEventListener("click", async () => {
+        if (sessaoAtual) {
+            if (confirm("Deseja sair da sua conta?")) {
+                await supabaseClient.auth.signOut();
+                sessaoAtual = null;
+                concluidos = [];
+                pontuacaoAtual = null;
+                atualizarResumo();
+                atualizarBotaoConta();
+                mostrarAcesso("Você saiu da sua conta.");
+            }
+        } else {
+            mostrarAcesso();
+        }
+    });
+
+    document.getElementById("signOut").addEventListener("click", async () => {
+        if (!confirm("Deseja sair da sua conta?")) return;
+        await supabaseClient.auth.signOut();
+        sessaoAtual = null;
+        concluidos = [];
+        pontuacaoAtual = null;
+        atualizarResumo();
+        atualizarBotaoConta();
+        mostrarAcesso("Você saiu da sua conta.");
+    });
+
+    document.getElementById("resetProgress").addEventListener("click", async () => {
+        if (!sessaoAtual) return mostrarAcesso();
+        const confirmar = confirm("Tem certeza de que deseja resetar seu progresso? Os módulos concluídos e a última pontuação serão apagados da sua conta. Essa ação não pode ser desfeita.");
+        if (!confirmar) return;
+
+        const { error } = await supabaseClient
+            .from("student_progress")
+            .delete()
+            .eq("user_id", sessaoAtual.user.id);
+
+        if (error) {
+            console.error("Erro ao resetar progresso:", error);
+            mostrarToast("Não foi possível resetar seu progresso. Tente novamente.");
+            return;
+        }
+
+        concluidos = [];
+        pontuacaoAtual = null;
+        atualizarResumo();
+        mostrarToast("Seu progresso foi resetado para 0%.");
+    });
+
+    atualizarModoAcesso();
+}
+
+async function iniciarPortal() {
     configurarNavegacao();
     configurarFiltros();
     configurarQuiz();
+    configurarAcesso();
 
     document.getElementById("search").addEventListener("input", pesquisarCursos);
     document.getElementById("completeModule").addEventListener("click", concluirModulo);
 
     renderizarModulos();
-    atualizarResumo();
+
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) console.error("Erro ao verificar sessão:", error);
+    sessaoAtual = data?.session || null;
+
+    if (sessaoAtual) {
+        await carregarProgressoDaConta();
+        ocultarAcesso();
+    } else {
+        concluidos = [];
+        pontuacaoAtual = null;
+        atualizarResumo();
+        mostrarAcesso();
+    }
+
+    atualizarBotaoConta();
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+        sessaoAtual = session;
+        if (!session) {
+            concluidos = [];
+            pontuacaoAtual = null;
+            atualizarResumo();
+            mostrarAcesso();
+        } else {
+            setTimeout(async () => {
+                await carregarProgressoDaConta();
+                atualizarBotaoConta();
+                ocultarAcesso();
+            }, 0);
+        }
+    });
+
     console.log("H.S. Bruno iniciado.");
 }
 
