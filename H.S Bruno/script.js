@@ -688,8 +688,10 @@ function configurarAcesso() {
         }
 
         concluidos = [];
+        aulasConcluidas = [];
         pontuacaoAtual = null;
         atualizarResumo();
+        if (moduloAtual) renderizarListaAulas(moduloAtual);
         mostrarToast("Seu progresso foi resetado para 0%.");
     });
 
@@ -725,6 +727,7 @@ async function iniciarPortal() {
         sessaoAtual = session;
         if (!session) {
             concluidos = [];
+            aulasConcluidas = [];
             pontuacaoAtual = null;
             atualizarResumo();
             mostrarAcesso();
