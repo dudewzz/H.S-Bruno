@@ -308,7 +308,10 @@ function abrirModulo(id) {
     document.getElementById("lessonTitle").textContent = modulo.titulo;
     document.getElementById("moduleDescription").textContent = modulo.descricao;
     const botaoConcluirModulo = document.getElementById("completeModule");
-    if (botaoConcluirModulo) botaoConcluirModulo.hidden = true;
+    if (botaoConcluirModulo) {
+        botaoConcluirModulo.hidden = true;
+        botaoConcluirModulo.style.display = "none";
+    }
     renderizarListaAulas(modulo);
     carregarVideoDaAula();
     navegar("aula");
