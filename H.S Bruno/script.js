@@ -742,7 +742,7 @@ function configurarAcesso() {
 
     document.getElementById("authToggle").addEventListener("click", async () => {
         if (sessaoAtual) {
-            if (confirm("Deseja sair da sua conta?")) {
+            if (await confirmarAcao("Deseja sair da sua conta?")) {
                 await supabaseClient.auth.signOut();
                 sessaoAtual = null;
                 concluidos = [];
@@ -758,7 +758,7 @@ function configurarAcesso() {
     });
 
     document.getElementById("signOut").addEventListener("click", async () => {
-        if (!confirm("Deseja sair da sua conta?")) return;
+        if (!(await confirmarAcao("Deseja sair da sua conta?"))) return;
         await supabaseClient.auth.signOut();
         sessaoAtual = null;
         concluidos = [];
