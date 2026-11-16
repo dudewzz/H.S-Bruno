@@ -76,8 +76,10 @@ const perguntas = [
 
 let concluidos = [];
 let aulasConcluidas = [];
+let atividadesSemanais = [];
 let aulaAtualIndice = 0;
 let pontuacaoAtual = null;
+        atividadesSemanais = [];
 let sessaoAtual = null;
 let modoCadastro = false;
 let moduloAtual = null;
@@ -146,6 +148,48 @@ function chaveAtividadeSemanal() {
     return "hsbruno_weekly_" + (sessaoAtual?.user?.id || "visitante");
 }
 
+function lerAtividadeSemanalLocal() {
+    try {
+        const valor = JSON.parse(localStorage.getItem(chaveAtividadeSemanal()) || "[]");
+        return Array.isArray(valor) ? valor : [];
+    } catch (_) {
+        return [];
+    }
+}
+
+function normalizarAtividadesSemanais(lista) {
+    const porAula = new Map();
+    const idsValidos = new Set(modulos.flatMap(modulo =>
+        modulo.aulas.map((_, indice) => idDaAula(modulo, indice))
+    ));
+
+    (Array.isArray(lista) ? lista : []).forEach(item => {
+        if (!item || !idsValidos.has(item.id)) return;
+        const data = new Date(item.data);
+        if (Number.isNaN(data.getTime())) return;
+        const anterior = porAula.get(item.id);
+        if (!anterior || new Date(anterior.data) < data) {
+            porAula.set(item.id, { id: item.id, data: data.toISOString() });
+        }
+    });
+
+    return [...porAula.values()];
+}
+
+function prepararAtividadeSemanal(idAula, concluida) {
+    const atividades = atividadesSemanais.filter(item => item.id !== idAula);
+    if (concluida && idAula) atividades.push({ id: idAula, data: new Date().toISOString() });
+    return normalizarAtividadesSemanais(atividades);
+}
+
+function salvarCopiaLocalAtividadeSemanal(atividades) {
+    try {
+        localStorage.setItem(chaveAtividadeSemanal(), JSON.stringify(atividades));
+    } catch (erro) {
+        console.warn("Não foi possível salvar a cópia local da meta semanal.", erro);
+    }
+}
+
 function inicioDaSemana(data = new Date()) {
     const inicio = new Date(data);
     inicio.setHours(0, 0, 0, 0);
@@ -154,23 +198,9 @@ function inicioDaSemana(data = new Date()) {
     return inicio;
 }
 
-function lerAtividadeSemanal() {
-    try {
-        const valor = JSON.parse(localStorage.getItem(chaveAtividadeSemanal()) || "[]");
-        return Array.isArray(valor) ? valor : [];
-    } catch (_) { return []; }
-}
-
-function registrarAtividadeSemanal(idAula, concluida) {
-    const atividades = lerAtividadeSemanal().filter(item => item && item.id !== idAula);
-    if (concluida) atividades.push({ id: idAula, data: new Date().toISOString() });
-    try { localStorage.setItem(chaveAtividadeSemanal(), JSON.stringify(atividades)); }
-    catch (erro) { console.warn("Não foi possível atualizar a meta semanal.", erro); }
-}
-
-function atualizarWidgetsDeMeta(percentual) {
+function atualizarWidgetsDeMeta() {
     const inicioSemana = inicioDaSemana();
-    const atividades = lerAtividadeSemanal().filter(item => {
+    const atividades = atividadesSemanais.filter(item => {
         const data = new Date(item.data);
         return item.id && !Number.isNaN(data.getTime()) && data >= inicioSemana;
     });
@@ -229,10 +259,11 @@ function abrirModalModulo(id) {
     lista.className = "module-modal-list";
     modulo.aulas.forEach((nomeAula, indice) => {
         const id = idDaAula(modulo, indice);
-        const linha = document.createElement("label");
+        const linha = document.createElement("div");
         linha.className = "module-modal-lesson" + (aulasConcluidas.includes(id) ? " is-complete" : "");
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
+        checkbox.id = "moduleLesson-" + id;
         checkbox.checked = aulasConcluidas.includes(id);
         checkbox.setAttribute("aria-label", "Marcar " + nomeAula + " como concluída");
         checkbox.addEventListener("change", async () => {
@@ -243,7 +274,8 @@ function abrirModalModulo(id) {
             if (sucesso) abrirModalModulo(modulo.id);
             else checkbox.checked = !checkbox.checked;
         });
-        const texto = document.createElement("span");
+        const texto = document.createElement("label");
+        texto.htmlFor = checkbox.id;
         texto.textContent = String(indice + 1).padStart(2, "0") + " · " + nomeAula;
         const abrirAula = document.createElement("button");
         abrirAula.type = "button";
@@ -298,16 +330,19 @@ async function salvarListaAulas(novasAulas, idAulaAlterada, foiConcluida) {
         mostrarAcesso();
         return false;
     }
+
     const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
     const listaValida = [...new Set(novasAulas.filter(id => idsValidos.includes(id)))];
     const novosModulos = modulos.filter(modulo =>
         modulo.aulas.length > 0 && modulo.aulas.every((_, indice) => listaValida.includes(idDaAula(modulo, indice)))
     ).map(modulo => modulo.id);
+    const novasAtividadesSemanais = prepararAtividadeSemanal(idAulaAlterada, foiConcluida);
 
     const { error } = await supabaseClient.from("student_progress").upsert({
         user_id: sessaoAtual.user.id,
         completed_lessons: listaValida,
         completed_modules: novosModulos,
+        weekly_activity: novasAtividadesSemanais,
         quiz_score: pontuacaoAtual,
         updated_at: new Date().toISOString()
     }, { onConflict: "user_id" });
@@ -320,7 +355,8 @@ async function salvarListaAulas(novasAulas, idAulaAlterada, foiConcluida) {
 
     aulasConcluidas = listaValida;
     concluidos = novosModulos;
-    registrarAtividadeSemanal(idAulaAlterada, foiConcluida);
+    atividadesSemanais = novasAtividadesSemanais;
+    salvarCopiaLocalAtividadeSemanal(atividadesSemanais);
     atualizarResumo();
     if (moduloAtual) renderizarListaAulas(moduloAtual);
     mostrarToast(foiConcluida ? "Aula marcada como concluída!" : "Aula removida das concluídas.");
@@ -635,13 +671,15 @@ function atualizarResumo() {
         : percentual === 100 ? "Jornada concluída. Parabéns!" : "Você está indo muito bem!";
     if (botaoInicio) {
         const texto = botaoInicio.querySelector("span");
-        if (texto) texto.textContent = percentual === 0 ? "Começar Estudos" : "Retomar Estudos";
+        if (texto) texto.textContent = percentual === 100
+            ? "Revisar Estudos"
+            : percentual === 0 ? "Começar Estudos" : "Retomar Estudos";
     }
     const proximaAula = proximaAulaPendente();
     if (proxima) proxima.textContent = proximaAula
         ? "Próxima aula: " + proximaAula.nome
         : "Todas as aulas foram concluídas!";
-    atualizarWidgetsDeMeta(percentual);
+    atualizarWidgetsDeMeta();
 
     renderizarModulos();
     atualizarPainelProgresso();
@@ -862,7 +900,25 @@ function configurarNavegacao() {
             navegar(botao.dataset.page);
         });
     });
+
+    const botaoRetomar = document.getElementById("homeResumeButton");
+    botaoRetomar?.addEventListener("click", () => {
+        if (!sessaoAtual) {
+            mostrarAcesso("Entre na sua conta para continuar seus estudos.");
+            return;
+        }
+
+        const proxima = proximaAulaPendente();
+        if (!proxima) {
+            navegar("cursos");
+            return;
+        }
+
+        abrirModulo(proxima.modulo.id);
+        selecionarAula(proxima.indice);
+    });
 }
+
 
 function mostrarAcesso(mensagem = "") {
     const overlay = document.getElementById("authOverlay");
@@ -1002,6 +1058,7 @@ function configurarPerfilAluno() {
         concluidos = [];
         aulasConcluidas = [];
         pontuacaoAtual = null;
+        atividadesSemanais = [];
         atualizarResumo();
         atualizarBotaoConta();
         mostrarAcesso("Você saiu da sua conta.");
@@ -1011,7 +1068,10 @@ function configurarPerfilAluno() {
 async function carregarProgressoDaConta() {
     concluidos = [];
     aulasConcluidas = [];
+    atividadesSemanais = [];
     pontuacaoAtual = null;
+        atividadesSemanais = [];
+
     if (!sessaoAtual) {
         atualizarResumo();
         return;
@@ -1019,7 +1079,7 @@ async function carregarProgressoDaConta() {
 
     const { data, error } = await supabaseClient
         .from("student_progress")
-        .select("completed_lessons, quiz_score")
+        .select("completed_lessons, quiz_score, weekly_activity")
         .eq("user_id", sessaoAtual.user.id)
         .maybeSingle();
 
@@ -1037,9 +1097,36 @@ async function carregarProgressoDaConta() {
             : [];
         pontuacaoAtual = data.quiz_score ?? null;
     }
+
+    const atividadesRemotas = normalizarAtividadesSemanais(data?.weekly_activity);
+    const atividadesLocais = normalizarAtividadesSemanais(lerAtividadeSemanalLocal());
+    atividadesSemanais = normalizarAtividadesSemanais([...atividadesRemotas, ...atividadesLocais]);
+
+    if (JSON.stringify(atividadesSemanais) !== JSON.stringify(atividadesRemotas)) {
+        const modulosConcluidos = modulos.filter(modulo =>
+            modulo.aulas.every((_, indice) => aulasConcluidas.includes(idDaAula(modulo, indice)))
+        ).map(modulo => modulo.id);
+
+        const { error: erroMigracao } = await supabaseClient.from("student_progress").upsert({
+            user_id: sessaoAtual.user.id,
+            completed_lessons: aulasConcluidas,
+            completed_modules: modulosConcluidos,
+            weekly_activity: atividadesSemanais,
+            quiz_score: pontuacaoAtual,
+            updated_at: new Date().toISOString()
+        }, { onConflict: "user_id" });
+
+        if (erroMigracao) {
+            console.warn("Não foi possível sincronizar o histórico semanal antigo.", erroMigracao);
+        } else {
+            salvarCopiaLocalAtividadeSemanal(atividadesSemanais);
+        }
+    }
+
     atualizarModulosConcluidos();
     atualizarResumo();
 }
+
 
 function atualizarModoAcesso() {
     const titulo = document.getElementById("authTitle");
@@ -1114,6 +1201,7 @@ function configurarAcesso() {
         concluidos = [];
         aulasConcluidas = [];
         pontuacaoAtual = null;
+        atividadesSemanais = [];
         atualizarResumo();
         atualizarBotaoConta();
         mostrarAcesso("Você saiu da sua conta.");
@@ -1138,6 +1226,7 @@ function configurarAcesso() {
         concluidos = [];
         aulasConcluidas = [];
         pontuacaoAtual = null;
+        atividadesSemanais = [];
         atualizarResumo();
         if (moduloAtual) renderizarListaAulas(moduloAtual);
         mostrarToast("Seu progresso foi resetado para 0%.");
@@ -1170,6 +1259,7 @@ async function iniciarPortal() {
     } else {
         concluidos = [];
         pontuacaoAtual = null;
+        atividadesSemanais = [];
         atualizarResumo();
         mostrarAcesso();
     }
@@ -1181,6 +1271,7 @@ async function iniciarPortal() {
             concluidos = [];
             aulasConcluidas = [];
             pontuacaoAtual = null;
+        atividadesSemanais = [];
             atualizarResumo();
             mostrarAcesso();
         } else {
