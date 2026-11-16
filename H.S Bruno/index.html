@@ -83,6 +83,10 @@
 
         <button class="bell">♧</button>
 
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" title="Alternar tema">
+            ☾
+        </button>
+
         <button class="profile" id="authToggle" type="button" aria-label="Conta do aluno">
             V
         </button>
@@ -102,7 +106,8 @@
                         <span class="welcome-wave">👋</span>
                         <h1>Olá, aluno(a)!</h1>
                         <p>Continue seus estudos e<br>conquiste novos conhecimentos!</p>
-                        <button class="home-resume" data-page="cursos">▶ <span>Retomar Estudos</span></button>
+                        <button class="home-resume" id="homeResumeButton" data-page="cursos">▶ <span>Começar Estudos</span></button>
+                        <small class="home-next-lesson" id="homeNextLesson">Próxima aula: Introdução ao hardware</small>
                     </div>
                     <div class="welcome-image" aria-hidden="true"></div>
                 </section>
@@ -143,6 +148,24 @@
                         <span class="performance-icon calendar">▦</span>
                         <div><small>Área de estudo</small><strong>Hardware e Software</strong></div>
                     </div>
+
+                    <div class="home-weekly-goal" id="homeWeeklyGoal">
+                        <div class="home-widget-heading">
+                            <strong>Meta semanal</strong>
+                            <span>🎯</span>
+                        </div>
+                        <p><b id="weeklyDone">0</b> de 3 aulas concluídas esta semana</p>
+                        <div class="home-widget-track"><span id="weeklyBar"></span></div>
+                    </div>
+
+                    <div class="home-certificate" id="homeCertificate">
+                        <div class="home-widget-heading">
+                            <strong>Certificado de conclusão</strong>
+                            <span>🎓</span>
+                        </div>
+                        <p id="certificateMessage">Conclua 100% das aulas para liberar seu certificado.</p>
+                        <div class="home-widget-track"><span id="certificateBar"></span></div>
+                    </div>
                 </aside>
             </div>
         </section>
@@ -175,6 +198,14 @@
 
                 <button class="filter" data-filter="Software">
                     Software
+                </button>
+
+                <button class="filter" data-filter="Em andamento">
+                    Em andamento
+                </button>
+
+                <button class="filter" data-filter="Concluídos">
+                    Concluídos
                 </button>
 
             </div>
@@ -478,6 +509,13 @@
 
     </main>
 
+
+    <!-- MODAL DE EMENTA DO MÓDULO -->
+    <div class="module-modal" id="moduleModal" aria-hidden="true">
+        <section class="module-modal-card" role="dialog" aria-modal="true" aria-labelledby="moduleModalTitle">
+            <div id="moduleModalContent"></div>
+        </section>
+    </div>
 
     <!-- ACESSO DO ALUNO -->
     <div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
