@@ -387,6 +387,71 @@
 
 
 
+        <!-- PERFIL DO ALUNO -->
+        <section class="page" id="perfil">
+            <div class="profile-page-heading">
+                <div>
+                    <small>SEU ESPAÇO DE APRENDIZADO</small>
+                    <h1>Meu perfil</h1>
+                    <p>Acompanhe suas conquistas e personalize sua conta.</p>
+                </div>
+                <button class="secondary" type="button" data-page="inicio">← Voltar ao início</button>
+            </div>
+
+            <article class="student-profile-hero panel">
+                <div class="student-avatar-large" id="profileAvatarPreview">V</div>
+                <div class="student-profile-identity">
+                    <span class="profile-kicker">PERFIL DO ALUNO</span>
+                    <h2 id="profileDisplayName">Aluno(a)</h2>
+                    <p id="profileDisplayEmail">—</p>
+                    <small id="profileJoinDate">Membro desde —</small>
+                </div>
+                <div class="profile-level">
+                    <span>SEU AVANÇO</span>
+                    <strong id="profilePercent">0%</strong>
+                    <small id="profileLevelText">Começando a jornada</small>
+                </div>
+            </article>
+
+            <div class="profile-stats-grid">
+                <article class="panel profile-stat-card"><span>📚</span><strong id="profileLessons">0/17</strong><small>Aulas concluídas</small></article>
+                <article class="panel profile-stat-card"><span>🏅</span><strong id="profileModules">0/4</strong><small>Módulos finalizados</small></article>
+                <article class="panel profile-stat-card"><span>⭐</span><strong id="profileScore">—</strong><small>Última avaliação</small></article>
+            </div>
+
+            <div class="profile-content-grid">
+                <article class="panel profile-edit-card">
+                    <div class="profile-card-heading"><div><small>PERSONALIZAÇÃO</small><h2>Editar perfil</h2></div><span>✎</span></div>
+                    <form id="profileForm">
+                        <label for="profileNameInput">Como devemos chamar você?</label>
+                        <input id="profileNameInput" type="text" maxlength="40" placeholder="Seu nome" required>
+                        <label>Escolha seu avatar</label>
+                        <div class="profile-avatar-options" id="profileAvatarOptions" aria-label="Escolha um avatar">
+                            <button type="button" data-profile-avatar="🦊" aria-label="Raposa">🦊</button>
+                            <button type="button" data-profile-avatar="🐼" aria-label="Panda">🐼</button>
+                            <button type="button" data-profile-avatar="🐸" aria-label="Sapo">🐸</button>
+                            <button type="button" data-profile-avatar="🐱" aria-label="Gato">🐱</button>
+                            <button type="button" data-profile-avatar="🐯" aria-label="Tigre">🐯</button>
+                            <button type="button" data-profile-avatar="🐧" aria-label="Pinguim">🐧</button>
+                            <button type="button" data-profile-avatar="🤖" aria-label="Robô">🤖</button>
+                            <button type="button" data-profile-avatar="🚀" aria-label="Foguete">🚀</button>
+                        </div>
+                        <button class="primary profile-save-button" id="profileSave" type="submit">Salvar alterações</button>
+                    </form>
+                </article>
+
+                <article class="panel profile-achievements-card">
+                    <div class="profile-card-heading"><div><small>SUAS CONQUISTAS</small><h2>Medalhas</h2></div><span>🏆</span></div>
+                    <div class="profile-achievements-grid" id="profileAchievements"></div>
+                </article>
+            </div>
+
+            <div class="profile-footer">
+                <p>Seus dados e seu progresso são individuais e vinculados à sua conta.</p>
+                <button class="secondary" id="profileSignOut" type="button">Sair da conta</button>
+            </div>
+        </section>
+
         <!-- SOBRE -->
         <section class="page" id="sobre">
 
