@@ -546,6 +546,7 @@ function atualizarBotaoConta() {
 
 async function carregarProgressoDaConta() {
     concluidos = [];
+    aulasConcluidas = [];
     pontuacaoAtual = null;
     if (!sessaoAtual) {
         atualizarResumo();
