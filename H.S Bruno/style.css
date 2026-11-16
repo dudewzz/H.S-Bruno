@@ -175,7 +175,7 @@ body{background:linear-gradient(135deg,#f8faff 0%,#edf2ff 58%,#f5f3ff 100%);colo
 .home-welcome h1{margin:0 0 12px;font:800 clamp(28px,3vw,42px)/1.1 Manrope,sans-serif;color:#fff}
 .home-welcome p{margin:0 0 22px;font-size:17px;line-height:1.45;color:#eef4ff}
 .home-resume{display:inline-flex;align-items:center;gap:12px;border:0;border-radius:28px;padding:13px 22px;background:linear-gradient(100deg,#8b43f4,#28a5f5);color:#fff;font-weight:800;box-shadow:0 5px 16px rgba(6,27,94,.2)}
-.welcome-image{position:absolute;inset:0 0 0 42%;background-image:linear-gradient(90deg,#1a4aa9 0%,rgba(26,74,169,.12) 34%,rgba(26,74,169,0) 100%),url("https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=85");background-size:cover;background-position:center;opacity:.94}
+.welcome-image{position:absolute;inset:0 0 0 42%;background-image:linear-gradient(90deg,#1a4aa9 0%,rgba(26,74,169,.12) 34%,rgba(26,74,169,0) 100%),url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=85");background-size:cover;background-position:center;opacity:.94}
 .home-progress-card{min-height:268px;padding:23px 24px;border:1px solid #d9e4ff;border-radius:22px;background:linear-gradient(145deg,#fff,#edf3ff);box-shadow:0 10px 26px rgba(38,77,168,.08)}
 .home-progress-card h2,.home-performance h2{margin:0;color:#152e6b;font:800 20px Manrope,sans-serif}
 .home-progress-card h2 span{margin-right:8px;color:#eab326}
