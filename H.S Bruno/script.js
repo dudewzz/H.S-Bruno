@@ -75,6 +75,8 @@ const perguntas = [
 ];
 
 let concluidos = [];
+let aulasConcluidas = [];
+let aulaAtualIndice = 0;
 let pontuacaoAtual = null;
 let sessaoAtual = null;
 let modoCadastro = false;
@@ -191,57 +193,59 @@ function renderizarModulos() {
     aplicarPesquisa();
 }
 
+function idDaAula(modulo, indice) {
+    return modulo.id + "-aula-" + (indice + 1);
+}
+
+function aulasConcluidasDoModulo(modulo) {
+    return modulo.aulas.filter((_, indice) => aulasConcluidas.includes(idDaAula(modulo, indice))).length;
+}
+
+function atualizarModulosConcluidos() {
+    concluidos = modulos.filter(modulo => modulo.aulas.length > 0 && aulasConcluidasDoModulo(modulo) === modulo.aulas.length).map(modulo => modulo.id);
+}
+
 function renderizarListaAulas(modulo) {
     const lista = document.getElementById("lessonList");
     const selecionado = document.getElementById("lessonSelected");
     const contador = document.getElementById("lessonCount");
     if (!lista || !selecionado || !contador) return;
-
     lista.replaceChildren();
-    contador.textContent = modulo.aulas.length + (modulo.aulas.length === 1 ? " assunto" : " assuntos");
-
+    const feitas = aulasConcluidasDoModulo(modulo);
+    contador.textContent = feitas + "/" + modulo.aulas.length + " aulas concluídas";
     modulo.aulas.forEach((aula, indice) => {
+        const concluida = aulasConcluidas.includes(idDaAula(modulo, indice));
         const botao = document.createElement("button");
         botao.type = "button";
-        botao.className = "lesson-item" + (indice === 0 ? " active" : "");
-        botao.textContent = String(indice + 1).padStart(2, "0") + " · " + aula;
-        botao.setAttribute("aria-pressed", indice === 0 ? "true" : "false");
-        botao.addEventListener("click", () => {
-            lista.querySelectorAll(".lesson-item").forEach(item => {
-                item.classList.remove("active");
-                item.setAttribute("aria-pressed", "false");
-            });
-            botao.classList.add("active");
-            botao.setAttribute("aria-pressed", "true");
-            selecionado.textContent = "Assunto selecionado: " + aula;
-        });
+        botao.className = "lesson-item" + (indice === aulaAtualIndice ? " active" : "");
+        botao.textContent = (concluida ? "✓ " : "") + String(indice + 1).padStart(2, "0") + " · " + aula;
+        botao.setAttribute("aria-pressed", indice === aulaAtualIndice ? "true" : "false");
+        botao.addEventListener("click", () => selecionarAula(indice));
         lista.appendChild(botao);
     });
-
-    selecionado.textContent = modulo.aulas.length
-        ? "Assunto selecionado: " + modulo.aulas[0]
-        : "Nenhum assunto cadastrado neste módulo.";
+    selecionado.textContent = modulo.aulas.length ? "Aula selecionada: " + modulo.aulas[aulaAtualIndice] : "Nenhuma aula cadastrada neste módulo.";
 }
 
-function abrirModulo(id) {
-    const modulo = modulos.find(item => item.id === id);
-    if (!modulo) return;
+function selecionarAula(indice) {
+    if (!moduloAtual || indice < 0 || indice >= moduloAtual.aulas.length) return;
+    aulaAtualIndice = indice;
+    renderizarListaAulas(moduloAtual);
+    carregarVideoDaAula();
+}
 
-    moduloAtual = modulo;
-    document.getElementById("lessonArea").textContent = modulo.area.toUpperCase();
-    document.getElementById("lessonTitle").textContent = modulo.titulo;
-    document.getElementById("moduleDescription").textContent = modulo.descricao;
-    renderizarListaAulas(modulo);
-
+function carregarVideoDaAula() {
+    if (!moduloAtual) return;
     const videoContainer = document.getElementById("moduleVideo");
+    if (!videoContainer) return;
     videoContainer.replaceChildren();
-
+    const caminhoVideo = "videos/" + moduloAtual.id + "-aula-" + (aulaAtualIndice + 1) + ".mp4";
+    const nomeAula = moduloAtual.aulas[aulaAtualIndice];
     const player = document.createElement("video");
     player.className = "module-player";
     player.controls = true;
     player.preload = "metadata";
     player.playsInline = true;
-    player.setAttribute("aria-label", "Videoaula: " + modulo.titulo);
+    player.setAttribute("aria-label", "Videoaula: " + nomeAula);
     player.style.width = "100%";
     player.style.maxHeight = "480px";
     player.style.aspectRatio = "16 / 9";
@@ -249,81 +253,79 @@ function abrirModulo(id) {
     player.style.background = "#101010";
     player.style.borderRadius = "12px";
     player.style.objectFit = "contain";
-
+    player.addEventListener("ended", concluirAulaAtual);
     const fonte = document.createElement("source");
-    fonte.src = modulo.video;
+    fonte.src = caminhoVideo;
     fonte.type = "video/mp4";
-    fonte.addEventListener("error", () => player.dispatchEvent(new Event("error")));
     player.appendChild(fonte);
-
-    const aviso = document.createElement("p");
-    aviso.textContent = "Seu navegador não conseguiu carregar este vídeo. Confira se o arquivo existe em: " + modulo.video;
-    player.appendChild(aviso);
-
     player.addEventListener("error", () => {
         const placeholder = document.createElement("div");
         placeholder.className = "video-placeholder";
         const tituloAviso = document.createElement("h3");
         tituloAviso.textContent = "Vídeo ainda não adicionado";
         const descricaoAviso = document.createElement("p");
-        descricaoAviso.textContent = "Coloque o arquivo MP4 neste caminho dentro da pasta do projeto:";
+        descricaoAviso.textContent = "Adicione o vídeo MP4 desta aula neste caminho:";
         const caminho = document.createElement("small");
-        caminho.textContent = modulo.video;
+        caminho.textContent = caminhoVideo;
         placeholder.append(tituloAviso, descricaoAviso, caminho);
         videoContainer.replaceChildren(placeholder);
-    });
-
+    }, { once: true });
     videoContainer.appendChild(player);
+}
 
-    const botao = document.getElementById("completeModule");
-    const concluido = concluidos.includes(modulo.id);
-    botao.textContent = concluido ? "✓ Módulo concluído" : "Marcar módulo como concluído ✓";
-    botao.disabled = concluido;
+async function concluirAulaAtual() {
+    if (!moduloAtual) return;
+    if (!sessaoAtual) { mostrarToast("Entre na sua conta para salvar a aula concluída."); return; }
+    const idAula = idDaAula(moduloAtual, aulaAtualIndice);
+    if (aulasConcluidas.includes(idAula)) { mostrarToast("Esta aula já está concluída."); return; }
+    const novasAulasConcluidas = [...aulasConcluidas, idAula];
+    const novosModulosConcluidos = modulos.filter(modulo => modulo.aulas.length > 0 && modulo.aulas.every((_, indice) => novasAulasConcluidas.includes(idDaAula(modulo, indice)))).map(modulo => modulo.id);
+    const { error } = await supabaseClient.from("student_progress").upsert({
+        user_id: sessaoAtual.user.id,
+        completed_lessons: novasAulasConcluidas,
+        completed_modules: novosModulosConcluidos,
+        quiz_score: pontuacaoAtual,
+        updated_at: new Date().toISOString()
+    }, { onConflict: "user_id" });
+    if (error) {
+        console.error("Erro ao salvar aula concluída:", error);
+        mostrarToast("Não foi possível salvar sua aula. Tente novamente.");
+        return;
+    }
+    aulasConcluidas = novasAulasConcluidas;
+    concluidos = novosModulosConcluidos;
+    atualizarResumo();
+    renderizarListaAulas(moduloAtual);
+    mostrarToast(concluidos.includes(moduloAtual.id) ? "Parabéns! Você concluiu todas as aulas deste módulo." : "Aula concluída e progresso salvo!");
+}
+
+function abrirModulo(id) {
+    const modulo = modulos.find(item => item.id === id);
+    if (!modulo) return;
+    moduloAtual = modulo;
+    aulaAtualIndice = 0;
+    document.getElementById("lessonArea").textContent = modulo.area.toUpperCase();
+    document.getElementById("lessonTitle").textContent = modulo.titulo;
+    document.getElementById("moduleDescription").textContent = modulo.descricao;
+    const botaoConcluirModulo = document.getElementById("completeModule");
+    if (botaoConcluirModulo) botaoConcluirModulo.hidden = true;
+    renderizarListaAulas(modulo);
+    carregarVideoDaAula();
     navegar("aula");
 }
 
-async function concluirModulo() {
-    if (!moduloAtual || !sessaoAtual) {
-        mostrarToast("Entre na sua conta para salvar seu progresso.");
-        return;
-    }
-    if (concluidos.includes(moduloAtual.id)) return;
-
-    const novosConcluidos = [...concluidos, moduloAtual.id];
-    const { error } = await supabaseClient
-        .from("student_progress")
-        .upsert({
-            user_id: sessaoAtual.user.id,
-            completed_modules: novosConcluidos,
-            quiz_score: pontuacaoAtual,
-            updated_at: new Date().toISOString()
-        }, { onConflict: "user_id" });
-
-    if (error) {
-        console.error("Erro ao salvar progresso:", error);
-        mostrarToast("Não foi possível salvar seu progresso. Tente novamente.");
-        return;
-    }
-
-    concluidos = novosConcluidos;
-    atualizarResumo();
-    abrirModulo(moduloAtual.id);
-    mostrarToast("Módulo marcado como concluído e salvo na sua conta!");
-}
-
 function atualizarResumo() {
-    const percentual = Math.round((concluidos.length / modulos.length) * 100);
+    const totalAulas = modulos.reduce((total, modulo) => total + modulo.aulas.length, 0);
+    const percentual = Math.round((aulasConcluidas.length / totalAulas) * 100);
     const percent = document.getElementById("percent");
     const ring = document.getElementById("ring");
     const done = document.getElementById("doneCount");
-
     if (percent) percent.textContent = percentual + "%";
     if (ring) {
         const angulo = percentual * 3.6;
-        ring.style.background = `conic-gradient(#19b7a2 0deg ${angulo}deg, #dfe7f8 ${angulo}deg 360deg)`;
+        ring.style.background = "conic-gradient(#19b7a2 0deg " + angulo + "deg, #dfe7f8 " + angulo + "deg 360deg)";
     }
-    if (done) done.textContent = concluidos.length;
-
+    if (done) done.textContent = aulasConcluidas.length;
     renderizarModulos();
     atualizarPainelProgresso();
 }
@@ -332,7 +334,6 @@ function atualizarPainelProgresso() {
     const score = document.getElementById("score");
     const performance = document.getElementById("performance");
     if (score) score.textContent = pontuacaoAtual === null ? "—" : pontuacaoAtual + "%";
-
     if (!performance) return;
     performance.replaceChildren();
     modulos.forEach(modulo => {
@@ -343,11 +344,11 @@ function atualizarPainelProgresso() {
         const trilho = document.createElement("div");
         trilho.className = "track";
         const barra = document.createElement("span");
-        const feito = concluidos.includes(modulo.id);
-        barra.style.width = feito ? "100%" : "0%";
+        const feitas = aulasConcluidasDoModulo(modulo);
+        barra.style.width = (modulo.aulas.length ? feitas / modulo.aulas.length * 100 : 0) + "%";
         trilho.appendChild(barra);
         const estado = document.createElement("span");
-        estado.textContent = feito ? "Concluído" : "Pendente";
+        estado.textContent = feitas === modulo.aulas.length ? "Concluído" : feitas + "/" + modulo.aulas.length + " aulas";
         linha.append(nome, trilho, estado);
         performance.appendChild(linha);
     });
@@ -466,6 +467,7 @@ async function finalizarQuiz() {
         .upsert({
             user_id: sessaoAtual.user.id,
             completed_modules: concluidos,
+            completed_lessons: aulasConcluidas,
             quiz_score: nota,
             updated_at: new Date().toISOString()
         }, { onConflict: "user_id" });
@@ -552,7 +554,7 @@ async function carregarProgressoDaConta() {
 
     const { data, error } = await supabaseClient
         .from("student_progress")
-        .select("completed_modules, quiz_score")
+        .select("completed_lessons, quiz_score")
         .eq("user_id", sessaoAtual.user.id)
         .maybeSingle();
 
@@ -564,12 +566,13 @@ async function carregarProgressoDaConta() {
     }
 
     if (data) {
-        concluidos = Array.isArray(data.completed_modules)
-            ? data.completed_modules.filter(id => modulos.some(modulo => modulo.id === id))
+        const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
+        aulasConcluidas = Array.isArray(data.completed_lessons)
+            ? [...new Set(data.completed_lessons.filter(id => idsValidos.includes(id)))]
             : [];
         pontuacaoAtual = data.quiz_score ?? null;
     }
-
+    atualizarModulosConcluidos();
     atualizarResumo();
 }
 
@@ -644,6 +647,7 @@ function configurarAcesso() {
                 await supabaseClient.auth.signOut();
                 sessaoAtual = null;
                 concluidos = [];
+                aulasConcluidas = [];
                 pontuacaoAtual = null;
                 atualizarResumo();
                 atualizarBotaoConta();
@@ -659,6 +663,7 @@ function configurarAcesso() {
         await supabaseClient.auth.signOut();
         sessaoAtual = null;
         concluidos = [];
+        aulasConcluidas = [];
         pontuacaoAtual = null;
         atualizarResumo();
         atualizarBotaoConta();
@@ -697,7 +702,6 @@ async function iniciarPortal() {
     configurarAcesso();
 
     document.getElementById("search").addEventListener("input", pesquisarCursos);
-    document.getElementById("completeModule").addEventListener("click", concluirModulo);
 
     renderizarModulos();
 
