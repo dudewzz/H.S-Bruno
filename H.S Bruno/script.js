@@ -117,6 +117,223 @@ function salvar(chave, valor) {
     }
 }
 
+function configurarTema() {
+    const botao = document.getElementById("themeToggle");
+    const temaSalvo = lerArmazenamento("hsbruno_theme");
+    const tema = temaSalvo === "dark" ? "dark" : "light";
+    document.body.classList.toggle("dark-mode", tema === "dark");
+    atualizarBotaoTema();
+    botao?.addEventListener("click", () => {
+        const escuro = !document.body.classList.contains("dark-mode");
+        document.body.classList.toggle("dark-mode", escuro);
+        try { localStorage.setItem("hsbruno_theme", escuro ? "dark" : "light"); } catch (erro) {
+            console.warn("Não foi possível salvar a preferência de tema.", erro);
+        }
+        atualizarBotaoTema();
+    });
+}
+
+function atualizarBotaoTema() {
+    const botao = document.getElementById("themeToggle");
+    if (!botao) return;
+    const escuro = document.body.classList.contains("dark-mode");
+    botao.textContent = escuro ? "☀" : "☾";
+    botao.setAttribute("aria-label", escuro ? "Ativar modo claro" : "Ativar modo escuro");
+    botao.title = escuro ? "Ativar modo claro" : "Ativar modo escuro";
+}
+
+function chaveAtividadeSemanal() {
+    return "hsbruno_weekly_" + (sessaoAtual?.user?.id || "visitante");
+}
+
+function inicioDaSemana(data = new Date()) {
+    const inicio = new Date(data);
+    inicio.setHours(0, 0, 0, 0);
+    const dia = (inicio.getDay() + 6) % 7;
+    inicio.setDate(inicio.getDate() - dia);
+    return inicio;
+}
+
+function lerAtividadeSemanal() {
+    try {
+        const valor = JSON.parse(localStorage.getItem(chaveAtividadeSemanal()) || "[]");
+        return Array.isArray(valor) ? valor : [];
+    } catch (_) { return []; }
+}
+
+function registrarAtividadeSemanal(idAula, concluida) {
+    const atividades = lerAtividadeSemanal().filter(item => item && item.id !== idAula);
+    if (concluida) atividades.push({ id: idAula, data: new Date().toISOString() });
+    try { localStorage.setItem(chaveAtividadeSemanal(), JSON.stringify(atividades)); }
+    catch (erro) { console.warn("Não foi possível atualizar a meta semanal.", erro); }
+}
+
+function atualizarWidgetsDeMeta(percentual) {
+    const inicioSemana = inicioDaSemana();
+    const atividades = lerAtividadeSemanal().filter(item => {
+        const data = new Date(item.data);
+        return item.id && !Number.isNaN(data.getTime()) && data >= inicioSemana;
+    });
+    const feitasSemana = new Set(atividades.map(item => item.id)).size;
+    const weeklyDone = document.getElementById("weeklyDone");
+    const weeklyBar = document.getElementById("weeklyBar");
+    const certificateBar = document.getElementById("certificateBar");
+    const certificateMessage = document.getElementById("certificateMessage");
+    if (weeklyDone) weeklyDone.textContent = Math.min(feitasSemana, 3);
+    if (weeklyBar) weeklyBar.style.width = Math.min(feitasSemana / 3 * 100, 100) + "%";
+    if (certificateBar) certificateBar.style.width = percentual + "%";
+    if (certificateMessage) certificateMessage.textContent = percentual >= 100
+        ? "Parabéns! Seu certificado está liberado."
+        : "Conclua " + (100 - percentual) + "% restante para liberar seu certificado.";
+}
+
+function proximaAulaPendente() {
+    for (const modulo of modulos) {
+        for (let indice = 0; indice < modulo.aulas.length; indice++) {
+            if (!aulasConcluidas.includes(idDaAula(modulo, indice))) {
+                return { modulo, indice, nome: modulo.aulas[indice] };
+            }
+        }
+    }
+    return null;
+}
+
+function abrirModalModulo(id) {
+    const modulo = modulos.find(item => item.id === id);
+    const modal = document.getElementById("moduleModal");
+    const conteudo = document.getElementById("moduleModalContent");
+    if (!modulo || !modal || !conteudo) return;
+
+    const feitas = aulasConcluidasDoModulo(modulo);
+    conteudo.replaceChildren();
+    const cabecalho = document.createElement("div");
+    cabecalho.className = "module-modal-head";
+    const tituloArea = document.createElement("div");
+    const etiqueta = document.createElement("small");
+    etiqueta.className = "module-modal-kicker";
+    etiqueta.textContent = modulo.area + " · EMENTA";
+    const titulo = document.createElement("h2");
+    titulo.id = "moduleModalTitle";
+    titulo.textContent = modulo.titulo.replace(modulo.area + " — ", "Módulo ");
+    tituloArea.append(etiqueta, titulo);
+    const fechar = document.createElement("button");
+    fechar.type = "button";
+    fechar.className = "module-modal-close";
+    fechar.setAttribute("aria-label", "Fechar ementa");
+    fechar.textContent = "×";
+    fechar.addEventListener("click", fecharModalModulo);
+    cabecalho.append(tituloArea, fechar);
+
+    const descricao = document.createElement("p");
+    descricao.className = "module-modal-description";
+    descricao.textContent = modulo.descricao;
+    const progresso = document.createElement("p");
+    progresso.className = "module-modal-progress";
+    progresso.textContent = feitas + " de " + modulo.aulas.length + " aulas concluídas";
+
+    const lista = document.createElement("div");
+    lista.className = "module-modal-list";
+    modulo.aulas.forEach((nomeAula, indice) => {
+        const id = idDaAula(modulo, indice);
+        const linha = document.createElement("label");
+        linha.className = "module-modal-lesson" + (aulasConcluidas.includes(id) ? " is-complete" : "");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = aulasConcluidas.includes(id);
+        checkbox.setAttribute("aria-label", "Marcar " + nomeAula + " como concluída");
+        checkbox.addEventListener("change", async () => {
+            const novas = checkbox.checked
+                ? [...new Set([...aulasConcluidas, id])]
+                : aulasConcluidas.filter(item => item !== id);
+            const sucesso = await salvarListaAulas(novas, id, checkbox.checked);
+            if (sucesso) abrirModalModulo(modulo.id);
+            else checkbox.checked = !checkbox.checked;
+        });
+        const texto = document.createElement("span");
+        texto.textContent = String(indice + 1).padStart(2, "0") + " · " + nomeAula;
+        const abrirAula = document.createElement("button");
+        abrirAula.type = "button";
+        abrirAula.className = "module-modal-open-lesson";
+        abrirAula.textContent = "Abrir aula";
+        abrirAula.addEventListener("click", () => {
+            fecharModalModulo();
+            abrirModulo(modulo.id);
+            selecionarAula(indice);
+        });
+        linha.append(checkbox, texto, abrirAula);
+        lista.appendChild(linha);
+    });
+
+    const rodape = document.createElement("div");
+    rodape.className = "module-modal-footer";
+    const dica = document.createElement("small");
+    dica.textContent = "Marque as aulas que você já concluiu.";
+    const botaoFechar = document.createElement("button");
+    botaoFechar.type = "button";
+    botaoFechar.className = "primary";
+    botaoFechar.textContent = "Concluir";
+    botaoFechar.addEventListener("click", fecharModalModulo);
+    rodape.append(dica, botaoFechar);
+    conteudo.append(cabecalho, descricao, progresso, lista, rodape);
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+}
+
+function fecharModalModulo() {
+    const modal = document.getElementById("moduleModal");
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+}
+
+function configurarModalModulo() {
+    const modal = document.getElementById("moduleModal");
+    modal?.addEventListener("click", evento => {
+        if (evento.target === modal) fecharModalModulo();
+    });
+    document.addEventListener("keydown", evento => {
+        if (evento.key === "Escape") fecharModalModulo();
+    });
+}
+
+async function salvarListaAulas(novasAulas, idAulaAlterada, foiConcluida) {
+    if (!sessaoAtual) {
+        mostrarToast("Entre na sua conta para registrar as aulas concluídas.");
+        mostrarAcesso();
+        return false;
+    }
+    const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
+    const listaValida = [...new Set(novasAulas.filter(id => idsValidos.includes(id)))];
+    const novosModulos = modulos.filter(modulo =>
+        modulo.aulas.length > 0 && modulo.aulas.every((_, indice) => listaValida.includes(idDaAula(modulo, indice)))
+    ).map(modulo => modulo.id);
+
+    const { error } = await supabaseClient.from("student_progress").upsert({
+        user_id: sessaoAtual.user.id,
+        completed_lessons: listaValida,
+        completed_modules: novosModulos,
+        quiz_score: pontuacaoAtual,
+        updated_at: new Date().toISOString()
+    }, { onConflict: "user_id" });
+
+    if (error) {
+        console.error("Erro ao salvar progresso:", error);
+        mostrarToast("Não foi possível atualizar o progresso. Tente novamente.");
+        return false;
+    }
+
+    aulasConcluidas = listaValida;
+    concluidos = novosModulos;
+    registrarAtividadeSemanal(idAulaAlterada, foiConcluida);
+    atualizarResumo();
+    if (moduloAtual) renderizarListaAulas(moduloAtual);
+    mostrarToast(foiConcluida ? "Aula marcada como concluída!" : "Aula removida das concluídas.");
+    return true;
+}
+
+
 function confirmarAcao(mensagem) {
     return new Promise(resolve => {
         const overlay = document.createElement("div");
@@ -209,8 +426,12 @@ function criarCard(modulo) {
     const corpo = document.createElement("div");
     corpo.className = "module-body";
 
+    const area = document.createElement("small");
+    area.className = "module-area-tag";
+    area.textContent = modulo.area;
+
     const titulo = document.createElement("h3");
-    titulo.textContent = modulo.titulo;
+    titulo.textContent = modulo.titulo.replace(modulo.area + " — ", "Módulo ");
 
     const descricao = document.createElement("p");
     descricao.textContent = modulo.descricao;
@@ -218,10 +439,10 @@ function criarCard(modulo) {
     const botao = document.createElement("button");
     botao.className = "primary";
     botao.type = "button";
-    botao.textContent = concluidos.includes(modulo.id) ? "Revisar módulo →" : "Começar módulo →";
-    botao.addEventListener("click", () => abrirModulo(modulo.id));
+    botao.textContent = concluidos.includes(modulo.id) ? "Revisar módulo →" : "Começar →";
+    botao.addEventListener("click", () => abrirModalModulo(modulo.id));
 
-    corpo.append(titulo, descricao, botao);
+    corpo.append(area, titulo, descricao, botao);
     artigo.append(imagem, corpo);
     return artigo;
 }
@@ -253,7 +474,7 @@ function criarCardInicio(modulo) {
     botao.type = "button";
     botao.className = "home-module-button";
     botao.textContent = percentual === 0 ? "▶  Começar" : "▶  Continuar";
-    botao.addEventListener("click", () => abrirModulo(modulo.id));
+    botao.addEventListener("click", () => abrirModalModulo(modulo.id));
     if (percentual === 100) {
         const selo = document.createElement("span");
         selo.className = "home-module-done";
@@ -270,14 +491,17 @@ function renderizarModulos() {
     const inicio = document.getElementById("homeModules");
     const todos = document.getElementById("allModules");
 
-    if (inicio) {
-        inicio.replaceChildren(...modulos.map(criarCardInicio));
-    }
+    if (inicio) inicio.replaceChildren(...modulos.map(criarCardInicio));
 
     if (todos) {
-        const filtrados = filtroAtual === "Todos"
-            ? modulos
-            : modulos.filter(modulo => modulo.area === filtroAtual);
+        const filtrados = modulos.filter(modulo => {
+            const feitas = aulasConcluidasDoModulo(modulo);
+            const total = modulo.aulas.length;
+            if (filtroAtual === "Hardware" || filtroAtual === "Software") return modulo.area === filtroAtual;
+            if (filtroAtual === "Em andamento") return feitas > 0 && feitas < total;
+            if (filtroAtual === "Concluídos") return feitas === total;
+            return true;
+        });
         todos.replaceChildren(...filtrados.map(criarCard));
     }
 
@@ -366,28 +590,10 @@ function carregarVideoDaAula() {
 
 async function concluirAulaAtual() {
     if (!moduloAtual) return;
-    if (!sessaoAtual) { mostrarToast("Entre na sua conta para salvar a aula concluída."); return; }
     const idAula = idDaAula(moduloAtual, aulaAtualIndice);
-    if (aulasConcluidas.includes(idAula)) { mostrarToast("Esta aula já está concluída."); return; }
-    const novasAulasConcluidas = [...aulasConcluidas, idAula];
-    const novosModulosConcluidos = modulos.filter(modulo => modulo.aulas.length > 0 && modulo.aulas.every((_, indice) => novasAulasConcluidas.includes(idDaAula(modulo, indice)))).map(modulo => modulo.id);
-    const { error } = await supabaseClient.from("student_progress").upsert({
-        user_id: sessaoAtual.user.id,
-        completed_lessons: novasAulasConcluidas,
-        completed_modules: novosModulosConcluidos,
-        quiz_score: pontuacaoAtual,
-        updated_at: new Date().toISOString()
-    }, { onConflict: "user_id" });
-    if (error) {
-        console.error("Erro ao salvar aula concluída:", error);
-        mostrarToast("Não foi possível salvar sua aula. Tente novamente.");
-        return;
-    }
-    aulasConcluidas = novasAulasConcluidas;
-    concluidos = novosModulosConcluidos;
-    atualizarResumo();
-    renderizarListaAulas(moduloAtual);
-    mostrarToast(concluidos.includes(moduloAtual.id) ? "Parabéns! Você concluiu todas as aulas deste módulo." : "Aula concluída e progresso salvo!");
+    if (aulasConcluidas.includes(idAula)) return;
+    const novas = [...aulasConcluidas, idAula];
+    await salvarListaAulas(novas, idAula, true);
 }
 
 function abrirModulo(id) {
@@ -417,15 +623,32 @@ function atualizarResumo() {
     if (percent) percent.textContent = percentual + "%";
     if (ring) {
         const angulo = percentual * 3.6;
-        ring.style.background = "conic-gradient(#20aee9 0deg, #3864e8 " + angulo + "deg, #dfe7f8 " + angulo + "deg 360deg)";
+        ring.style.background = "conic-gradient(#39765F 0deg, #39765F " + angulo + "deg, #E8E0D4 " + angulo + "deg 360deg)";
     }
     if (done) done.textContent = aulasConcluidas.length;
+
     const homeDone = document.getElementById("homeDoneCount");
-    if (homeDone) homeDone.textContent = aulasConcluidas.length;
     const homeLessons = document.getElementById("homeLessons");
     const homeScore = document.getElementById("homeScore");
+    const mensagem = document.querySelector(".home-progress-message strong");
+    const botaoInicio = document.getElementById("homeResumeButton");
+    const proxima = document.getElementById("homeNextLesson");
+    if (homeDone) homeDone.textContent = aulasConcluidas.length;
     if (homeLessons) homeLessons.textContent = aulasConcluidas.length + " de " + totalAulas;
-    if (homeScore) homeScore.textContent = pontuacaoAtual === null ? "—" : pontuacaoAtual + "%";
+    if (homeScore) homeScore.textContent = aulasConcluidas.length === 0 ? "N/A" : (pontuacaoAtual === null ? "—" : pontuacaoAtual + "%");
+    if (mensagem) mensagem.textContent = percentual === 0
+        ? "Pronto para começar sua jornada!"
+        : percentual === 100 ? "Jornada concluída. Parabéns!" : "Você está indo muito bem!";
+    if (botaoInicio) {
+        const texto = botaoInicio.querySelector("span");
+        if (texto) texto.textContent = percentual === 0 ? "Começar Estudos" : "Retomar Estudos";
+    }
+    const proximaAula = proximaAulaPendente();
+    if (proxima) proxima.textContent = proximaAula
+        ? "Próxima aula: " + proximaAula.nome
+        : "Todas as aulas foram concluídas!";
+    atualizarWidgetsDeMeta(percentual);
+
     renderizarModulos();
     atualizarPainelProgresso();
     if (document.getElementById("perfil")?.classList.contains("active")) renderizarPerfilAluno();
@@ -481,15 +704,7 @@ function pesquisarCursos() {
         return;
     }
 
-    if (filtroAtual !== "Todos") {
-        filtroAtual = "Todos";
-        document.querySelectorAll(".filter").forEach(botao => {
-            botao.classList.toggle("active", botao.dataset.filter === "Todos");
-        });
-        renderizarModulos();
-    } else {
-        aplicarPesquisa();
-    }
+    aplicarPesquisa();
 
     const paginaCursos = document.getElementById("cursos");
     if (paginaCursos && !paginaCursos.classList.contains("active")) {
@@ -501,7 +716,11 @@ function configurarFiltros() {
     document.querySelectorAll(".filter").forEach(botao => {
         botao.addEventListener("click", () => {
             filtroAtual = botao.dataset.filter || "Todos";
-            document.querySelectorAll(".filter").forEach(item => item.classList.toggle("active", item === botao));
+            document.querySelectorAll(".filter").forEach(item => {
+                const ativo = item.dataset.filter === filtroAtual;
+                item.classList.toggle("active", ativo);
+                item.setAttribute("aria-pressed", ativo ? "true" : "false");
+            });
             renderizarModulos();
         });
     });
@@ -911,8 +1130,11 @@ function configurarAcesso() {
 }
 
 async function iniciarPortal() {
+    configurarTema();
+    configurarModalModulo();
     configurarNavegacao();
     configurarFiltros();
+    document.querySelectorAll(".filter").forEach(botao => botao.setAttribute("aria-pressed", botao.classList.contains("active") ? "true" : "false"));
     configurarQuiz();
     configurarAcesso();
 
