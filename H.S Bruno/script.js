@@ -418,6 +418,8 @@ function atualizarResumo() {
         ring.style.background = "conic-gradient(#20aee9 0deg, #3864e8 " + angulo + "deg, #dfe7f8 " + angulo + "deg 360deg)";
     }
     if (done) done.textContent = aulasConcluidas.length;
+    const homeDone = document.getElementById("homeDoneCount");
+    if (homeDone) homeDone.textContent = aulasConcluidas.length;
     const homeLessons = document.getElementById("homeLessons");
     const homeScore = document.getElementById("homeScore");
     if (homeLessons) homeLessons.textContent = aulasConcluidas.length + " de " + totalAulas;
