@@ -560,3 +560,58 @@ body.dark-mode .home-resume{background:#FFFCF6!important;color:#1D4968!important
   .module-modal-footer{align-items:flex-start;flex-direction:column}
   .module-modal-footer .primary{width:100%}
 }
+
+
+/* AJUSTES DE LEITURA, BUSCA E NOTA DO QUIZ */
+.search-feedback{
+  margin:14px 2px 0;padding:12px 15px;border:1px solid rgba(36,87,122,.10);
+  border-radius:12px;background:#FFFCF6;color:#24577A;
+  font-size:13px;font-weight:600;line-height:1.5;
+}
+.search-feedback[hidden]{display:none}
+.search-feedback:not([hidden]){
+  display:block;
+}
+.search input{color:#1B3448}
+.search input::placeholder{color:#746F66;opacity:1}
+
+/* Contraste reforçado para textos secundários e conteúdo no tema escuro. */
+body.dark-mode{color:#F3F7F9!important}
+body.dark-mode p,body.dark-mode small,body.dark-mode label,
+body.dark-mode .module-body p,body.dark-mode .home-module-body p,
+body.dark-mode .home-progress-count,body.dark-mode .home-progress-message,
+body.dark-mode .home-weekly-goal p,body.dark-mode .profile-footer p,
+body.dark-mode .profile-page-heading p,body.dark-mode .profile-stat-card small,
+body.dark-mode .student-profile-identity p,body.dark-mode .student-profile-identity small,
+body.dark-mode .profile-level span,body.dark-mode .profile-level small,
+body.dark-mode .profile-achievement small,body.dark-mode .module-modal-description,
+body.dark-mode .module-modal-footer small,body.dark-mode .lesson-content,
+body.dark-mode .answer,body.dark-mode .page-title p,body.dark-mode .page-title small,
+body.dark-mode .section-head p,body.dark-mode .tabs button,
+body.dark-mode .performance-row,body.dark-mode .home-widget-heading strong{
+  color:#D3E0E6!important;
+}
+body.dark-mode h1,body.dark-mode h2,body.dark-mode h3,body.dark-mode h4,
+body.dark-mode strong,body.dark-mode b,body.dark-mode .brand,
+body.dark-mode .brand strong,body.dark-mode .nav-link,
+body.dark-mode .module-body h3,body.dark-mode .home-module-body h3,
+body.dark-mode .home-section-heading h2,body.dark-mode .home-progress-card h2,
+body.dark-mode .home-performance h2,body.dark-mode .profile-page-heading h1,
+body.dark-mode .profile-card-heading h2,body.dark-mode .student-profile-identity h2,
+body.dark-mode .profile-stat-card strong,body.dark-mode .module-modal-head h2{
+  color:#F3F7F9!important;
+}
+body.dark-mode .search-feedback{
+  background:#263945!important;color:#EAF3F7!important;
+  border-color:rgba(190,215,228,.18)!important;
+}
+body.dark-mode .search input{color:#F3F7F9!important}
+body.dark-mode .search input::placeholder{color:#B9C9D1!important;opacity:1}
+body.dark-mode .module-area-tag,body.dark-mode .profile-kicker,
+body.dark-mode .profile-page-heading small,body.dark-mode .profile-card-heading small{
+  color:#9BC9E0!important;
+}
+body.dark-mode .home-progress-message strong,
+body.dark-mode .home-progress-count,body.dark-mode .home-progress-count b{
+  color:#F3F7F9!important;
+}
