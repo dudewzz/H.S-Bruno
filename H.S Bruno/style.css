@@ -403,3 +403,160 @@ body{background:#F2E8D8;color:#1B3448}
 .profile-achievement{border-color:rgba(36,87,122,.08);background:#F8F2E8}
 .profile-achievement strong{color:#43566A}
 .profile-achievement small{color:#746F66}
+
+
+/* =========================================================
+   NOVOS RECURSOS — FILTROS, META, MODAL E MODO ESCURO
+   Mantém a estrutura aprovada e a identidade areia + azul.
+========================================================= */
+:root{
+  --surface:#FFFCF6;
+  --surface-soft:#F8F2E8;
+  --text-main:#1B3448;
+  --text-muted:#746F66;
+  --primary:#24577A;
+  --progress:#39765F;
+  --achievement:#66558A;
+  --border-soft:rgba(36,87,122,.10);
+  --shadow-soft:0 4px 16px rgba(36,87,122,.05);
+}
+.theme-toggle{
+  width:40px;height:40px;flex:none;display:grid;place-items:center;
+  border:1px solid rgba(36,87,122,.12);border-radius:50%;
+  background:#FFFCF6;color:#24577A;font-size:20px;
+  transition:background .2s,transform .2s,color .2s;
+}
+.theme-toggle:hover{background:#EDF3F8;transform:translateY(-1px)}
+.home-next-lesson{
+  display:block;margin-top:10px;color:rgba(255,255,255,.82);
+  font-size:11px;line-height:1.45;font-weight:500;
+}
+.home-performance{display:flex;flex-direction:column;gap:14px}
+.home-weekly-goal,.home-certificate{
+  padding:14px 15px;border:1px solid rgba(36,87,122,.09);
+  border-radius:15px;background:#F8F2E8;
+}
+.home-widget-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.home-widget-heading strong{font-size:13px;color:#1B3448}
+.home-widget-heading span{font-size:17px}
+.home-weekly-goal p,.home-certificate p{
+  margin:7px 0 9px;color:#746F66;font-size:11px;line-height:1.45
+}
+.home-weekly-goal p b{color:#24577A}
+.home-widget-track{height:7px;overflow:hidden;border-radius:20px;background:#E8E0D4}
+.home-widget-track span{display:block;width:0;height:100%;border-radius:inherit;background:#39765F;transition:width .25s}
+.home-certificate .home-widget-track span{background:#66558A}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filter{transition:background .18s,border-color .18s,color .18s}
+.filter.active{background:#24577A!important;color:#fff!important;border-color:#24577A!important}
+.module-area-tag{display:inline-block;margin:0 0 7px;color:#39765F;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.module-card[hidden]{display:none!important}
+
+/* Modal de ementa */
+.module-modal{
+  position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;
+  padding:20px;background:rgba(27,52,72,.48);backdrop-filter:blur(4px);
+}
+.module-modal.is-open{display:flex}
+.module-modal-card{
+  width:min(560px,100%);max-height:min(82vh,760px);overflow:auto;
+  padding:25px;border:1px solid rgba(36,87,122,.10);border-radius:22px;
+  background:#FFFCF6;color:#1B3448;box-shadow:0 22px 70px rgba(15,35,52,.22);
+  animation:moduleModalIn .18s ease-out;
+}
+@keyframes moduleModalIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.module-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.module-modal-kicker{display:block;margin-bottom:6px;color:#39765F;font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.module-modal-head h2{margin:0;color:#1B3448;font:800 22px Manrope}
+.module-modal-description{margin:8px 0 18px;color:#746F66;font-size:13px;line-height:1.55}
+.module-modal-close{width:34px;height:34px;flex:none;border:0;border-radius:50%;background:#EDF3F8;color:#24577A;font-size:20px}
+.module-modal-progress{margin:0 0 15px;color:#39765F;font-size:12px;font-weight:700}
+.module-modal-list{display:grid;gap:9px}
+.module-modal-lesson{
+  display:flex;align-items:center;gap:12px;padding:12px 13px;
+  border:1px solid rgba(36,87,122,.10);border-radius:13px;background:#fff;
+}
+.module-modal-lesson input{width:18px;height:18px;flex:none;accent-color:#39765F;cursor:pointer}
+.module-modal-lesson span{flex:1;color:#1B3448;font-size:13px;font-weight:600;line-height:1.4}
+.module-modal-lesson.is-complete{background:#F0F6F1;border-color:rgba(57,118,95,.22)}
+.module-modal-lesson.is-complete span{color:#39765F}
+.module-modal-open-lesson{padding:7px 10px;border:1px solid rgba(36,87,122,.12);border-radius:9px;background:#EDF3F8;color:#24577A;font-size:11px;font-weight:700}
+.module-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:19px}
+.module-modal-footer small{color:#746F66;font-size:11px}
+.module-modal-footer .primary{padding:10px 17px;border:0;border-radius:20px}
+
+/* Tema escuro: cores são trocadas por variáveis e overrides locais. */
+body.dark-mode{
+  --surface:#202C35;--surface-soft:#263640;--text-main:#E8EEF1;
+  --text-muted:#AAB8BE;--primary:#79AFCB;--progress:#78B99A;
+  --achievement:#B3A0D7;--border-soft:rgba(190,215,228,.12);
+  --shadow-soft:0 5px 18px rgba(0,0,0,.18);
+  background:#17232C!important;color:#E8EEF1!important;
+}
+body.dark-mode .sidebar,body.dark-mode .topbar{background:#1D2B35!important;border-color:rgba(190,215,228,.12)!important}
+body.dark-mode .brand,body.dark-mode .brand strong,body.dark-mode .nav-link,
+body.dark-mode .module-body h3,body.dark-mode .section-head h2,
+body.dark-mode .home-section-heading h2,body.dark-mode .home-progress-card h2,
+body.dark-mode .home-performance h2,body.dark-mode .home-widget-heading strong,
+body.dark-mode .profile-page-heading h1,body.dark-mode .profile-card-heading h2,
+body.dark-mode .student-profile-identity h2,body.dark-mode .profile-stat-card strong,
+body.dark-mode .module-modal-head h2{color:#E8EEF1!important}
+body.dark-mode .brand small,body.dark-mode .module-body p,body.dark-mode .section-head p,
+body.dark-mode .profile-page-heading p,body.dark-mode .home-weekly-goal p,
+body.dark-mode .home-certificate p,body.dark-mode .profile-footer p,
+body.dark-mode .profile-stat-card small,body.dark-mode .student-profile-identity p,
+body.dark-mode .student-profile-identity small,body.dark-mode .profile-level span,
+body.dark-mode .profile-level small,body.dark-mode .module-modal-description,
+body.dark-mode .module-modal-footer small{color:#AAB8BE!important}
+body.dark-mode .panel,body.dark-mode .info,body.dark-mode .quiz,body.dark-mode .module-card,
+body.dark-mode .profile-edit-card,body.dark-mode .profile-achievements-card,
+body.dark-mode .home-module-card,body.dark-mode .home-performance,
+body.dark-mode .profile-stat-card,body.dark-mode .home-progress-card,
+body.dark-mode .student-profile-hero,body.dark-mode .home-weekly-goal,
+body.dark-mode .home-certificate{
+  background:#202C35!important;border-color:rgba(190,215,228,.12)!important;
+  color:#E8EEF1!important;box-shadow:0 5px 18px rgba(0,0,0,.18)!important;
+}
+body.dark-mode .nav-link.active{background:#24577A!important;color:#fff!important}
+body.dark-mode .search,body.dark-mode .search input{background:#263640!important;color:#E8EEF1!important;border-color:rgba(190,215,228,.14)!important}
+body.dark-mode .bell,body.dark-mode .theme-toggle{background:#263640!important;color:#E8EEF1!important;border-color:rgba(190,215,228,.14)!important}
+body.dark-mode .filter{background:#263640!important;color:#C8D5DA!important;border-color:rgba(190,215,228,.14)!important}
+body.dark-mode .filter.active{background:#24577A!important;color:#fff!important}
+body.dark-mode .home-module-button,body.dark-mode .home-view-all,
+body.dark-mode .secondary,body.dark-mode .outline,body.dark-mode .dark,
+body.dark-mode .progress-controls button{background:#304653!important;color:#DCEAF0!important;border-color:rgba(190,215,228,.14)!important}
+body.dark-mode .home-progress-ring:before{background:#202C35!important}
+body.dark-mode .home-progress-ring b,body.dark-mode .home-progress-count,
+body.dark-mode .home-progress-message strong{color:#DCEAF0!important}
+body.dark-mode .track,body.dark-mode .progress-track,body.dark-mode .home-module-progress>span,
+body.dark-mode .home-widget-track{background:#3A4A52!important}
+body.dark-mode .lesson-item{background:#263640!important;color:#C8D5DA!important}
+body.dark-mode .lesson-item.active{background:#24577A!important;color:#fff!important}
+body.dark-mode .answer{background:#263640!important;color:#DCEAF0!important;border-color:rgba(190,215,228,.12)!important}
+body.dark-mode .answer.selected{background:#304653!important;border-color:#79AFCB!important}
+body.dark-mode .auth-card,body.dark-mode .confirm-dialog,
+body.dark-mode .module-modal-card{background:#202C35!important;color:#E8EEF1!important;border-color:rgba(190,215,228,.12)!important}
+body.dark-mode .auth-card h2,body.dark-mode .confirm-dialog h2,
+body.dark-mode .auth-description,body.dark-mode .confirm-dialog p{color:#E8EEF1!important}
+body.dark-mode .auth-card form input,body.dark-mode .profile-edit-card input{
+  background:#263640!important;color:#E8EEF1!important;border-color:rgba(190,215,228,.18)!important;
+}
+body.dark-mode .module-modal-lesson{background:#263640!important;border-color:rgba(190,215,228,.12)!important}
+body.dark-mode .module-modal-lesson span{color:#E8EEF1!important}
+body.dark-mode .module-modal-lesson.is-complete{background:#243B35!important}
+body.dark-mode .module-modal-lesson.is-complete span{color:#9BD0B1!important}
+body.dark-mode .module-modal-open-lesson{background:#304653!important;color:#DCEAF0!important}
+body.dark-mode .profile-achievement{background:#263640!important;border-color:rgba(190,215,228,.12)!important}
+body.dark-mode .profile-achievement strong,body.dark-mode .profile-achievement small{color:#C8D5DA!important}
+body.dark-mode .profile-avatar-options button{background:#263640!important;border-color:rgba(190,215,228,.12)!important}
+body.dark-mode .confirm-cancel{background:#304653!important;color:#E8EEF1!important}
+body.dark-mode .home-resume{background:#FFFCF6!important;color:#1D4968!important}
+@media(max-width:600px){
+  .module-modal{padding:10px;align-items:flex-end}
+  .module-modal-card{max-height:88vh;padding:19px;border-radius:20px 20px 14px 14px}
+  .module-modal-lesson{gap:9px;padding:10px}
+  .module-modal-lesson span{font-size:12px}
+  .module-modal-open-lesson{padding:7px 8px}
+  .module-modal-footer{align-items:flex-start;flex-direction:column}
+  .module-modal-footer .primary{width:100%}
+}
