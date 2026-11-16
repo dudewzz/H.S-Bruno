@@ -312,15 +312,26 @@ function pesquisarCursos() {
     const campo = document.getElementById("search");
     if (!campo) return;
 
-    if (campo.value.trim()) {
+    const termo = campo.value.trim();
+
+    if (!termo) {
+        aplicarPesquisa();
+        return;
+    }
+
+    if (filtroAtual !== "Todos") {
         filtroAtual = "Todos";
         document.querySelectorAll(".filter").forEach(botao => {
             botao.classList.toggle("active", botao.dataset.filter === "Todos");
         });
         renderizarModulos();
-        navegar("cursos");
     } else {
         aplicarPesquisa();
+    }
+
+    const paginaCursos = document.getElementById("cursos");
+    if (paginaCursos && !paginaCursos.classList.contains("active")) {
+        navegar("cursos");
     }
 }
 
