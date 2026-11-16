@@ -49,3 +49,79 @@ body{background:linear-gradient(135deg,#f5f7ff 0%,#e8eeff 52%,#f5f4ff 100%)}
 .progress-controls button{padding:10px 15px;border:1px solid #d6e1ff;border-radius:10px;background:#f5f7ff;color:#193f9e;font:600 12px "DM Sans",sans-serif;cursor:pointer}
 .progress-controls button:hover{background:#e9efff}
 @media(max-width:520px){.auth-card{padding:24px 20px}.progress-controls{flex-direction:column}.progress-controls button{width:100%}}
+
+
+/* Ajustes adicionais para celulares e telas pequenas */
+@media (max-width: 650px) {
+    html, body { width:100%; min-width:0; overflow-x:hidden; }
+    .content { width:100%; max-width:100%; box-sizing:border-box; padding-left:12px; padding-right:12px; }
+    .topbar { box-sizing:border-box; width:100%; gap:8px; }
+    .search { min-width:0; flex:1; width:auto; }
+    .search input { min-width:0; }
+    .bell { flex:0 0 auto; margin-left:0; }
+    .profile { flex:0 0 35px; margin-left:0; }
+    .sidebar { padding-bottom:env(safe-area-inset-bottom, 0px); }
+    .sidebar nav { width:100%; }
+    .nav-link { min-width:0; overflow:hidden; }
+    .nav-link span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .hero { width:100%; box-sizing:border-box; }
+    .section-head { flex-wrap:wrap; }
+    .section-head > div { min-width:0; }
+    .module-grid { width:100%; }
+    .module-card { min-width:0; }
+    .lesson-layout { grid-template-columns:minmax(0,1fr); }
+    .lesson-layout aside { min-width:0; }
+    .lesson-layout .module-video-panel { min-width:0; }
+    .lesson-item { white-space:normal; overflow-wrap:anywhere; }
+    .video-slot, #moduleVideo { width:100%; max-width:100%; aspect-ratio:16/9; min-height:0; }
+    #moduleVideo video, #moduleVideo iframe { display:block; width:100%; max-width:100%; height:100%; object-fit:contain; }
+    .video-placeholder { box-sizing:border-box; padding:16px; text-align:center; }
+    .video-placeholder h3 { font-size:15px; }
+    .video-placeholder p, .video-placeholder small { overflow-wrap:anywhere; }
+    .lesson-actions { width:100%; }
+    .lesson-actions button { min-width:0; }
+    .progress-controls { width:100%; }
+    .progress-controls button { min-height:42px; }
+    .auth-overlay { overflow-y:auto; align-items:center; }
+    .auth-card { max-height:calc(100dvh - 32px); overflow-y:auto; }
+    .quiz, .info, .panel { min-width:0; }
+    .answer { align-items:flex-start; overflow-wrap:anywhere; }
+    #toast { left:12px; right:12px; bottom:78px; text-align:center; }
+}
+
+@media (max-width: 420px) {
+    .content { padding-left:9px; padding-right:9px; }
+    .topbar { padding-left:9px; padding-right:9px; }
+    .search { height:39px; gap:7px; padding:0 10px; font-size:21px; }
+    .search input { font-size:11px; }
+    .profile { width:33px; height:33px; flex-basis:33px; }
+    .module-grid, .page#cursos .module-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+    .module-card img, .page#cursos .module-card img { height:88px; }
+    .module-body, .page#cursos .module-body { padding:8px 6px; }
+    .module-body h3 { font-size:11px; }
+    .module-body p { font-size:9px; }
+    .module-body .primary { font-size:9px; }
+    .hero { height:260px; }
+    .hero-copy { padding:19px 14px; }
+    .hero h1 { font-size:26px; }
+    .section-head h2 { font-size:17px; }
+    .section-head p { margin-left:0; }
+    .stats { gap:7px; }
+    .stats b { font-size:23px; }
+    .performance-row { grid-template-columns:minmax(0,1fr) minmax(65px,1.2fr) 34px; gap:6px; font-size:10px; }
+    .quiz-top { flex-wrap:wrap; }
+    .quiz-top .track { width:100%; order:3; }
+    .auth-card { padding:21px 17px; }
+}
+
+@media (max-width: 350px) {
+    .nav-link { font-size:8px; }
+    .nav-link span { max-width:58px; }
+    .module-grid, .page#cursos .module-grid { grid-template-columns:minmax(0,1fr); }
+    .module-card { display:grid; grid-template-columns:92px minmax(0,1fr); }
+    .module-card img, .page#cursos .module-card img { height:100%; min-height:118px; }
+    .module-body { text-align:left; }
+    .module-body h3, .module-body p { min-height:0; }
+    .quick { gap:4px; }
+    .quick small { font-size:8px; }
+}
