@@ -125,3 +125,21 @@ body{background:linear-gradient(135deg,#f5f7ff 0%,#e8eeff 52%,#f5f4ff 100%)}
     .quick { gap:4px; }
     .quick small { font-size:8px; }
 }
+
+
+/* Janela personalizada de confirmação de ações */
+.confirm-overlay{position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(13,27,62,.48);backdrop-filter:blur(5px);animation:confirmFadeIn .18s ease-out}
+.confirm-dialog{width:min(100%,440px);padding:28px;border:1px solid #d9e4ff;border-radius:20px;background:#fff;box-shadow:0 24px 70px rgba(16,36,82,.24);color:#101f59;text-align:center;animation:confirmPopIn .2s ease-out}
+.confirm-icon{display:grid;place-items:center;width:48px;height:48px;margin:0 auto 14px;border-radius:50%;background:#fff3df;color:#c77a13;font:800 26px Manrope,sans-serif}
+.confirm-dialog h2{margin:0 0 10px;color:#10265d;font:800 21px Manrope,sans-serif}
+.confirm-dialog p{margin:0;color:#52658f;font-size:14px;line-height:1.6}
+.confirm-actions{display:flex;justify-content:center;gap:10px;margin-top:24px}
+.confirm-actions button{min-width:120px;padding:11px 20px;border:0;border-radius:24px;cursor:pointer;font:700 13px "DM Sans",sans-serif;transition:transform .15s ease,background .15s ease}
+.confirm-actions button:hover{transform:translateY(-1px)}
+.confirm-cancel{background:#edf2ff;color:#31518e}
+.confirm-cancel:hover{background:#e1eaff}
+.confirm-accept{background:linear-gradient(100deg,#075cf0,#3479f4);color:#fff;box-shadow:0 4px 12px rgba(23,101,237,.2)}
+.confirm-accept:hover{background:#0755dc}
+@keyframes confirmFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes confirmPopIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.confirm-dialog{padding:24px 19px}.confirm-dialog h2{font-size:19px}.confirm-dialog p{font-size:13px}.confirm-actions button{min-width:0;flex:1}}
