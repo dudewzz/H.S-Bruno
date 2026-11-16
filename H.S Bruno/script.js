@@ -116,6 +116,55 @@ function salvar(chave, valor) {
     }
 }
 
+function confirmarAcao(mensagem) {
+    return new Promise(resolve => {
+        const overlay = document.createElement("div");
+        overlay.className = "confirm-overlay";
+        const caixa = document.createElement("section");
+        caixa.className = "confirm-dialog";
+        caixa.setAttribute("role", "dialog");
+        caixa.setAttribute("aria-modal", "true");
+        caixa.setAttribute("aria-labelledby", "confirmTitle");
+        const icone = document.createElement("div");
+        icone.className = "confirm-icon";
+        icone.textContent = "!";
+        const titulo = document.createElement("h2");
+        titulo.id = "confirmTitle";
+        titulo.textContent = "Confirmar ação";
+        const texto = document.createElement("p");
+        texto.textContent = mensagem;
+        const botoes = document.createElement("div");
+        botoes.className = "confirm-actions";
+        const cancelar = document.createElement("button");
+        cancelar.type = "button";
+        cancelar.className = "confirm-cancel";
+        cancelar.textContent = "Cancelar";
+        const confirmar = document.createElement("button");
+        confirmar.type = "button";
+        confirmar.className = "confirm-accept";
+        confirmar.textContent = "Confirmar";
+        botoes.append(cancelar, confirmar);
+        caixa.append(icone, titulo, texto, botoes);
+        overlay.appendChild(caixa);
+        document.body.appendChild(overlay);
+        const finalizar = resultado => {
+            overlay.remove();
+            document.removeEventListener("keydown", teclaEsc);
+            resolve(resultado);
+        };
+        const teclaEsc = evento => {
+            if (evento.key === "Escape") finalizar(false);
+        };
+        cancelar.addEventListener("click", () => finalizar(false));
+        confirmar.addEventListener("click", () => finalizar(true));
+        overlay.addEventListener("click", evento => {
+            if (evento.target === overlay) finalizar(false);
+        });
+        document.addEventListener("keydown", teclaEsc);
+        confirmar.focus();
+    });
+}
+
 function mostrarToast(mensagem) {
     const toast = document.getElementById("toast");
     if (!toast) return;
@@ -676,7 +725,7 @@ function configurarAcesso() {
 
     document.getElementById("resetProgress").addEventListener("click", async () => {
         if (!sessaoAtual) return mostrarAcesso();
-        const confirmar = confirm("Tem certeza de que deseja resetar seu progresso? Os módulos concluídos e a última pontuação serão apagados da sua conta. Essa ação não pode ser desfeita.");
+        const confirmar = await confirmarAcao("Tem certeza de que deseja resetar seu progresso? Os módulos concluídos e a última pontuação serão apagados da sua conta. Essa ação não pode ser desfeita.");
         if (!confirmar) return;
 
         const { error } = await supabaseClient
