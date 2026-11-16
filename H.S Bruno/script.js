@@ -300,10 +300,28 @@ function normalizar(texto) {
 function aplicarPesquisa() {
     const campo = document.getElementById("search");
     if (!campo) return;
+
     const termo = normalizar(campo.value.trim());
-    document.querySelectorAll(".module-card").forEach(card => {
-        card.hidden = termo !== "" && !normalizar(card.dataset.search || card.textContent).includes(termo);
+    document.querySelectorAll("#allModules .module-card").forEach(card => {
+        const conteudo = normalizar(card.dataset.search || card.textContent);
+        card.hidden = termo !== "" && !conteudo.includes(termo);
     });
+}
+
+function pesquisarCursos() {
+    const campo = document.getElementById("search");
+    if (!campo) return;
+
+    if (campo.value.trim()) {
+        filtroAtual = "Todos";
+        document.querySelectorAll(".filter").forEach(botao => {
+            botao.classList.toggle("active", botao.dataset.filter === "Todos");
+        });
+        renderizarModulos();
+        navegar("cursos");
+    } else {
+        aplicarPesquisa();
+    }
 }
 
 function configurarFiltros() {
@@ -417,22 +435,12 @@ function configurarNavegacao() {
     });
 }
 
-function configurarContato() {
-    const form = document.getElementById("contactForm");
-    form.addEventListener("submit", evento => {
-        evento.preventDefault();
-        mostrarToast("Formulário demonstrativo: o envio de mensagens ainda não está conectado.");
-        form.reset();
-    });
-}
-
 function iniciarPortal() {
     configurarNavegacao();
     configurarFiltros();
     configurarQuiz();
-    configurarContato();
 
-    document.getElementById("search").addEventListener("input", aplicarPesquisa);
+    document.getElementById("search").addEventListener("input", pesquisarCursos);
     document.getElementById("completeModule").addEventListener("click", concluirModulo);
 
     renderizarModulos();
