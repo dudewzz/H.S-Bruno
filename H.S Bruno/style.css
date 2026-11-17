@@ -615,3 +615,110 @@ body.dark-mode .home-progress-message strong,
 body.dark-mode .home-progress-count,body.dark-mode .home-progress-count b{
   color:#F3F7F9!important;
 }
+
+
+/* PALETA AZUL-BEBÊ — MODO CLARO
+   Substitui os tons bege por azuis suaves, mantendo o layout e o tema escuro. */
+body:not(.dark-mode){
+  --ink:#19324A;
+  --muted:#587087;
+  --blue:#3976B9;
+  --line:rgba(57,118,185,.13);
+  --bg:#EAF4FC;
+  --surface:#F7FBFF;
+  --surface-soft:#EAF4FC;
+  --text-main:#19324A;
+  --text-muted:#587087;
+  --primary:#3976B9;
+  --border-soft:rgba(57,118,185,.13);
+  --shadow-soft:0 4px 16px rgba(43,91,135,.06);
+  background:linear-gradient(130deg,#EAF4FC 0%,#E4F1FB 58%,#F0F7FD 100%)!important;
+  color:#19324A;
+}
+body:not(.dark-mode) .sidebar{background:#F4FAFF;border-color:#D8E8F6}
+body:not(.dark-mode) .topbar{background:rgba(241,248,255,.96);border-color:#D8E8F6}
+body:not(.dark-mode) .brand,body:not(.dark-mode) .brand strong{color:#19324A}
+body:not(.dark-mode) .brand small,
+body:not(.dark-mode) .profile-footer p,
+body:not(.dark-mode) .module-body p,
+body:not(.dark-mode) .section-head p,
+body:not(.dark-mode) .profile-page-heading p,
+body:not(.dark-mode) .home-module-body p{color:#587087}
+body:not(.dark-mode) .nav-link{color:#355773}
+body:not(.dark-mode) .nav-link.active{background:#DCEEFF;color:#245C91;box-shadow:inset 3px 0 #3976B9}
+body:not(.dark-mode) .search{background:#F8FCFF;border-color:#D5E6F5;color:#3976B9}
+body:not(.dark-mode) .search input{color:#19324A}
+body:not(.dark-mode) .search input::placeholder{color:#71879A}
+body:not(.dark-mode) .bell{color:#3976B9}
+body:not(.dark-mode) .theme-toggle{background:#F7FBFF;color:#3976B9;border-color:#D5E6F5}
+body:not(.dark-mode) .panel,
+body:not(.dark-mode) .info,
+body:not(.dark-mode) .quiz,
+body:not(.dark-mode) .module-card,
+body:not(.dark-mode) .profile-edit-card,
+body:not(.dark-mode) .profile-achievements-card,
+body:not(.dark-mode) .home-module-card,
+body:not(.dark-mode) .home-performance,
+body:not(.dark-mode) .profile-stat-card,
+body:not(.dark-mode) .home-progress-card,
+body:not(.dark-mode) .student-profile-hero{
+  background:#F8FCFF;border-color:#DCEAF6;
+  box-shadow:0 4px 16px rgba(43,91,135,.06);color:#19324A;
+}
+body:not(.dark-mode) .module-body h3,
+body:not(.dark-mode) .section-head h2,
+body:not(.dark-mode) .profile-page-heading h1,
+body:not(.dark-mode) .student-profile-identity h2,
+body:not(.dark-mode) .profile-card-heading h2,
+body:not(.dark-mode) .home-section-heading h2,
+body:not(.dark-mode) .home-progress-card h2,
+body:not(.dark-mode) .home-performance h2,
+body:not(.dark-mode) .home-module-body h3{color:#19324A}
+body:not(.dark-mode) .primary,
+body:not(.dark-mode) .auth-submit,
+body:not(.dark-mode) .confirm-accept,
+body:not(.dark-mode) .module-body .primary{background:#3976B9;color:#fff}
+body:not(.dark-mode) .primary:hover,
+body:not(.dark-mode) .auth-submit:hover,
+body:not(.dark-mode) .confirm-accept:hover{background:#2E639E}
+body:not(.dark-mode) .secondary,
+body:not(.dark-mode) .outline,
+body:not(.dark-mode) .dark,
+body:not(.dark-mode) .home-module-button,
+body:not(.dark-mode) .home-view-all,
+body:not(.dark-mode) .progress-controls button{background:#E8F2FA;color:#2E639E;border-color:#D3E5F4}
+body:not(.dark-mode) .home-module-button:hover,
+body:not(.dark-mode) .home-view-all:hover,
+body:not(.dark-mode) .progress-controls button:hover{background:#DCECF8}
+body:not(.dark-mode) .home-weekly-goal,
+body:not(.dark-mode) .home-certificate{background:#EDF6FC;border-color:#DCEAF6}
+body:not(.dark-mode) .home-widget-heading strong{color:#19324A}
+body:not(.dark-mode) .home-weekly-goal p,
+body:not(.dark-mode) .home-certificate p{color:#587087}
+body:not(.dark-mode) .track,
+body:not(.dark-mode) .progress-track,
+body:not(.dark-mode) .home-module-progress>span,
+body:not(.dark-mode) .home-widget-track{background:#DCEAF4}
+body:not(.dark-mode) .home-progress-ring{background:conic-gradient(#3976B9 0deg,#3976B9 0deg,#DCEAF4 0deg)}
+body:not(.dark-mode) .home-progress-ring:before{background:#F8FCFF}
+body:not(.dark-mode) .home-progress-ring b,
+body:not(.dark-mode) .home-progress-message strong,
+body:not(.dark-mode) .home-progress-count{color:#245C91}
+body:not(.dark-mode) .lesson-item{background:#EAF3FA;color:#45647D}
+body:not(.dark-mode) .lesson-item.active{background:#3976B9;color:#fff}
+body:not(.dark-mode) .answer{background:#F1F7FC;color:#355773;border-color:#DCEAF6}
+body:not(.dark-mode) .answer.selected{background:#E2F0FA;border-color:#3976B9}
+body:not(.dark-mode) .auth-card,
+body:not(.dark-mode) .confirm-dialog,
+body:not(.dark-mode) .module-modal-card{background:#F8FCFF;color:#19324A;border-color:#DCEAF6}
+body:not(.dark-mode) .auth-card form input,
+body:not(.dark-mode) .profile-edit-card input{background:#F8FCFF;color:#19324A;border-color:#D5E6F5}
+body:not(.dark-mode) .module-modal-lesson{background:#F3F9FE;border-color:#DCEAF6}
+body:not(.dark-mode) .module-modal-lesson span{color:#19324A}
+body:not(.dark-mode) .module-modal-lesson.is-complete{background:#E6F2EB;border-color:#CBE3D4}
+body:not(.dark-mode) .profile-achievement{background:#EDF6FC;border-color:#DCEAF6}
+body:not(.dark-mode) .profile-avatar-options button{background:#EDF6FC;border-color:#DCEAF6}
+body:not(.dark-mode) .profile-avatar-options button:hover{background:#DCECF8}
+body:not(.dark-mode) .confirm-cancel{background:#E8F2FA;color:#355773}
+body:not(.dark-mode) .search-feedback{background:#F8FCFF;color:#2E639E;border-color:#DCEAF6}
+body:not(.dark-mode) .profile-achievement.unlocked .profile-achievement-icon{background:#E3EEF9;color:#3976B9}
