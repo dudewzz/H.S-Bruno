@@ -722,3 +722,118 @@ body:not(.dark-mode) .profile-avatar-options button:hover{background:#DCECF8}
 body:not(.dark-mode) .confirm-cancel{background:#E8F2FA;color:#355773}
 body:not(.dark-mode) .search-feedback{background:#F8FCFF;color:#2E639E;border-color:#DCEAF6}
 body:not(.dark-mode) .profile-achievement.unlocked .profile-achievement-icon{background:#E3EEF9;color:#3976B9}
+
+
+/* MODO CLARO CONFORTÁVEL — AZUL ACINZENTADO, MENOS LUMINOSIDADE */
+body:not(.dark-mode){
+  --ink:#263B50;
+  --muted:#536A7E;
+  --blue:#416B91;
+  --line:#B9C9D8;
+  --bg:#C8D6E3;
+  --surface:#DCE5ED;
+  --surface-soft:#D1DDE7;
+  --text-main:#263B50;
+  --text-muted:#536A7E;
+  --primary:#416B91;
+  --border-soft:#B9C9D8;
+  --shadow-soft:0 3px 12px rgba(36,58,78,.07);
+  background:#C8D6E3!important;
+  color:#263B50!important;
+}
+body:not(.dark-mode) .sidebar{background:#D5E0E9!important;border-color:#B9C9D8!important}
+body:not(.dark-mode) .topbar{background:rgba(211,223,233,.97)!important;border-color:#B9C9D8!important}
+body:not(.dark-mode) .panel,
+body:not(.dark-mode) .info,
+body:not(.dark-mode) .quiz,
+body:not(.dark-mode) .module-card,
+body:not(.dark-mode) .profile-edit-card,
+body:not(.dark-mode) .profile-achievements-card,
+body:not(.dark-mode) .home-module-card,
+body:not(.dark-mode) .home-performance,
+body:not(.dark-mode) .profile-stat-card,
+body:not(.dark-mode) .home-progress-card,
+body:not(.dark-mode) .student-profile-hero,
+body:not(.dark-mode) .auth-card,
+body:not(.dark-mode) .confirm-dialog,
+body:not(.dark-mode) .module-modal-card{
+  background:#DCE5ED!important;
+  border-color:#B9C9D8!important;
+  box-shadow:0 3px 12px rgba(36,58,78,.07)!important;
+  color:#263B50!important;
+}
+body:not(.dark-mode) .home-weekly-goal,
+body:not(.dark-mode) .home-certificate,
+body:not(.dark-mode) .profile-achievement,
+body:not(.dark-mode) .module-modal-lesson,
+body:not(.dark-mode) .answer,
+body:not(.dark-mode) .lesson-item,
+body:not(.dark-mode) .search,
+body:not(.dark-mode) .theme-toggle,
+body:not(.dark-mode) .auth-card form input,
+body:not(.dark-mode) .profile-edit-card input,
+body:not(.dark-mode) .search-feedback{
+  background:#D1DDE7!important;
+  border-color:#B9C9D8!important;
+  color:#263B50!important;
+}
+body:not(.dark-mode) .nav-link.active,
+body:not(.dark-mode) .secondary,
+body:not(.dark-mode) .outline,
+body:not(.dark-mode) .dark,
+body:not(.dark-mode) .home-module-button,
+body:not(.dark-mode) .home-view-all,
+body:not(.dark-mode) .progress-controls button,
+body:not(.dark-mode) .confirm-cancel,
+body:not(.dark-mode) .module-modal-open-lesson{
+  background:#C3D2DF!important;
+  color:#294D6B!important;
+  border-color:#AFC2D2!important;
+}
+body:not(.dark-mode) .brand,
+body:not(.dark-mode) .brand strong,
+body:not(.dark-mode) .module-body h3,
+body:not(.dark-mode) .section-head h2,
+body:not(.dark-mode) .profile-page-heading h1,
+body:not(.dark-mode) .student-profile-identity h2,
+body:not(.dark-mode) .profile-card-heading h2,
+body:not(.dark-mode) .home-section-heading h2,
+body:not(.dark-mode) .home-progress-card h2,
+body:not(.dark-mode) .home-performance h2,
+body:not(.dark-mode) .home-module-body h3,
+body:not(.dark-mode) .home-widget-heading strong,
+body:not(.dark-mode) .module-modal-head h2,
+body:not(.dark-mode) .module-modal-lesson span{
+  color:#263B50!important;
+}
+body:not(.dark-mode) .brand small,
+body:not(.dark-mode) .profile-footer p,
+body:not(.dark-mode) .module-body p,
+body:not(.dark-mode) .section-head p,
+body:not(.dark-mode) .profile-page-heading p,
+body:not(.dark-mode) .home-module-body p,
+body:not(.dark-mode) .home-weekly-goal p,
+body:not(.dark-mode) .home-certificate p,
+body:not(.dark-mode) .student-profile-identity p,
+body:not(.dark-mode) .student-profile-identity small,
+body:not(.dark-mode) .profile-level span,
+body:not(.dark-mode) .profile-level small,
+body:not(.dark-mode) .profile-stat-card small,
+body:not(.dark-mode) .module-modal-description,
+body:not(.dark-mode) .module-modal-footer small{
+  color:#536A7E!important;
+}
+body:not(.dark-mode) .search input{color:#263B50!important}
+body:not(.dark-mode) .search input::placeholder{color:#647B8E!important;opacity:1}
+body:not(.dark-mode) .track,
+body:not(.dark-mode) .progress-track,
+body:not(.dark-mode) .home-module-progress>span,
+body:not(.dark-mode) .home-widget-track{background:#B8C9D7!important}
+body:not(.dark-mode) .home-progress-ring:before{background:#DCE5ED!important}
+body:not(.dark-mode) .primary,
+body:not(.dark-mode) .auth-submit,
+body:not(.dark-mode) .confirm-accept,
+body:not(.dark-mode) .module-body .primary{background:#416B91!important;color:#fff!important}
+body:not(.dark-mode) .lesson-item.active{background:#416B91!important;color:#fff!important}
+body:not(.dark-mode) .module-modal-lesson.is-complete{background:#CFDED5!important}
+body:not(.dark-mode) .module-modal-lesson.is-complete span{color:#315B48!important}
