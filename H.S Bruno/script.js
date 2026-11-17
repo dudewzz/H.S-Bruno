@@ -1140,16 +1140,28 @@ function atualizarModoAcesso() {
 }
 
 function configurarAcesso() {
+    const mensagemAcesso = document.getElementById("authMessage");
+    const campoEmail = document.getElementById("authEmail");
+    const campoSenha = document.getElementById("authPassword");
+
+    // Ao corrigir os dados, remove o erro anterior para permitir uma nova tentativa.
+    [campoEmail, campoSenha].forEach(campo => {
+        campo.addEventListener("input", () => {
+            mensagemAcesso.textContent = "";
+        });
+    });
+
     document.getElementById("authSwitch").addEventListener("click", () => {
         modoCadastro = !modoCadastro;
-        document.getElementById("authMessage").textContent = "";
+        mensagemAcesso.textContent = "";
         atualizarModoAcesso();
     });
 
     document.getElementById("authForm").addEventListener("submit", async evento => {
         evento.preventDefault();
-        const email = document.getElementById("authEmail").value.trim();
-        const password = document.getElementById("authPassword").value;
+        mensagemAcesso.textContent = "";
+        const email = campoEmail.value.trim();
+        const password = campoSenha.value;
         const submit = document.getElementById("authSubmit");
         submit.disabled = true;
         submit.textContent = "Aguarde...";
