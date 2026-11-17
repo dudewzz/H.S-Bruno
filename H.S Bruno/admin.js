@@ -7,6 +7,29 @@ const TOTAL_LESSONS = 17;
 let students = [];
 
 const byId = (id) => document.getElementById(id);
+
+function configurarTema() {
+  const button = byId("themeToggle");
+  const savedTheme = (() => {
+    try { return localStorage.getItem("hsbruno_theme"); } catch (_) { return null; }
+  })();
+  document.body.classList.toggle("dark-mode", savedTheme === "dark");
+
+  const updateButton = () => {
+    const dark = document.body.classList.contains("dark-mode");
+    button.textContent = dark ? "☀" : "☾";
+    button.setAttribute("aria-label", dark ? "Ativar modo claro" : "Ativar modo escuro");
+    button.title = dark ? "Ativar modo claro" : "Ativar modo escuro";
+  };
+
+  updateButton();
+  button.addEventListener("click", () => {
+    const dark = !document.body.classList.contains("dark-mode");
+    document.body.classList.toggle("dark-mode", dark);
+    try { localStorage.setItem("hsbruno_theme", dark ? "dark" : "light"); } catch (_) {}
+    updateButton();
+  });
+}
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 })[char]);
@@ -104,6 +127,8 @@ byId("logoutButton").addEventListener("click", async () => {
   await client.auth.signOut();
   window.location.href = "index.html";
 });
+
+configurarTema();
 
 carregarPainel().catch((error) => {
   console.error(error);
