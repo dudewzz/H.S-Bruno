@@ -1569,24 +1569,13 @@ async function iniciarPortal() {
 
     renderizarModulos();
 
-    const { data, error } = await supabaseClient.auth.getSession();
-    if (error) console.error("Erro ao verificar sessão:", error);
-    sessaoAtual = data?.session || null;
-
-    if (sessaoAtual) {
-        await carregarProgressoDaConta();
-        ocultarAcesso();
-    } else {
-        concluidos = [];
-        pontuacaoAtual = null;
-        atividadesSemanais = [];
-        atualizarResumo();
-        mostrarAcesso();
-    }
-
-    atualizarBotaoConta();
+    // Registrar o listener antes de consultar a sessão evita perder eventos de autenticação
+    // e impede que a resposta inicial atrasada reabra o login depois de um login bem-sucedido.
+    let eventoAuthRecebido = false;
     supabaseClient.auth.onAuthStateChange((eventoAuth, session) => {
+        eventoAuthRecebido = true;
         sessaoAtual = session;
+
         if (!session) {
             concluidos = [];
             aulasConcluidas = [];
@@ -1597,17 +1586,39 @@ async function iniciarPortal() {
         } else {
             atualizarBotaoConta();
             ocultarAcesso();
-            // Login e cadastro carregam o progresso explicitamente; evita chamadas duplicadas.
-            if (eventoAuth === "TOKEN_REFRESHED") {
+
+            if (eventoAuth === "INITIAL_SESSION" || eventoAuth === "TOKEN_REFRESHED") {
                 setTimeout(() => {
                     carregarProgressoDaConta().catch(erro => {
-                        console.error("Erro ao carregar progresso após renovação de sessão:", erro);
+                        console.error("Erro ao carregar progresso da sessão:", erro);
                     });
                 }, 0);
             }
         }
     });
 
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) console.error("Erro ao verificar sessão:", error);
+
+    // Só aplica a consulta inicial se nenhum evento de autenticação mais recente já ocorreu.
+    if (!eventoAuthRecebido) {
+        sessaoAtual = data?.session || null;
+        if (sessaoAtual) {
+            ocultarAcesso();
+            carregarProgressoDaConta().catch(erro => {
+                console.error("Erro ao carregar progresso inicial:", erro);
+            });
+        } else {
+            concluidos = [];
+            aulasConcluidas = [];
+            pontuacaoAtual = null;
+            atividadesSemanais = [];
+            atualizarResumo();
+            mostrarAcesso();
+        }
+    }
+
+    atualizarBotaoConta();
     console.log("H.S. Bruno iniciado.");
 }
 
