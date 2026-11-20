@@ -174,6 +174,7 @@ let modoCadastro = false;
 let moduloAtual = null;
 let indicePergunta = 0;
 let respostas = {};
+let ordemOpcoesQuizGeral = {};
 let filtroAtual = "Todos";
 let avatarPerfilSelecionado = "🦊";
 
@@ -1067,16 +1068,21 @@ function renderizarPergunta() {
     const respostasEl = document.getElementById("answers");
     respostasEl.replaceChildren();
 
-    pergunta.opcoes.forEach((opcao, indice) => {
+    if (!ordemOpcoesQuizGeral[indicePergunta]) {
+        ordemOpcoesQuizGeral[indicePergunta] = pergunta.opcoes.map((_, indice) => indice)
+            .sort(() => Math.random() - 0.5);
+    }
+    ordemOpcoesQuizGeral[indicePergunta].forEach(indiceOriginal => {
+        const opcao = pergunta.opcoes[indiceOriginal];
         const label = document.createElement("label");
         label.className = "answer";
         const input = document.createElement("input");
         input.type = "radio";
         input.name = "resposta";
-        input.value = indice;
-        input.checked = respostas[indicePergunta] === indice;
+        input.value = indiceOriginal;
+        input.checked = respostas[indicePergunta] === indiceOriginal;
         input.addEventListener("change", () => {
-            respostas[indicePergunta] = indice;
+            respostas[indicePergunta] = indiceOriginal;
             renderizarPergunta();
         });
         const texto = document.createElement("span");
@@ -1151,6 +1157,7 @@ function configurarQuiz() {
         if (botao.dataset.resultado === "true") {
             indicePergunta = 0;
             respostas = {};
+            ordemOpcoesQuizGeral = {};
             delete botao.dataset.resultado;
             renderizarPergunta();
             return;
