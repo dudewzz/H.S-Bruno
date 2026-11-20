@@ -662,13 +662,22 @@ function renderizarListaAulas(modulo) {
 }
 
 
+function quizDaAulaFoiConcluido(idAula) {
+    return Boolean(lerResultadosQuizzes()[idAula]);
+}
+
 function atualizarBotaoProximaAula() {
     const botao = document.getElementById("nextLessonButton");
     if (!botao || !moduloAtual) return;
+    const idAula = idDaAula(moduloAtual, aulaAtualIndice);
+    const quizConcluido = quizDaAulaFoiConcluido(idAula);
     const indiceModulo = modulos.findIndex(modulo => modulo.id === moduloAtual.id);
     const temProximaNaAula = aulaAtualIndice + 1 < moduloAtual.aulas.length;
     const temProximoModulo = indiceModulo >= 0 && indiceModulo + 1 < modulos.length;
-    if (temProximaNaAula || temProximoModulo) {
+    if (!quizConcluido) {
+        botao.disabled = true;
+        botao.textContent = "Faça o quiz para continuar";
+    } else if (temProximaNaAula || temProximoModulo) {
         botao.disabled = false;
         botao.textContent = "Próxima aula →";
     } else {
@@ -839,7 +848,10 @@ function renderizarQuizDaAula() {
         }
         const score = quiz.reduce((total, item, qIndex) => total + (escolhas[qIndex] === item.correta ? 1 : 0), 0);
         salvarResultadoQuizAula(idAula, { score, respostas: escolhas, data: new Date().toISOString() });
-        renderizarQuizDaAula();
+        concluirAulaAtual().then(() => {
+            renderizarQuizDaAula();
+            atualizarBotaoProximaAula();
+        });
     });
     container.appendChild(form);
 }
@@ -848,6 +860,11 @@ function configurarProximaAula() {
     if (!botao) return;
     botao.addEventListener("click", async () => {
         if (!moduloAtual) return;
+        const idAtual = idDaAula(moduloAtual, aulaAtualIndice);
+        if (!quizDaAulaFoiConcluido(idAtual)) {
+            mostrarToast("Responda o quiz desta aula antes de avançar.");
+            return;
+        }
         await concluirAulaAtual();
         const indiceGlobal = modulos.findIndex(modulo => modulo.id === moduloAtual.id);
         if (aulaAtualIndice + 1 < moduloAtual.aulas.length) {
@@ -867,9 +884,13 @@ function configurarProximaAula() {
 async function concluirAulaAtual() {
     if (!moduloAtual) return;
     const idAula = idDaAula(moduloAtual, aulaAtualIndice);
-    if (aulasConcluidas.includes(idAula)) return;
+    if (!quizDaAulaFoiConcluido(idAula)) {
+        mostrarToast("Conclua o quiz desta aula para registrar seu progresso.");
+        return false;
+    }
+    if (aulasConcluidas.includes(idAula)) return true;
     const novas = [...aulasConcluidas, idAula];
-    await salvarListaAulas(novas, idAula, true);
+    return await salvarListaAulas(novas, idAula, true);
 }
 
 function abrirModulo(id) {
