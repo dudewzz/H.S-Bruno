@@ -837,3 +837,14 @@ body:not(.dark-mode) .module-body .primary{background:#416B91!important;color:#f
 body:not(.dark-mode) .lesson-item.active{background:#416B91!important;color:#fff!important}
 body:not(.dark-mode) .module-modal-lesson.is-complete{background:#CFDED5!important}
 body:not(.dark-mode) .module-modal-lesson.is-complete span{color:#315B48!important}
+
+
+/* Ajuste do cartão motivacional da sidebar no modo escuro */
+body.dark-mode .promo{
+  background:linear-gradient(145deg,#273647,#202C35)!important;
+  border:1px solid rgba(190,215,228,.14)!important;
+  color:#E8EEF1!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.18)!important;
+}
+body.dark-mode .promo-cap{color:#B18AF5!important}
+body.dark-mode .promo p{color:#D2DCE5!important}
