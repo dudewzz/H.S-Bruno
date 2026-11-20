@@ -436,7 +436,7 @@ async function salvarListaAulas(novasAulas, idAulaAlterada, foiConcluida) {
     }
 
     aulasConcluidas = listaValida;
-    concluidos = novosModulos;
+    atualizarModulosConcluidos();
     atividadesSemanais = novasAtividadesSemanais;
     salvarCopiaLocalAtividadeSemanal(atividadesSemanais);
     atualizarResumo();
