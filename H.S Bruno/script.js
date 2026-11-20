@@ -682,11 +682,10 @@ function selecionarAula(indice) {
     aulaAtualIndice = indice;
     renderizarListaAulas(moduloAtual);
     carregarVideoDaAula();
-    renderizarQuizDaAula();
     atualizarBotaoProximaAula();
 }
 
-function carregarVideoDaAula() {
+function carregarVideoDaAula {
     if (!moduloAtual) return;
     const videoContainer = document.getElementById("moduleVideo");
     if (!videoContainer) return;
@@ -758,6 +757,7 @@ function renderizarQuizDaAula() {
     const idAula = idDaAula(moduloAtual, aulaAtualIndice);
     const quiz = quizzesPorAula[idAula] || [];
     const resultados = lerResultadosQuizzes();
+    const jaRespondido = resultados[idAula];
     container.replaceChildren();
     if (!quiz.length) {
         container.hidden = true;
@@ -774,47 +774,62 @@ function renderizarQuizDaAula() {
 
     const form = document.createElement("form");
     form.className = "lesson-quiz-form";
-    const jaRespondido = resultados[idAula];
     quiz.forEach((item, qIndex) => {
         const bloco = document.createElement("fieldset");
         bloco.className = "lesson-quiz-question";
         const legend = document.createElement("legend");
         legend.textContent = (qIndex + 1) + ". " + item.pergunta;
         bloco.appendChild(legend);
-        item.opcoes.forEach((opcao, opIndex) => {
+        const rotacao = (qIndex + aulaAtualIndice + modulos.findIndex(m => m.id === moduloAtual.id)) % item.opcoes.length;
+        const opcoesEmOrdem = item.opcoes.map((_, originalIndex) => originalIndex)
+            .sort((a,b) => ((a + rotacao) % item.opcoes.length) - ((b + rotacao) % item.opcoes.length));
+        opcoesEmOrdem.forEach(originalIndex => {
             const label = document.createElement("label");
             label.className = "lesson-quiz-option";
             const input = document.createElement("input");
             input.type = "radio";
             input.name = "lesson-q-" + qIndex;
-            input.value = String(opIndex);
+            input.value = String(originalIndex);
+            input.checked = jaRespondido?.respostas?.[qIndex] === originalIndex;
             input.disabled = Boolean(jaRespondido);
-            label.append(input, document.createTextNode(opcao));
+            label.append(input, document.createTextNode(item.opcoes[originalIndex]));
             bloco.appendChild(label);
         });
         form.appendChild(bloco);
+        if (jaRespondido) {
+            const resposta = jaRespondido.respostas?.[qIndex];
+            const linhaResultado = document.createElement("p");
+            linhaResultado.className = "lesson-quiz-explanation";
+            const acertou = resposta === item.correta;
+            linhaResultado.textContent = (acertou ? "Resposta correta. " : "Resposta incorreta. ") +
+                "Resposta certa: " + item.opcoes[item.correta] + ". " + item.explicacao;
+            bloco.appendChild(linhaResultado);
+        }
     });
+
     const feedback = document.createElement("div");
     feedback.className = "lesson-quiz-result";
     feedback.setAttribute("aria-live", "polite");
     const enviar = document.createElement("button");
     enviar.type = "submit";
     enviar.className = "primary lesson-quiz-submit";
-    enviar.textContent = jaRespondido ? "Quiz já respondido" : "Conferir respostas";
-    enviar.disabled = Boolean(jaRespondido);
+    enviar.textContent = jaRespondido ? "Refazer quiz" : "Conferir respostas";
     form.append(enviar, feedback);
 
     if (jaRespondido) {
         feedback.classList.add("is-visible", jaRespondido.score === 3 ? "good" : "review");
-        feedback.textContent = "Resultado salvo: " + jaRespondido.score + "/3. " + (jaRespondido.score === 3 ? "Excelente, você acertou tudo!" : "Você pode revisar o conteúdo da aula e tentar o quiz novamente mais tarde.");
-        quiz.forEach((item, qIndex) => {
-            const explicacao = document.createElement("p");
-            explicacao.textContent = (qIndex + 1) + ". " + item.explicacao;
-            feedback.appendChild(explicacao);
-        });
+        feedback.textContent = "Resultado: " + jaRespondido.score + "/3. " +
+            (jaRespondido.score === 3 ? "Excelente, você acertou tudo!" : "Revise as explicações e, se quiser, tente novamente.");
     }
     form.addEventListener("submit", evento => {
         evento.preventDefault();
+        if (jaRespondido) {
+            const resultadosAtuais = lerResultadosQuizzes();
+            delete resultadosAtuais[idAula];
+            try { localStorage.setItem(chaveQuizzesDoUsuario(), JSON.stringify(resultadosAtuais)); } catch (_) {}
+            renderizarQuizDaAula();
+            return;
+        }
         const escolhas = quiz.map((_, qIndex) => {
             const selecionada = form.querySelector('input[name="lesson-q-' + qIndex + '"]:checked');
             return selecionada ? Number(selecionada.value) : null;
@@ -829,7 +844,6 @@ function renderizarQuizDaAula() {
     });
     container.appendChild(form);
 }
-
 function configurarProximaAula() {
     const botao = document.getElementById("nextLessonButton");
     if (!botao) return;
