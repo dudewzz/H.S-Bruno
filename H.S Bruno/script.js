@@ -414,7 +414,10 @@ async function salvarListaAulas(novasAulas, idAulaAlterada, foiConcluida) {
     const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
     const resultadosQuiz = lerResultadosQuizzes();
     const listaValida = [...new Set(novasAulas.filter(id => idsValidos.includes(id) && (resultadosQuiz[id] || !foiConcluida)))];
-    const novosModulos = modulos.filter(modulo => moduloCompleto(modulo)).map(modulo => modulo.id);
+    const novosModulos = modulos.filter(modulo => modulo.aulas.every((_, indice) => {
+        const id = idDaAula(modulo, indice);
+        return listaValida.includes(id) && videosAssistidos.includes(id) && Boolean(resultadosQuiz[id]);
+    }) && Boolean(resultadosDesafios[modulo.id]?.completed)).map(modulo => modulo.id);
     const novasAtividadesSemanais = prepararAtividadeSemanal(idAulaAlterada, foiConcluida);
 
     const { error } = await supabaseClient.from("student_progress").upsert({
