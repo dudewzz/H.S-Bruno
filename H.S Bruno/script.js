@@ -1332,6 +1332,10 @@ async function iniciarPortal() {
         if (!session) {
             concluidos = [];
             aulasConcluidas = [];
+            videosAssistidos = [];
+            resultadosDesafios = {};
+            historicoDesafios = [];
+            historicoQuizGeral = [];
             pontuacaoAtual = null;
             atividadesSemanais = [];
             atualizarResumo();
