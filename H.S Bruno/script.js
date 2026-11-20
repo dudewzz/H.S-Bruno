@@ -659,7 +659,7 @@ function renderizarListaAulas(modulo) {
         const botao = document.createElement("button");
         botao.type = "button";
         botao.className = "lesson-item" + (indice === aulaAtualIndice ? " active" : "");
-        botao.textContent = (concluida ? "✓ " : "") + String(indice + 1).padStart(2, "0") + " · " + aula;
+        botao.textContent = String(indice + 1).padStart(2, "0") + " · " + aula;
         botao.setAttribute("aria-pressed", indice === aulaAtualIndice ? "true" : "false");
         botao.addEventListener("click", () => selecionarAula(indice));
         lista.appendChild(botao);
