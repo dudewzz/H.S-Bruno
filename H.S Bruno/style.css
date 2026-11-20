@@ -970,3 +970,25 @@ body.dark-mode .challenge-card:hover { box-shadow: 0 12px 28px #00000028; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* CLEAN PREMIUM — destaque visual mais perceptível */
+.module-card, .home-module-card, .home-progress-card, .home-next-lesson, .home-widget, .home-performance-item, .profile-stat-card, .challenge-card, .history-stat-card, .history-panel, .lesson-quiz {
+  border: 1px solid #d9e3fb;
+  box-shadow: 0 10px 28px #24458b12, 0 2px 5px #24458b0a;
+}
+.module-card, .home-module-card, .challenge-card { position: relative; }
+.module-card::before, .home-module-card::before, .challenge-card::before {
+  content: ""; position: absolute; inset: 0 0 auto; height: 3px; z-index: 1;
+  background: linear-gradient(90deg, #1765ed, #7b91ef, #c4a6ef); opacity: .78;
+}
+.module-card:hover, .home-module-card:hover, .challenge-card:hover, .home-progress-card:hover, .home-next-lesson:hover, .history-stat-card:hover, .history-panel:hover {
+  border-color: #b8cdfa; box-shadow: 0 16px 34px #24458b20, 0 3px 8px #24458b0b; transform: translateY(-3px);
+}
+.home-widget, .home-performance-item { background-image: linear-gradient(145deg, #ffffff, #f7f9ff); }
+.home-progress-card, .home-next-lesson { background-image: linear-gradient(145deg, #ffffff, #f4f7ff); }
+.progress-track, .track, .home-module-progress, .home-widget-track, .challenge-card-progress { background-color: #dce6fb; }
+.progress-track > span, .track > span, .home-module-progress > span, .home-widget-track > span, .challenge-card-progress span { box-shadow: 0 0 9px #1765ed35; }
+body.dark-mode .module-card, body.dark-mode .home-module-card, body.dark-mode .home-progress-card, body.dark-mode .home-next-lesson, body.dark-mode .home-widget, body.dark-mode .home-performance-item, body.dark-mode .profile-stat-card, body.dark-mode .challenge-card, body.dark-mode .history-stat-card, body.dark-mode .history-panel, body.dark-mode .lesson-quiz { border-color: #344a61; box-shadow: 0 10px 28px #00000020; }
+body.dark-mode .home-widget, body.dark-mode .home-performance-item, body.dark-mode .home-progress-card, body.dark-mode .home-next-lesson { background-image: linear-gradient(145deg, #202c35, #243342); }
+body.dark-mode .module-card:hover, body.dark-mode .home-module-card:hover, body.dark-mode .challenge-card:hover, body.dark-mode .home-progress-card:hover, body.dark-mode .home-next-lesson:hover, body.dark-mode .history-stat-card:hover, body.dark-mode .history-panel:hover { border-color: #526f95; box-shadow: 0 16px 34px #00000030; }
+@media(max-width:650px){ .module-card:hover, .home-module-card:hover, .challenge-card:hover, .home-progress-card:hover, .home-next-lesson:hover, .history-stat-card:hover, .history-panel:hover { transform:none; } }
