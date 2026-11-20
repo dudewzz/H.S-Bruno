@@ -1000,3 +1000,39 @@ body.dark-mode .module-card:hover, body.dark-mode .home-module-card:hover, body.
 .nav-link.active:hover .nav-icon { transform:translateY(-2px) rotate(7deg) scale(1.15); }
 @media(max-width:650px){ .nav-link .nav-icon { flex-basis:auto; width:auto; height:24px; font-size:18px; } }
 @media(prefers-reduced-motion:reduce){ .nav-link .nav-icon{transition:none} .nav-link:hover .nav-icon,.nav-link.active:hover .nav-icon{transform:none} }
+
+
+/* INTERATIVIDADE PREMIUM — feedback visual e movimento refinado */
+:root { --hs-interactive-ease: cubic-bezier(.16,1,.3,1); }
+.page { animation:none; }
+.page.active { animation:hsPageReveal 340ms var(--hs-interactive-ease) both; }
+@keyframes hsPageReveal { from { opacity:0; transform:translateY(9px); filter:blur(1px); } to { opacity:1; transform:translateY(0); filter:blur(0); } }
+.primary, .auth-submit, .confirm-accept, .home-resume { position:relative; isolation:isolate; overflow:hidden; transition:transform 220ms var(--hs-interactive-ease), box-shadow 220ms ease, filter 220ms ease; }
+.primary::after, .auth-submit::after, .confirm-accept::after, .home-resume::after { content:""; position:absolute; inset:-1px; pointer-events:none; background:linear-gradient(112deg,transparent 18%,rgba(255,255,255,.25) 45%,rgba(255,255,255,.48) 50%,transparent 72%); transform:translateX(-130%); transition:transform 650ms var(--hs-interactive-ease); }
+.primary:hover::after, .auth-submit:hover::after, .confirm-accept:hover::after, .home-resume:hover::after { transform:translateX(130%); }
+.primary:hover, .auth-submit:hover, .confirm-accept:hover, .home-resume:hover { transform:translateY(-2px); filter:saturate(1.08); }
+.primary:active, .auth-submit:active, .confirm-accept:active, .home-resume:active { transform:scale(.97); }
+.module-card, .home-module-card, .challenge-card, .profile-stat-card, .home-progress-card, .home-performance-item { transition:transform 320ms var(--hs-interactive-ease), box-shadow 320ms ease, border-color 320ms ease, background 320ms ease; will-change:transform; }
+.module-card:hover, .home-module-card:hover, .challenge-card:hover, .profile-stat-card:hover, .home-progress-card:hover, .home-performance-item:hover { transform:translateY(-4px); }
+.module-card::before, .home-module-card::before, .challenge-card::before { transition:opacity 320ms ease, height 320ms ease; }
+.module-card:hover::before, .home-module-card:hover::before, .challenge-card:hover::before { opacity:1; height:4px; }
+.search { transition:box-shadow 240ms ease, border-color 240ms ease, transform 240ms var(--hs-interactive-ease), background 240ms ease; }
+.search:focus-within { border-color:#1765ed; box-shadow:0 0 0 4px #1765ed15, 0 6px 18px #1765ed12; transform:translateY(-1px); }
+.search input { transition:letter-spacing 220ms ease; }
+.search:focus-within input { letter-spacing:.12px; }
+.answer, .lesson-quiz-option, .challenge-answer, .lesson-item, .module-modal-lesson, .profile-avatar-options button { transition:transform 220ms var(--hs-interactive-ease), box-shadow 220ms ease, background-color 220ms ease, border-color 220ms ease, color 220ms ease; }
+.answer:hover, .lesson-item:hover, .module-modal-lesson:hover, .profile-avatar-options button:hover { transform:translateX(2px); }
+.answer.selected, .lesson-quiz-option:has(input:checked), .challenge-answer:has(input:checked) { box-shadow:0 0 0 2px #1765ed1c; }
+.answer:has(input:checked), .lesson-quiz-option:has(input:checked), .challenge-answer:has(input:checked) { transform:translateX(3px); }
+.profile, .bell, .theme-toggle { transition:transform 260ms var(--hs-interactive-ease), box-shadow 260ms ease, background-color 260ms ease, filter 260ms ease; }
+.profile:hover { transform:translateY(-2px) rotate(4deg); box-shadow:0 6px 15px #1765ed30; }
+.bell:hover { transform:translateY(-2px) rotate(-8deg) scale(1.08); }
+.theme-toggle:hover { transform:rotate(-12deg) scale(1.08); }
+.progress-track, .track, .home-module-progress, .home-widget-track, .challenge-card-progress { overflow:hidden; }
+.progress-track>span, .track>span, .home-module-progress>span, .home-widget-track>span, .challenge-card-progress>span { position:relative; }
+.progress-track>span::after, .track>span::after, .home-module-progress>span::after, .home-widget-track>span::after, .challenge-card-progress>span::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent); transform:translateX(-100%); animation:hsProgressGlint 2.8s ease-in-out infinite; }
+@keyframes hsProgressGlint { 55%,100% { transform:translateX(100%); } }
+.welcome-wave { transform-origin:70% 90%; animation:hsWave 3.6s ease-in-out infinite; }
+@keyframes hsWave { 0%,82%,100% { transform:rotate(0); } 86% { transform:rotate(14deg); } 90% { transform:rotate(-8deg); } 94% { transform:rotate(10deg); } 98% { transform:rotate(-3deg); } }
+@media(max-width:650px) { .page.active { animation-duration:260ms; } .search:focus-within { transform:none; } .profile:hover, .bell:hover, .theme-toggle:hover, .answer:hover, .lesson-item:hover, .module-modal-lesson:hover, .profile-avatar-options button:hover { transform:none; } }
+@media(prefers-reduced-motion:reduce) { .page.active, .welcome-wave, .progress-track>span::after, .track>span::after, .home-module-progress>span::after, .home-widget-track>span::after, .challenge-card-progress>span::after { animation:none!important; } .primary::after, .auth-submit::after, .confirm-accept::after, .home-resume::after { display:none!important; } }
