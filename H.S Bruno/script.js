@@ -1478,12 +1478,26 @@ function configurarAcesso() {
             } else {
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) throw error;
+
+                // Só finalizar o fluxo se o Supabase devolver uma sessão real.
+                if (!data?.session?.user) {
+                    throw new Error("O login foi aceito, mas a sessão não foi retornada. Tente novamente.");
+                }
+
                 sessaoAtual = data.session;
-                atualizarBotaoConta();
-                renderizarPerfilAluno();
+
+                // Fechar o acesso imediatamente após validar a sessão.
+                // Atualizações de perfil/progresso não podem bloquear o fechamento do login.
                 ocultarAcesso();
+                atualizarBotaoConta();
                 mostrarToast("Login realizado!");
-                // Não manter a tela de login aberta enquanto a consulta do progresso carrega.
+
+                // Perfil e progresso são atualizados depois de liberar a tela.
+                try {
+                    renderizarPerfilAluno();
+                } catch (erroPerfil) {
+                    console.error("Erro ao atualizar perfil após login:", erroPerfil);
+                }
                 carregarProgressoDaConta().catch(erro => {
                     console.error("Erro ao carregar progresso após login:", erro);
                     mostrarToast("Você entrou, mas não foi possível carregar o progresso agora.");
