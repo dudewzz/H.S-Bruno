@@ -835,7 +835,7 @@ function renderizarQuizDaAula() {
         feedback.textContent = "Resultado: " + jaRespondido.score + "/3. " +
             (jaRespondido.score === 3 ? "Excelente, você acertou tudo!" : "Revise as explicações e, se quiser, tente novamente.");
     }
-    form.addEventListener("submit", evento => {
+    form.addEventListener("submit", async evento => {
         evento.preventDefault();
         if (jaRespondido) {
             const resultadosAtuais = lerResultadosQuizzes();
