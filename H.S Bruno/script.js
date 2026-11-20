@@ -685,7 +685,7 @@ function selecionarAula(indice) {
     atualizarBotaoProximaAula();
 }
 
-function carregarVideoDaAula {
+function carregarVideoDaAula() {
     if (!moduloAtual) return;
     const videoContainer = document.getElementById("moduleVideo");
     if (!videoContainer) return;
@@ -727,7 +727,6 @@ function carregarVideoDaAula {
     atualizarBotaoProximaAula();
 }
 
-async 
 function chaveQuizzesDoUsuario() {
     return "hsbruno_quizzes_aulas_" + (sessaoAtual?.user?.id || "visitante");
 }
@@ -865,7 +864,7 @@ function configurarProximaAula() {
     });
 }
 
-function concluirAulaAtual() {
+async function concluirAulaAtual() {
     if (!moduloAtual) return;
     const idAula = idDaAula(moduloAtual, aulaAtualIndice);
     if (aulasConcluidas.includes(idAula)) return;
