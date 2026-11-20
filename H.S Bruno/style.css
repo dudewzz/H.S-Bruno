@@ -1177,3 +1177,36 @@ body.dark-mode #historico .history-empty{background:#253647;border-color:#40566f
 @media(max-width:900px){#historico .history-overview{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){#historico .page-title{padding:20px 17px;border-radius:18px}#historico .history-overview .panel{min-height:124px;padding:16px}#historico .history-overview .panel::before{left:14px;top:14px}#historico .history-overview .panel:nth-child(1)::after,#historico .history-overview .panel:nth-child(2)::after,#historico .history-overview .panel:nth-child(3)::after,#historico .history-overview .panel:nth-child(4)::after{left:24px;top:22px}#historico .history-activities-panel{padding:17px 13px}#historico .history-activity{grid-template-columns:36px minmax(0,1fr) auto;gap:9px;padding:12px 5px}#historico .history-activity-icon{width:34px;height:34px}#historico .history-activity-copy small{font-size:10px}}
 @media(prefers-reduced-motion:reduce){#historico .history-overview .panel,#historico .history-activity{transition:none}}
+
+
+/* =====================================================
+   PALETA DE ACENTOS — IDENTIDADE VISUAL COLORIDA
+   Base clara preservada; cores aplicadas em detalhes e estados.
+===================================================== */
+:root{
+ --accent-blue:#dce9ff;--accent-blue-strong:#3977df;
+ --accent-purple:#e9e0ff;--accent-purple-strong:#8058d6;
+ --accent-green:#d9f3e7;--accent-green-strong:#328763;
+ --accent-orange:#fff0d5;--accent-orange-strong:#c88329;
+ --accent-pink:#ffe1e8;--accent-pink-strong:#c34d75;
+ --accent-cyan:#d9f1f8;--accent-cyan-strong:#2e829d;
+}
+/* Navegação e pequenos marcadores */
+.nav-link.active{background:linear-gradient(100deg,var(--accent-blue),#e7eaff);color:#2459b9;box-shadow:inset 3px 0 var(--accent-blue-strong)}
+.nav-link i,.teacher-promo i{background:linear-gradient(135deg,var(--accent-purple-strong),#9b7be7)}
+/* Cards dos módulos: diferenciação por área sem mudar layout */
+.module-card:nth-child(1),.module-card:nth-child(2){border-top:3px solid var(--accent-blue-strong)}
+.module-card:nth-child(3),.module-card:nth-child(4){border-top:3px solid var(--accent-purple-strong)}
+/* Destaques discretos para metas, conquistas e atividades */
+.home-progress-card{background:linear-gradient(135deg,#f0f6ff,#f7f3ff)}
+.profile-achievement:nth-child(4n+1) .profile-achievement-icon{background:var(--accent-green);color:var(--accent-green-strong)}
+.profile-achievement:nth-child(4n+2) .profile-achievement-icon{background:var(--accent-purple);color:var(--accent-purple-strong)}
+.profile-achievement:nth-child(4n+3) .profile-achievement-icon{background:var(--accent-orange);color:var(--accent-orange-strong)}
+.profile-achievement:nth-child(4n) .profile-achievement-icon{background:var(--accent-pink);color:var(--accent-pink-strong)}
+.challenge-card:nth-child(4n+1){--challenge-accent:var(--accent-blue-strong);--challenge-soft:var(--accent-blue)}
+.challenge-card:nth-child(4n+2){--challenge-accent:var(--accent-purple-strong);--challenge-soft:var(--accent-purple)}
+.challenge-card:nth-child(4n+3){--challenge-accent:var(--accent-orange-strong);--challenge-soft:var(--accent-orange)}
+.challenge-card:nth-child(4n){--challenge-accent:var(--accent-green-strong);--challenge-soft:var(--accent-green)}
+.challenge-card .challenge-card-symbol{background:var(--challenge-soft);color:var(--challenge-accent)}
+.challenge-card .challenge-card-top{color:var(--challenge-accent)}
+.challenge-card .challenge-card-progress{accent-color:var(--challenge-accent)}
