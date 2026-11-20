@@ -166,6 +166,10 @@ const quizzesPorAula = {
 let concluidos = [];
 let aulasConcluidas = [];
 let atividadesSemanais = [];
+let videosAssistidos = [];
+let resultadosDesafios = {};
+let historicoDesafios = [];
+let historicoQuizGeral = [];
 let aulaAtualIndice = 0;
 let pontuacaoAtual = null;
         atividadesSemanais = [];
@@ -518,81 +522,9 @@ function navegar(pagina) {
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function criarCard(modulo) {
-    const artigo = document.createElement("article");
-    artigo.className = "module-card";
-    artigo.dataset.area = modulo.area;
-    artigo.dataset.search = (modulo.titulo + " " + modulo.descricao + " " + modulo.aulas.join(" ")).toLocaleLowerCase("pt-BR");
+function criarCard(modulo){const artigo=document.createElement("article");artigo.className="module-card";artigo.dataset.area=modulo.area;artigo.dataset.search=(modulo.titulo+" "+modulo.descricao+" "+modulo.aulas.join(" ")).toLocaleLowerCase("pt-BR");const imagem=document.createElement("img");imagem.src=modulo.imagem;imagem.alt="Imagem ilustrativa do tema "+modulo.area;imagem.loading="lazy";imagem.onerror=()=>{imagem.hidden=true;};const corpo=document.createElement("div");corpo.className="module-body";const area=document.createElement("small");area.className="module-area-tag";area.textContent=modulo.area;const titulo=document.createElement("h3");titulo.textContent=modulo.titulo.replace(modulo.area+" — ","Módulo ");const descricao=document.createElement("p");descricao.textContent=modulo.descricao;const prog=document.createElement("small");prog.className="module-modal-progress";prog.textContent=progressoModulo(modulo)+"% das atividades concluídas";const botao=document.createElement("button");botao.className="primary";botao.type="button";botao.textContent=moduloCompleto(modulo)?"Revisar módulo →":"Começar →";botao.addEventListener("click",()=>abrirModalModulo(modulo.id));corpo.append(area,titulo,descricao,prog,botao);artigo.append(imagem,corpo);return artigo;}
 
-    const imagem = document.createElement("img");
-    imagem.src = modulo.imagem;
-    imagem.alt = "Imagem ilustrativa do tema " + modulo.area;
-    imagem.loading = "lazy";
-    imagem.onerror = () => { imagem.hidden = true; };
-
-    const corpo = document.createElement("div");
-    corpo.className = "module-body";
-
-    const area = document.createElement("small");
-    area.className = "module-area-tag";
-    area.textContent = modulo.area;
-
-    const titulo = document.createElement("h3");
-    titulo.textContent = modulo.titulo.replace(modulo.area + " — ", "Módulo ");
-
-    const descricao = document.createElement("p");
-    descricao.textContent = modulo.descricao;
-
-    const botao = document.createElement("button");
-    botao.className = "primary";
-    botao.type = "button";
-    botao.textContent = concluidos.includes(modulo.id) ? "Revisar módulo →" : "Começar →";
-    botao.addEventListener("click", () => abrirModalModulo(modulo.id));
-
-    corpo.append(area, titulo, descricao, botao);
-    artigo.append(imagem, corpo);
-    return artigo;
-}
-
-function criarCardInicio(modulo) {
-    const artigo = document.createElement("article");
-    artigo.className = "home-module-card";
-    const imagem = document.createElement("div");
-    imagem.className = "home-module-image";
-    imagem.style.backgroundImage = "url('" + modulo.imagem + "')";
-    const corpo = document.createElement("div");
-    corpo.className = "home-module-body";
-    const titulo = document.createElement("h3");
-    titulo.textContent = modulo.area;
-    const subtitulo = document.createElement("p");
-    subtitulo.textContent = modulo.titulo.replace(modulo.area + " — ", "Módulo ");
-    const feitas = aulasConcluidasDoModulo(modulo);
-    const percentual = Math.round(feitas / modulo.aulas.length * 100);
-    const linha = document.createElement("div");
-    linha.className = "home-module-progress";
-    const trilho = document.createElement("span");
-    const barra = document.createElement("i");
-    barra.style.width = percentual + "%";
-    trilho.appendChild(barra);
-    const valor = document.createElement("b");
-    valor.textContent = percentual + "%";
-    linha.append(trilho, valor);
-    const botao = document.createElement("button");
-    botao.type = "button";
-    botao.className = "home-module-button";
-    botao.textContent = percentual === 0 ? "▶  Começar" : "▶  Continuar";
-    botao.addEventListener("click", () => abrirModalModulo(modulo.id));
-    if (percentual === 100) {
-        const selo = document.createElement("span");
-        selo.className = "home-module-done";
-        selo.textContent = "✓";
-        imagem.appendChild(selo);
-        botao.textContent = "✓  Revisar";
-    }
-    corpo.append(titulo, subtitulo, linha, botao);
-    artigo.append(imagem, corpo);
-    return artigo;
-}
+function criarCardInicio(modulo){const artigo=document.createElement("article");artigo.className="home-module-card";const imagem=document.createElement("div");imagem.className="home-module-image";imagem.style.backgroundImage="url('"+modulo.imagem+"')";const corpo=document.createElement("div");corpo.className="home-module-body";const titulo=document.createElement("h3");titulo.textContent=modulo.area;const subtitulo=document.createElement("p");subtitulo.textContent=modulo.titulo.replace(modulo.area+" — ","Módulo ");const percent=progressoModulo(modulo),linha=document.createElement("div");linha.className="home-module-progress";const trilho=document.createElement("span"),barra=document.createElement("i");barra.style.width=percent+"%";trilho.appendChild(barra);const valor=document.createElement("b");valor.textContent=percent+"%";linha.append(trilho,valor);const botao=document.createElement("button");botao.type="button";botao.className="home-module-button";botao.textContent=percent===0?"▶  Começar":"▶  Continuar";botao.addEventListener("click",()=>abrirModalModulo(modulo.id));if(percent===100){const selo=document.createElement("span");selo.className="home-module-done";selo.textContent="✓";imagem.appendChild(selo);botao.textContent="✓  Revisar";}corpo.append(titulo,subtitulo,linha,botao);artigo.append(imagem,corpo);return artigo;}
 
 function renderizarModulos() {
     const inicio = document.getElementById("homeModules");
@@ -723,6 +655,15 @@ function carregarVideoDaAula() {
     atualizarBotaoProximaAula();
 }
 
+function chaveVideosAssistidos(){return "hsbruno_videos_assistidos_"+(sessaoAtual?.user?.id||"visitante");}
+function lerVideosAssistidos(){try{const v=JSON.parse(localStorage.getItem(chaveVideosAssistidos())||"[]");return Array.isArray(v)?v:[];}catch(_){return [];}}
+function salvarVideosAssistidos(v){videosAssistidos=[...new Set(v)];try{localStorage.setItem(chaveVideosAssistidos(),JSON.stringify(videosAssistidos));}catch(_){mostrarToast("Não foi possível guardar o registro de vídeo neste dispositivo.");}}
+function chaveDesafios(){return "hsbruno_desafios_"+(sessaoAtual?.user?.id||"visitante");}
+function lerDesafiosSalvos(){try{const v=JSON.parse(localStorage.getItem(chaveDesafios())||"{}");return v&&typeof v==="object"&&!Array.isArray(v)?v:{resultados:{},historico:[]};}catch(_){return {resultados:{},historico:[]};}}
+function salvarDesafiosSalvos(){try{localStorage.setItem(chaveDesafios(),JSON.stringify({resultados:resultadosDesafios,historico:historicoDesafios}));}catch(_){mostrarToast("Não foi possível guardar os desafios neste dispositivo.");}}
+function chaveHistoricoQuizGeral(){return "hsbruno_quiz_geral_historico_"+(sessaoAtual?.user?.id||"visitante");}
+function lerHistoricoQuizGeral(){try{const v=JSON.parse(localStorage.getItem(chaveHistoricoQuizGeral())||"[]");return Array.isArray(v)?v:[];}catch(_){return [];}}
+function salvarHistoricoQuizGeral(list){historicoQuizGeral=list.slice(-50);try{localStorage.setItem(chaveHistoricoQuizGeral(),JSON.stringify(historicoQuizGeral));}catch(_){mostrarToast("Não foi possível guardar o histórico de avaliações.");}}
 function chaveQuizzesDoUsuario() {
     return "hsbruno_quizzes_aulas_" + (sessaoAtual?.user?.id || "visitante");
 }
@@ -824,6 +765,7 @@ function renderizarQuizDaAula() {
             try { localStorage.setItem(chaveQuizzesDoUsuario(), JSON.stringify(resultadosAtuais)); } catch (_) {}
             const novasAulas = aulasConcluidas.filter(id => id !== idAula);
             await salvarListaAulas(novasAulas, idAula, false);
+            atualizarResumo();
             renderizarQuizDaAula();
             atualizarBotaoProximaAula();
             return;
@@ -837,11 +779,18 @@ function renderizarQuizDaAula() {
             return;
         }
         const score = quiz.reduce((total, item, qIndex) => total + (escolhas[qIndex] === item.correta ? 1 : 0), 0);
-        salvarResultadoQuizAula(idAula, { score, respostas: escolhas, data: new Date().toISOString() });
-        concluirAulaAtual().then(() => {
+        const dataQuiz = new Date().toISOString();
+        const atual = lerResultadosQuizzes()[idAula];
+        const tentativas = [...(atual?.tentativas || []), { score, respostas: escolhas, data: dataQuiz }].slice(-50);
+        salvarResultadoQuizAula(idAula, { score, respostas: escolhas, data: dataQuiz, tentativas });
+        atualizarResumo();
+        if (videosAssistidos.includes(idAula)) {
+            concluirAulaAtual().then(() => { renderizarQuizDaAula(); atualizarBotaoProximaAula(); });
+        } else {
             renderizarQuizDaAula();
             atualizarBotaoProximaAula();
-        });
+            mostrarToast("Quiz concluído! Termine a videoaula para marcar a aula como feita.");
+        }
     });
     container.appendChild(form);
 }
@@ -871,17 +820,7 @@ function configurarProximaAula() {
     });
 }
 
-async function concluirAulaAtual() {
-    if (!moduloAtual) return;
-    const idAula = idDaAula(moduloAtual, aulaAtualIndice);
-    if (!quizDaAulaFoiConcluido(idAula)) {
-        mostrarToast("Conclua o quiz desta aula para registrar seu progresso.");
-        return false;
-    }
-    if (aulasConcluidas.includes(idAula)) return true;
-    const novas = [...aulasConcluidas, idAula];
-    return await salvarListaAulas(novas, idAula, true);
-}
+async function concluirAulaAtual(){if(!moduloAtual)return false;const id=idDaAula(moduloAtual,aulaAtualIndice);if(!videosAssistidos.includes(id))salvarVideosAssistidos([...videosAssistidos,id]);if(!quizDaAulaFoiConcluido(id)){atualizarResumo();mostrarToast("Vídeo assistido! Faça o quiz para concluir a aula.");return true;}if(aulasConcluidas.includes(id))return true;return await salvarListaAulas([...aulasConcluidas,id],id,true);}
 
 function abrirModulo(id) {
     const modulo = modulos.find(item => item.id === id);
@@ -901,71 +840,9 @@ function abrirModulo(id) {
     navegar("aula");
 }
 
-function atualizarResumo() {
-    const totalAulas = modulos.reduce((total, modulo) => total + modulo.aulas.length, 0);
-    const percentual = Math.round((aulasConcluidas.length / totalAulas) * 100);
-    const percent = document.getElementById("percent");
-    const ring = document.getElementById("ring");
-    const done = document.getElementById("doneCount");
-    if (percent) percent.textContent = percentual + "%";
-    if (ring) {
-        const angulo = percentual * 3.6;
-        ring.style.background = "conic-gradient(#39765F 0deg, #39765F " + angulo + "deg, #E8E0D4 " + angulo + "deg 360deg)";
-    }
-    if (done) done.textContent = aulasConcluidas.length;
+function atualizarResumo(){const total=modulos.reduce((sum,m)=>sum+m.aulas.length,0),percent=Math.round(tarefasConcluidasPortal()/totalTarefasPortal()*100);const percentEl=document.getElementById("percent"),ring=document.getElementById("ring"),done=document.getElementById("doneCount");if(percentEl)percentEl.textContent=percent+"%";if(ring){const angle=percent*3.6;ring.style.background="conic-gradient(#39765F 0deg, #39765F "+angle+"deg, #E8E0D4 "+angle+"deg 360deg)";}if(done)done.textContent=aulasConcluidas.length;const homeDone=document.getElementById("homeDoneCount"),homeLessons=document.getElementById("homeLessons"),homeScore=document.getElementById("homeScore"),message=document.querySelector(".home-progress-message strong"),resume=document.getElementById("homeResumeButton"),next=document.getElementById("homeNextLesson");if(homeDone)homeDone.textContent=aulasConcluidas.length;if(homeLessons)homeLessons.textContent=aulasConcluidas.length+" de "+total+" aulas concluídas";if(homeScore)homeScore.textContent=pontuacaoAtual===null?"N/A":pontuacaoAtual+"%";if(message)message.textContent=percent===0?"Pronto para começar sua jornada!":percent===100?"Jornada concluída. Parabéns!":"Você está indo muito bem!";if(resume){const span=resume.querySelector("span");if(span)span.textContent=percent===100?"Revisar Estudos":percent===0?"Começar Estudos":"Retomar Estudos";}const upcoming=proximaAulaPendente();if(next)next.textContent=upcoming?"Próxima aula: "+upcoming.nome:"Todas as aulas foram concluídas!";atualizarWidgetsDeMeta();renderizarModulos();atualizarPainelProgresso();renderizarDesafios();renderizarHistorico();if(document.getElementById("perfil")?.classList.contains("active"))renderizarPerfilAluno();}
 
-    const homeDone = document.getElementById("homeDoneCount");
-    const homeLessons = document.getElementById("homeLessons");
-    const homeScore = document.getElementById("homeScore");
-    const mensagem = document.querySelector(".home-progress-message strong");
-    const botaoInicio = document.getElementById("homeResumeButton");
-    const proxima = document.getElementById("homeNextLesson");
-    if (homeDone) homeDone.textContent = aulasConcluidas.length;
-    if (homeLessons) homeLessons.textContent = aulasConcluidas.length + " de " + totalAulas;
-    if (homeScore) homeScore.textContent = pontuacaoAtual === null ? "N/A" : pontuacaoAtual + "%";
-    if (mensagem) mensagem.textContent = percentual === 0
-        ? "Pronto para começar sua jornada!"
-        : percentual === 100 ? "Jornada concluída. Parabéns!" : "Você está indo muito bem!";
-    if (botaoInicio) {
-        const texto = botaoInicio.querySelector("span");
-        if (texto) texto.textContent = percentual === 100
-            ? "Revisar Estudos"
-            : percentual === 0 ? "Começar Estudos" : "Retomar Estudos";
-    }
-    const proximaAula = proximaAulaPendente();
-    if (proxima) proxima.textContent = proximaAula
-        ? "Próxima aula: " + proximaAula.nome
-        : "Todas as aulas foram concluídas!";
-    atualizarWidgetsDeMeta();
-
-    renderizarModulos();
-    atualizarPainelProgresso();
-    if (document.getElementById("perfil")?.classList.contains("active")) renderizarPerfilAluno();
-}
-
-function atualizarPainelProgresso() {
-    const score = document.getElementById("score");
-    const performance = document.getElementById("performance");
-    if (score) score.textContent = pontuacaoAtual === null ? "—" : pontuacaoAtual + "%";
-    if (!performance) return;
-    performance.replaceChildren();
-    modulos.forEach(modulo => {
-        const linha = document.createElement("div");
-        linha.className = "performance-row";
-        const nome = document.createElement("span");
-        nome.textContent = modulo.titulo;
-        const trilho = document.createElement("div");
-        trilho.className = "track";
-        const barra = document.createElement("span");
-        const feitas = aulasConcluidasDoModulo(modulo);
-        barra.style.width = (modulo.aulas.length ? feitas / modulo.aulas.length * 100 : 0) + "%";
-        trilho.appendChild(barra);
-        const estado = document.createElement("span");
-        estado.textContent = feitas === modulo.aulas.length ? "Concluído" : feitas + "/" + modulo.aulas.length + " aulas";
-        linha.append(nome, trilho, estado);
-        performance.appendChild(linha);
-    });
-}
+function atualizarPainelProgresso(){const score=document.getElementById("score"),performance=document.getElementById("performance");if(score)score.textContent=pontuacaoAtual===null?"—":pontuacaoAtual+"%";if(!performance)return;performance.replaceChildren();modulos.forEach(m=>{const row=document.createElement("div");row.className="performance-row";const name=document.createElement("span");name.textContent=m.titulo;const track=document.createElement("div");track.className="track";const fill=document.createElement("span");fill.style.width=progressoModulo(m)+"%";track.appendChild(fill);const status=document.createElement("span");status.textContent=moduloCompleto(m)?"Concluído":tarefasConcluidasModulo(m)+"/"+totalTarefasModulo(m)+" atividades";row.append(name,track,status);performance.appendChild(row);});}
 
 function normalizar(texto) {
     return texto.toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -1091,46 +968,7 @@ function renderizarPergunta() {
     botaoProximo.textContent = indicePergunta === perguntas.length - 1 ? "Finalizar quiz ✓" : "Próxima questão →";
 }
 
-async function finalizarQuiz() {
-    const respondidas = Object.keys(respostas).length;
-    if (respondidas < perguntas.length) {
-        mostrarToast("Responda todas as questões antes de finalizar.");
-        return;
-    }
-    if (!sessaoAtual) {
-        mostrarToast("Entre na sua conta para salvar sua pontuação.");
-        return;
-    }
-    const acertos = perguntas.reduce((total, pergunta, indice) => total + (respostas[indice] === pergunta.correta ? 1 : 0), 0);
-    const nota = Math.round((acertos / perguntas.length) * 100);
-    const { error } = await supabaseClient
-        .from("student_progress")
-        .upsert({
-            user_id: sessaoAtual.user.id,
-            completed_modules: concluidos,
-            completed_lessons: aulasConcluidas,
-            quiz_score: nota,
-            updated_at: new Date().toISOString()
-        }, { onConflict: "user_id" });
-
-    if (error) {
-        console.error("Erro ao salvar pontuação:", error);
-        mostrarToast("Não foi possível salvar sua pontuação. Tente novamente.");
-        return;
-    }
-
-    pontuacaoAtual = nota;
-    atualizarResumo();
-    document.getElementById("question").textContent = `Você acertou ${acertos} de ${perguntas.length} questões!`;
-    document.getElementById("answers").replaceChildren();
-    const feedback = document.getElementById("feedback");
-    feedback.className = "feedback " + (nota >= 70 ? "good" : "bad");
-    feedback.textContent = `Sua pontuação foi ${nota}%. ${nota >= 70 ? "Muito bem! Continue praticando." : "Revise os módulos e tente novamente."}`;
-    document.getElementById("quizCount").textContent = "Resultado final";
-    document.getElementById("quizNext").textContent = "Refazer quiz";
-    document.getElementById("quizPrev").disabled = true;
-    document.getElementById("quizNext").dataset.resultado = "true";
-}
+async function finalizarQuiz(){const answered=Object.keys(respostas).length;if(answered<perguntas.length){mostrarToast("Responda todas as questões antes de finalizar.");return;}if(!sessaoAtual){mostrarToast("Entre na sua conta para salvar sua pontuação.");return;}const hits=perguntas.reduce((sum,p,i)=>sum+(respostas[i]===p.correta?1:0),0),score=Math.round(hits/perguntas.length*100);const {error}=await supabaseClient.from("student_progress").upsert({user_id:sessaoAtual.user.id,completed_modules:concluidos,completed_lessons:aulasConcluidas,quiz_score:score,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error){console.error("Erro ao salvar pontuação:",error);mostrarToast("Não foi possível salvar sua pontuação. Tente novamente.");return;}pontuacaoAtual=score;salvarHistoricoQuizGeral([...historicoQuizGeral,{score,acertos:hits,total:perguntas.length,data:new Date().toISOString()}]);atualizarResumo();document.getElementById("question").textContent="Você acertou "+hits+" de "+perguntas.length+" questões!";document.getElementById("answers").replaceChildren();const feedback=document.getElementById("feedback");feedback.className="feedback "+(score>=70?"good":"bad");feedback.textContent="Sua pontuação foi "+score+"%. "+(score>=70?"Muito bem! Continue praticando.":"Revise os módulos e tente novamente.");document.getElementById("quizCount").textContent="Resultado final";document.getElementById("quizNext").textContent="Refazer quiz";document.getElementById("quizPrev").disabled=true;document.getElementById("quizNext").dataset.resultado="true";}
 
 function configurarQuiz() {
     document.getElementById("quizPrev").addEventListener("click", () => {
@@ -1338,66 +1176,16 @@ function configurarPerfilAluno() {
     });
 }
 
-async function carregarProgressoDaConta() {
-    concluidos = [];
-    aulasConcluidas = [];
-    atividadesSemanais = [];
-    pontuacaoAtual = null;
-
-    if (!sessaoAtual) {
-        atualizarResumo();
-        return;
-    }
-
-    const { data, error } = await supabaseClient
-        .from("student_progress")
-        .select("completed_lessons, quiz_score, weekly_activity")
-        .eq("user_id", sessaoAtual.user.id)
-        .maybeSingle();
-
-    if (error) {
-        console.error("Erro ao carregar progresso:", error);
-        mostrarToast("Não foi possível carregar seu progresso.");
-        atualizarResumo();
-        return;
-    }
-
-    if (data) {
-        const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
-        const resultadosQuiz = lerResultadosQuizzes();
-        aulasConcluidas = Array.isArray(data.completed_lessons)
-            ? [...new Set(data.completed_lessons.filter(id => idsValidos.includes(id) && resultadosQuiz[id]))]
-            : [];
-        pontuacaoAtual = data.quiz_score ?? null;
-    }
-
-    const atividadesRemotas = normalizarAtividadesSemanais(data?.weekly_activity);
-    const atividadesLocais = normalizarAtividadesSemanais(lerAtividadeSemanalLocal());
-    atividadesSemanais = normalizarAtividadesSemanais([...atividadesRemotas, ...atividadesLocais]);
-
-    if (JSON.stringify(atividadesSemanais) !== JSON.stringify(atividadesRemotas)) {
-        const modulosConcluidos = modulos.filter(modulo =>
-            modulo.aulas.every((_, indice) => aulasConcluidas.includes(idDaAula(modulo, indice)))
-        ).map(modulo => modulo.id);
-
-        const { error: erroMigracao } = await supabaseClient.from("student_progress").upsert({
-            user_id: sessaoAtual.user.id,
-            completed_lessons: aulasConcluidas,
-            completed_modules: modulosConcluidos,
-            weekly_activity: atividadesSemanais,
-            quiz_score: pontuacaoAtual,
-            updated_at: new Date().toISOString()
-        }, { onConflict: "user_id" });
-
-        if (erroMigracao) {
-            console.warn("Não foi possível sincronizar o histórico semanal antigo.", erroMigracao);
-        } else {
-            salvarCopiaLocalAtividadeSemanal(atividadesSemanais);
-        }
-    }
-
-    atualizarModulosConcluidos();
-    atualizarResumo();
+async function carregarProgressoDaConta(){
+ concluidos=[];aulasConcluidas=[];atividadesSemanais=[];pontuacaoAtual=null;videosAssistidos=lerVideosAssistidos();resultadosDesafios={};historicoDesafios=[];historicoQuizGeral=lerHistoricoQuizGeral();
+ if(!sessaoAtual){atualizarResumo();return;}
+ const {data,error}=await supabaseClient.from("student_progress").select("completed_lessons,quiz_score,weekly_activity").eq("user_id",sessaoAtual.user.id).maybeSingle();
+ if(error){console.error("Erro ao carregar progresso:",error);mostrarToast("Não foi possível carregar seu progresso.");atualizarResumo();return;}
+ if(data){const valid=modulos.flatMap(m=>m.aulas.map((_,i)=>idDaAula(m,i))),results=lerResultadosQuizzes();aulasConcluidas=Array.isArray(data.completed_lessons)?[...new Set(data.completed_lessons.filter(id=>valid.includes(id)&&results[id]))]:[];videosAssistidos=[...new Set([...videosAssistidos,...aulasConcluidas])];salvarVideosAssistidos(videosAssistidos);pontuacaoAtual=data.quiz_score??null;}
+ const remote=normalizarAtividadesSemanais(data?.weekly_activity),local=normalizarAtividadesSemanais(lerAtividadeSemanalLocal());atividadesSemanais=normalizarAtividadesSemanais([...remote,...local]);
+ const saved=lerDesafiosSalvos();resultadosDesafios=saved.resultados||{};historicoDesafios=Array.isArray(saved.historico)?saved.historico:[];
+ if(JSON.stringify(atividadesSemanais)!==JSON.stringify(remote)){const modulesDone=modulos.filter(m=>moduloCompleto(m)).map(m=>m.id);const {error:sync}=await supabaseClient.from("student_progress").upsert({user_id:sessaoAtual.user.id,completed_lessons:aulasConcluidas,completed_modules:modulesDone,weekly_activity:atividadesSemanais,quiz_score:pontuacaoAtual,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(sync)console.warn("Não foi possível sincronizar atividade semanal antiga.",sync);else salvarCopiaLocalAtividadeSemanal(atividadesSemanais);}
+ atualizarModulosConcluidos();atualizarResumo();
 }
 
 
@@ -1607,4 +1395,25 @@ async function iniciarPortal() {
     console.log("H.S. Bruno iniciado.");
 }
 
+function quantidadeQuizzesConcluidos(){const results=lerResultadosQuizzes();return modulos.reduce((sum,m)=>sum+m.aulas.filter((_,i)=>Boolean(results[idDaAula(m,i)])).length,0);}
+function quantidadeDesafiosConcluidos(){return modulos.filter(m=>Boolean(resultadosDesafios[m.id]?.completed)).length;}
+function tarefasConcluidasModulo(m){const results=lerResultadosQuizzes(),video=m.aulas.filter((_,i)=>videosAssistidos.includes(idDaAula(m,i))).length,quiz=m.aulas.filter((_,i)=>Boolean(results[idDaAula(m)])).length,challenge=resultadosDesafios[m.id]?.completed?1:0;return video+quiz+challenge;}
+function totalTarefasModulo(m){return m.aulas.length*2+1;}
+function progressoModulo(m){return Math.round(tarefasConcluidasModulo(m)/totalTarefasModulo(m)*100);}
+function moduloCompleto(m){return tarefasConcluidasModulo(m)===totalTarefasModulo(m);}
+function tarefasConcluidasPortal(){return videosAssistidos.length+quantidadeQuizzesConcluidos()+quantidadeDesafiosConcluidos();}
+function totalTarefasPortal(){return modulos.reduce((sum,m)=>sum+totalTarefasModulo(m),0);}
+const desafiosPorModulo={
+ "hardware-1":[{pergunta:"PC lento ao abrir várias aplicações. O que investigar?",opcoes:["Uso de RAM e programas ativos","Trocar o monitor","Desconectar teclado","Formatar sem diagnóstico"],correta:0,explicacao:"Confira memória e processos ativos antes de trocar peças."},{pergunta:"Vai comprar RAM adicional. O que verificar?",opcoes:["Compatibilidade, tipo e capacidade suportada pela placa-mãe","Cor do gabinete","Modelo do mouse","Resolução do monitor"],correta:0,explicacao:"Compatibilidade, capacidade e slots são importantes."},{pergunta:"SSD não aparece no sistema. Primeiro passo?",opcoes:["Verificar detecção na BIOS/UEFI e conexão","Trocar mouse","Desinstalar navegador","Aumentar brilho"],correta:0,explicacao:"Verifique firmware e conexão para diferenciar falha física e configuração."}],
+ "hardware-2":[{pergunta:"Após limpeza, PC liga sem imagem. O que revisar?",opcoes:["Conexões e encaixes que foram manuseados","Instalar navegador","Formatar","Trocar todas as peças"],correta:0,explicacao:"Revise RAM, vídeo e cabos manuseados com cuidado."},{pergunta:"Componente não encaixa no conector. O que fazer?",opcoes:["Parar e verificar orientação e compatibilidade no manual","Forçar","Lixar conector","Ligar parcialmente encaixado"],correta:0,explicacao:"Não force peças. Confira orientação e compatibilidade."},{pergunta:"PC aquece e cooler está coberto de poeira. Procedimento?",opcoes:["Desligar, desconectar e limpar com segurança, verificando fluxo de ar","Cobrir entradas de ar","Desativar sensores térmicos","Abrir mais programas"],correta:0,explicacao:"Poeira pode comprometer o resfriamento. Limpeza segura e ventilação ajudam."}],
+ "software-1":[{pergunta:"Renomear .docx para .txt não converte. Por quê?",opcoes:["A extensão não altera o formato interno","RAM define extensão","GPU bloqueia conversão","Sistema apaga conteúdo"],correta:0,explicacao:"Renomear é diferente de converter o formato."},{pergunta:"Programa funciona em outra conta, mas não na sua. O que investigar?",opcoes:["Permissões, configurações e dados do perfil","Processador","Tela","Desconectar SSD"],correta:0,explicacao:"O problema pode estar no perfil do usuário."},{pergunta:"Instalar programa de forma segura?",opcoes:["Fonte oficial e requisitos verificados","Qualquer link","Desativar antivírus","Executar anexos desconhecidos"],correta:0,explicacao:"Use fontes oficiais e verifique requisitos."}],
+ "software-2":[{pergunta:"E-mail pede senha por link urgente e desconhecido. O que fazer?",opcoes:["Não clicar e acessar pelo endereço oficial","Informar senha","Repassar link","Desligar antivírus"],correta:0,explicacao:"Pode ser phishing. Evite links e nunca compartilhe credenciais."},{pergunta:"Proteção alerta malware num arquivo. Como agir?",opcoes:["Não abrir e analisar com ferramenta confiável","Ignorar alerta","Renomear arquivo","Desativar proteção"],correta:0,explicacao:"Não execute arquivo suspeito; use proteção de segurança."},{pergunta:"Impressão travada na fila. Checagem inicial?",opcoes:["Conexão, estado e fila de impressão","Placa de vídeo","Apagar documentos","Desinstalar apps"],correta:0,explicacao:"Conexão e fila são verificações básicas para diagnóstico."}]
+};
+function renderizarDesafios(){const grid=document.getElementById("challengeModules");if(!grid)return;grid.replaceChildren();modulos.forEach(m=>{const result=resultadosDesafios[m.id],card=document.createElement("article");card.className="panel challenge-card";const title=document.createElement("h2");title.textContent=m.titulo;const desc=document.createElement("p");desc.textContent=m.descricao;const meta=document.createElement("small");meta.className="challenge-card-meta";meta.textContent=result?.completed?"Concluído · nota "+result.score+"/3":"3 situações práticas";const track=document.createElement("div");track.className="challenge-card-progress";const bar=document.createElement("span");bar.style.width=result?.completed?"100%":"0%";track.appendChild(bar);const btn=document.createElement("button");btn.type="button";btn.className=result?.completed?"secondary":"primary";btn.textContent=result?.completed?"Ver/Refazer":"Iniciar desafio";btn.addEventListener("click",()=>abrirDesafio(m.id));card.append(title,desc,meta,track,btn);grid.appendChild(card);});}
+function abrirDesafio(moduleId,refazer=false){const m=modulos.find(v=>v.id===moduleId),area=document.getElementById("challengeWorkspace");if(!m||!area)return;const items=desafiosPorModulo[moduleId]||[],previous=refazer?null:resultadosDesafios[moduleId];area.hidden=false;area.replaceChildren();const heading=document.createElement("h2");heading.textContent="Desafio prático · "+m.titulo;const intro=document.createElement("p");intro.className="challenge-intro";intro.textContent="Responda às situações aplicando o que aprendeu. Depois de finalizar, veja as explicações e tente novamente se quiser.";area.append(heading,intro);const form=document.createElement("form");form.className="challenge-form";
+items.forEach((item,index)=>{const field=document.createElement("fieldset");field.className="challenge-question";const legend=document.createElement("legend");legend.textContent=(index+1)+". "+item.pergunta;field.appendChild(legend);const order=item.opcoes.map((_,i)=>i).sort((a,b)=>((a+index)%item.opcoes.length)-((b+index)%item.opcoes.length));order.forEach(optionIndex=>{const label=document.createElement("label");label.className="challenge-answer";const input=document.createElement("input");input.type="radio";input.name="challenge-"+index;input.value=String(optionIndex);input.checked=previous?.respostas?.[index]===optionIndex;input.disabled=Boolean(previous?.completed);label.append(input,document.createTextNode(item.opcoes[optionIndex]));field.appendChild(label);});if(previous?.completed){const explain=document.createElement("p");explain.className="lesson-quiz-explanation";explain.textContent=(previous.respostas[index]===item.correta?"Acertou. ":"Errou. ")+"Resposta: "+item.opcoes[item.correta]+". "+item.explicacao;field.appendChild(explain);}form.appendChild(field);});
+const feedback=document.createElement("div");feedback.className="challenge-result";const button=document.createElement("button");button.type="submit";button.className="primary";button.textContent=previous?.completed?"Refazer desafio":"Finalizar desafio";form.append(button,feedback);if(previous?.completed)feedback.textContent="Nota: "+previous.score+"/3. "+(previous.score===3?"Excelente!":"Revise as explicações e refaça se desejar.");
+form.addEventListener("submit",async e=>{e.preventDefault();if(!sessaoAtual){mostrarToast("Entre na conta para registrar o desafio.");mostrarAcesso();return;}if(previous?.completed){abrirDesafio(moduleId,true);return;}const answers=items.map((_,i)=>{const selected=form.querySelector('input[name="challenge-'+i+'"]:checked');return selected?Number(selected.value):null;});if(answers.some(v=>v===null)){mostrarToast("Responda às três situações antes de finalizar.");return;}const score=items.reduce((sum,item,i)=>sum+(answers[i]===item.correta?1:0),0),date=new Date().toISOString(),entry={moduleId,score,respostas:answers,data:date},attempts=[...(resultadosDesafios[moduleId]?.attempts||[]),entry].slice(-50);resultadosDesafios[moduleId]={completed:true,score,respostas:answers,data:date,attempts};historicoDesafios=[...historicoDesafios,entry].slice(-50);salvarDesafiosSalvos();const completeModules=modulos.filter(moduloCompleto).map(x=>x.id);const {error:saveError}=await supabaseClient.from("student_progress").upsert({user_id:sessaoAtual.user.id,completed_lessons:aulasConcluidas,completed_modules:completeModules,weekly_activity:atividadesSemanais,quiz_score:pontuacaoAtual,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(saveError)console.warn("Desafio guardado localmente; falha ao sincronizar conclusão de módulos",saveError);atualizarResumo();abrirDesafio(moduleId);mostrarToast("Desafio concluído!");});area.appendChild(form);area.scrollIntoView({behavior:"smooth",block:"start"});}
+function renderizarHistorico(){const quizCount=quantidadeQuizzesConcluidos(),challengeCount=quantidadeDesafiosConcluidos(),generalCount=historicoQuizGeral.length,notes=[];Object.values(lerResultadosQuizzes()).forEach(r=>notes.push(Math.round((Number(r.score)||0)/3*100)));historicoQuizGeral.forEach(r=>notes.push(Number(r.score)||0));historicoDesafios.forEach(r=>notes.push(Math.round((Number(r.score)||0)/3*100)));const avg=notes.length?Math.round(notes.reduce((a,b)=>a+b,0)/notes.length):null;const q=document.getElementById("historyLessonQuizzes"),d=document.getElementById("historyChallenges"),g=document.getElementById("historyGeneralAttempts"),a=document.getElementById("historyAverage");if(q)q.textContent=quizCount+"/17";if(d)d.textContent=challengeCount+"/4";if(g)g.textContent=generalCount;if(a)a.textContent=avg===null?"—":avg+"%";const container=document.getElementById("historyActivities");if(!container)return;container.replaceChildren();const entries=[];Object.entries(lerResultadosQuizzes()).forEach(([id,r])=>{const lesson=buscarAulaId(id);if(lesson)entries.push({type:"Quiz da aula",title:lesson.nome,details:lesson.module.titulo,date:r.data,score:Math.round((Number(r.score)||0)/3*100)});(r.tentativas||[]).forEach(attempt=>entries.push({type:"Tentativa anterior",title:lesson?.nome||"Quiz",details:"Quiz da aula",date:attempt.data,score:Math.round((Number(attempt.score)||0)/3*100)}));});historicoQuizGeral.forEach(r=>entries.push({type:"Quiz geral",title:"Avaliação geral",details:"Hardware e Software",date:r.data,score:r.score}));historicoDesafios.forEach(r=>{const module=modulos.find(m=>m.id===r.moduleId);entries.push({type:"Desafio prático",title:module?.titulo||"Desafio",details:"Tentativa registrada",date:r.data,score:Math.round((Number(r.score)||0)/3*100)});});entries.sort((a,b)=>new Date(b.date)-new Date(a.date));if(!entries.length){const empty=document.createElement("p");empty.className="history-empty";empty.textContent="Ainda não há atividades. Faça uma aula, quiz ou desafio para iniciar seu histórico.";container.appendChild(empty);return;}entries.slice(0,50).forEach(entry=>{const row=document.createElement("div");row.className="history-activity";const icon=document.createElement("span");icon.className="history-activity-icon";icon.textContent=entry.type.includes("Desafio")?"◆":entry.type.includes("geral")?"★":"✓";const copy=document.createElement("div");copy.className="history-activity-copy";const title=document.createElement("strong");title.textContent=entry.title;const detail=document.createElement("small");detail.textContent=entry.type+" · "+entry.details+" · "+(entry.date?new Date(entry.date).toLocaleString("pt-BR"):"data indisponível");copy.append(title,detail);const score=document.createElement("span");score.className="history-activity-score";score.textContent=entry.score===undefined?"":entry.score+"%";row.append(icon,copy,score);container.appendChild(row);});}
+function buscarAulaId(id){for(const m of modulos){const index=m.aulas.findIndex((_,i)=>idDaAula(m,i)===id);if(index>=0)return{module:m,nome:m.aulas[index],indice:index};}return null;}
 document.addEventListener("DOMContentLoaded", iniciarPortal);
