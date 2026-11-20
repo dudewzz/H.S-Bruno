@@ -414,9 +414,7 @@ async function salvarListaAulas(novasAulas, idAulaAlterada, foiConcluida) {
     const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
     const resultadosQuiz = lerResultadosQuizzes();
     const listaValida = [...new Set(novasAulas.filter(id => idsValidos.includes(id) && (resultadosQuiz[id] || !foiConcluida)))];
-    const novosModulos = modulos.filter(modulo =>
-        modulo.aulas.length > 0 && modulo.aulas.every((_, indice) => listaValida.includes(idDaAula(modulo, indice)))
-    ).map(modulo => modulo.id);
+    const novosModulos = modulos.filter(modulo => moduloCompleto(modulo)).map(modulo => modulo.id);
     const novasAtividadesSemanais = prepararAtividadeSemanal(idAulaAlterada, foiConcluida);
 
     const { error } = await supabaseClient.from("student_progress").upsert({
@@ -526,26 +524,7 @@ function criarCard(modulo){const artigo=document.createElement("article");artigo
 
 function criarCardInicio(modulo){const artigo=document.createElement("article");artigo.className="home-module-card";const imagem=document.createElement("div");imagem.className="home-module-image";imagem.style.backgroundImage="url('"+modulo.imagem+"')";const corpo=document.createElement("div");corpo.className="home-module-body";const titulo=document.createElement("h3");titulo.textContent=modulo.area;const subtitulo=document.createElement("p");subtitulo.textContent=modulo.titulo.replace(modulo.area+" — ","Módulo ");const percent=progressoModulo(modulo),linha=document.createElement("div");linha.className="home-module-progress";const trilho=document.createElement("span"),barra=document.createElement("i");barra.style.width=percent+"%";trilho.appendChild(barra);const valor=document.createElement("b");valor.textContent=percent+"%";linha.append(trilho,valor);const botao=document.createElement("button");botao.type="button";botao.className="home-module-button";botao.textContent=percent===0?"▶  Começar":"▶  Continuar";botao.addEventListener("click",()=>abrirModalModulo(modulo.id));if(percent===100){const selo=document.createElement("span");selo.className="home-module-done";selo.textContent="✓";imagem.appendChild(selo);botao.textContent="✓  Revisar";}corpo.append(titulo,subtitulo,linha,botao);artigo.append(imagem,corpo);return artigo;}
 
-function renderizarModulos() {
-    const inicio = document.getElementById("homeModules");
-    const todos = document.getElementById("allModules");
-
-    if (inicio) inicio.replaceChildren(...modulos.map(criarCardInicio));
-
-    if (todos) {
-        const filtrados = modulos.filter(modulo => {
-            const feitas = aulasConcluidasDoModulo(modulo);
-            const total = modulo.aulas.length;
-            if (filtroAtual === "Hardware" || filtroAtual === "Software") return modulo.area === filtroAtual;
-            if (filtroAtual === "Em andamento") return feitas > 0 && feitas < total;
-            if (filtroAtual === "Concluídos") return feitas === total;
-            return true;
-        });
-        todos.replaceChildren(...filtrados.map(criarCard));
-    }
-
-    aplicarPesquisa();
-}
+function renderizarModulos(){const inicio=document.getElementById("homeModules"),todos=document.getElementById("allModules");if(inicio)inicio.replaceChildren(...modulos.map(criarCardInicio));if(todos){const filtrados=modulos.filter(m=>{const feitas=tarefasConcluidasModulo(m),total=totalTarefasModulo(m);if(filtroAtual==="Hardware"||filtroAtual==="Software")return m.area===filtroAtual;if(filtroAtual==="Em andamento")return feitas>0&&feitas<total;if(filtroAtual==="Concluídos")return moduloCompleto(m);return true;});todos.replaceChildren(...filtrados.map(criarCard));}aplicarPesquisa();}
 
 function idDaAula(modulo, indice) {
     return modulo.id + "-aula-" + (indice + 1);
@@ -555,9 +534,7 @@ function aulasConcluidasDoModulo(modulo) {
     return modulo.aulas.filter((_, indice) => aulasConcluidas.includes(idDaAula(modulo, indice))).length;
 }
 
-function atualizarModulosConcluidos() {
-    concluidos = modulos.filter(modulo => modulo.aulas.length > 0 && aulasConcluidasDoModulo(modulo) === modulo.aulas.length).map(modulo => modulo.id);
-}
+function atualizarModulosConcluidos(){concluidos=modulos.filter(modulo=>moduloCompleto(modulo)).map(modulo=>modulo.id);}
 
 function renderizarListaAulas(modulo) {
     const lista = document.getElementById("lessonList");
