@@ -1534,7 +1534,7 @@ async function iniciarPortal() {
     }
 
     atualizarBotaoConta();
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
+    supabaseClient.auth.onAuthStateChange((eventoAuth, session) => {
         sessaoAtual = session;
         if (!session) {
             concluidos = [];
@@ -1546,11 +1546,14 @@ async function iniciarPortal() {
         } else {
             atualizarBotaoConta();
             ocultarAcesso();
-            setTimeout(() => {
-                carregarProgressoDaConta().catch(erro => {
-                    console.error("Erro ao carregar progresso após mudança de sessão:", erro);
-                });
-            }, 0);
+            // Login e cadastro carregam o progresso explicitamente; evita chamadas duplicadas.
+            if (eventoAuth === "TOKEN_REFRESHED") {
+                setTimeout(() => {
+                    carregarProgressoDaConta().catch(erro => {
+                        console.error("Erro ao carregar progresso após renovação de sessão:", erro);
+                    });
+                }, 0);
+            }
         }
     });
 
