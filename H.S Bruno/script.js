@@ -350,27 +350,8 @@ function abrirModalModulo(id) {
     modulo.aulas.forEach((nomeAula, indice) => {
         const id = idDaAula(modulo, indice);
         const linha = document.createElement("div");
-        linha.className = "module-modal-lesson" + (aulasConcluidas.includes(id) ? " is-complete" : "");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.id = "moduleLesson-" + id;
-        checkbox.checked = aulasConcluidas.includes(id);
-        checkbox.setAttribute("aria-label", "Marcar " + nomeAula + " como concluída");
-        checkbox.addEventListener("change", async () => {
-            if (checkbox.checked && !quizDaAulaFoiConcluido(id)) {
-                checkbox.checked = false;
-                mostrarToast("Esta aula só pode ser marcada após concluir seu quiz.");
-                return;
-            }
-            const novas = checkbox.checked
-                ? [...new Set([...aulasConcluidas, id])]
-                : aulasConcluidas.filter(item => item !== id);
-            const sucesso = await salvarListaAulas(novas, id, checkbox.checked);
-            if (sucesso) abrirModalModulo(modulo.id);
-            else checkbox.checked = !checkbox.checked;
-        });
-        const texto = document.createElement("label");
-        texto.htmlFor = checkbox.id;
+        linha.className = "module-modal-lesson";
+        const texto = document.createElement("span");
         texto.textContent = String(indice + 1).padStart(2, "0") + " · " + nomeAula;
         const abrirAula = document.createElement("button");
         abrirAula.type = "button";
@@ -381,14 +362,14 @@ function abrirModalModulo(id) {
             abrirModulo(modulo.id);
             selecionarAula(indice);
         });
-        linha.append(checkbox, texto, abrirAula);
+        linha.append(texto, abrirAula);
         lista.appendChild(linha);
     });
 
     const rodape = document.createElement("div");
     rodape.className = "module-modal-footer";
     const dica = document.createElement("small");
-    dica.textContent = "Marque as aulas que você já concluiu.";
+    dica.textContent = "Conclua o quiz de cada aula para registrar seu progresso.";
     const botaoFechar = document.createElement("button");
     botaoFechar.type = "button";
     botaoFechar.className = "primary";
