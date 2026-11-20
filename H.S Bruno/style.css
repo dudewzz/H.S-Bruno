@@ -992,3 +992,11 @@ body.dark-mode .module-card, body.dark-mode .home-module-card, body.dark-mode .h
 body.dark-mode .home-widget, body.dark-mode .home-performance-item, body.dark-mode .home-progress-card, body.dark-mode .home-next-lesson { background-image: linear-gradient(145deg, #202c35, #243342); }
 body.dark-mode .module-card:hover, body.dark-mode .home-module-card:hover, body.dark-mode .challenge-card:hover, body.dark-mode .home-progress-card:hover, body.dark-mode .home-next-lesson:hover, body.dark-mode .history-stat-card:hover, body.dark-mode .history-panel:hover { border-color: #526f95; box-shadow: 0 16px 34px #00000030; }
 @media(max-width:650px){ .module-card:hover, .home-module-card:hover, .challenge-card:hover, .home-progress-card:hover, .home-next-lesson:hover, .history-stat-card:hover, .history-panel:hover { transform:none; } }
+
+/* MENU LATERAL — microanimação dos ícones */
+.nav-link .nav-icon { display:inline-grid; place-items:center; flex:0 0 30px; width:30px; height:30px; font-size:19px; line-height:1; transform-origin:center; transition:transform 260ms cubic-bezier(.2,.75,.25,1), filter 260ms ease; }
+.nav-link:hover .nav-icon { transform:translateY(-2px) rotate(-7deg) scale(1.13); filter:drop-shadow(0 2px 3px #1765ed35); }
+.nav-link.active .nav-icon { transform:scale(1.05); }
+.nav-link.active:hover .nav-icon { transform:translateY(-2px) rotate(7deg) scale(1.15); }
+@media(max-width:650px){ .nav-link .nav-icon { flex-basis:auto; width:auto; height:24px; font-size:18px; } }
+@media(prefers-reduced-motion:reduce){ .nav-link .nav-icon{transition:none} .nav-link:hover .nav-icon,.nav-link.active:hover .nav-icon{transform:none} }
