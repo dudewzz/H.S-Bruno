@@ -940,6 +940,12 @@ function atualizarBotaoConta() {
             || "V";
         botao.setAttribute("aria-label", sessaoAtual ? "Abrir meu perfil" : "Entrar na conta");
     }
+
+    const adminLink = document.getElementById("adminNavLink");
+    if (adminLink) {
+        const isAdmin = sessaoAtual?.user?.app_metadata?.role === "admin";
+        adminLink.style.display = isAdmin ? "" : "none";
+    }
 }
 
 function renderizarPerfilAluno() {
