@@ -61,6 +61,14 @@
                 ☑ <span>Avaliações</span>
             </button>
 
+            <button class="nav-link" data-page="desafios">
+                ◈ <span>Desafios</span>
+            </button>
+
+            <button class="nav-link" data-page="historico">
+                ▥ <span>Histórico</span>
+            </button>
+
             <button class="nav-link" data-page="sobre">
                 ⓘ <span>Sobre</span>
             </button>
@@ -366,6 +374,36 @@
 
 
 
+
+        <!-- DESAFIOS -->
+        <section class="page" id="desafios">
+            <div class="page-title">
+                <small>APLIQUE O QUE APRENDEU</small>
+                <h1>Desafios práticos</h1>
+                <p>Resolva situações do dia a dia e pratique o conteúdo dos módulos.</p>
+            </div>
+            <div class="challenge-grid" id="challengeModules"></div>
+            <article class="panel challenge-workspace" id="challengeWorkspace" hidden></article>
+        </section>
+
+        <!-- HISTÓRICO -->
+        <section class="page" id="historico">
+            <div class="page-title">
+                <small>ACOMPANHE SUA EVOLUÇÃO</small>
+                <h1>Histórico de desempenho</h1>
+                <p>Veja avaliações, desafios e suas atividades recentes.</p>
+            </div>
+            <div class="stats history-stats">
+                <article class="panel"><b id="historyLessonQuizzes">0/17</b><small>Quizzes das aulas</small></article>
+                <article class="panel"><b id="historyChallenges">0/4</b><small>Desafios concluídos</small></article>
+                <article class="panel"><b id="historyGeneralAttempts">0</b><small>Quiz geral · tentativas</small></article>
+                <article class="panel"><b id="historyAverage">—</b><small>Média das avaliações</small></article>
+            </div>
+            <article class="panel">
+                <h2>Atividade recente</h2>
+                <div id="historyActivities" class="history-activity-list"></div>
+            </article>
+        </section>
 
         <!-- PROGRESSO -->
         <section class="page" id="progresso">
