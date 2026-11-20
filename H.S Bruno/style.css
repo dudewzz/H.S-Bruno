@@ -877,3 +877,35 @@ body.dark-mode .lesson-quiz-option{background:#263640;color:#DCEAF0}
 body.dark-mode .lesson-quiz-result.good{background:#243B35;color:#D7EBDD}
 body.dark-mode .lesson-quiz-result.review{background:#304653;color:#DCEAF0}
 @media(max-width:600px){.lesson-navigation{justify-content:stretch}.lesson-navigation button{flex:1}.lesson-quiz-question{padding:10px}.lesson-quiz-option{padding:9px}}
+
+/* Desafios e histórico de desempenho */
+.challenge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.challenge-card{display:flex;flex-direction:column;gap:10px}
+.challenge-card h2{margin:0;font:800 18px Manrope}
+.challenge-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+.challenge-card-meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:12px}
+.challenge-card button{align-self:flex-start;margin-top:auto}
+.challenge-card-progress{height:7px;background:var(--line);border-radius:10px;overflow:hidden}
+.challenge-card-progress span{display:block;height:100%;background:#39765f;border-radius:10px}
+.challenge-workspace{margin:14px 0}
+.challenge-workspace h2{margin:0 0 8px}
+.challenge-workspace .challenge-intro{color:var(--muted);line-height:1.55}
+.challenge-question{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.challenge-question legend{font-weight:700;line-height:1.5;padding:0 3px}
+.challenge-answer{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line);border-radius:10px;padding:11px;margin:8px 0;cursor:pointer;line-height:1.45}
+.challenge-answer:has(input:checked){background:#edf3ff;border-color:#7da4ed}
+.challenge-answer input{accent-color:#1765ed;margin-top:3px}
+.challenge-result{border-radius:12px;padding:13px;margin:12px 0;background:#e7f5ee;color:#226f53;line-height:1.6}
+.history-activity-list{display:grid;gap:10px}
+.history-activity{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.history-activity:last-child{border-bottom:0}
+.history-activity-icon{width:36px;height:36px;flex:none;border-radius:11px;background:#e4edff;color:#1765ed;display:grid;place-items:center;font-weight:800}
+.history-activity-copy{min-width:0;flex:1}
+.history-activity-copy strong{display:block;font-size:13px}
+.history-activity-copy small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.history-activity-score{font-weight:800;font-size:12px;color:#39765f}
+.history-empty{padding:18px 4px;color:var(--muted);font-size:13px}
+body.dark-mode .challenge-answer:has(input:checked){background:#25364a;border-color:#5478a7}
+body.dark-mode .challenge-result{background:#203c32;color:#a9e0c2}
+@media(max-width:900px){.history-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.challenge-grid{grid-template-columns:1fr}.history-activity{gap:8px;padding:10px 0}}
