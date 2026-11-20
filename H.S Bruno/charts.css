@@ -40,3 +40,11 @@ body.dark-mode #historico .history-evolution-bar-wrap{background:repeating-linea
 body.dark-mode #historico .history-activity-bar-track{background:#34465b}
 @media(max-width:900px){#historico .history-charts{grid-template-columns:1fr 1fr}#historico .history-evolution-card{grid-column:span 2}}
 @media(max-width:650px){#historico .history-charts{grid-template-columns:1fr;gap:12px}#historico .history-evolution-card{grid-column:auto}#historico .history-chart-card{padding:17px}#historico .history-evolution-bars{gap:5px;height:165px}#historico .history-lesson-chart{gap:14px}#historico .history-activity-bar-row{grid-template-columns:minmax(80px,1fr) minmax(40px,1.5fr) 22px;gap:7px}}
+
+
+/* Paleta de séries e marcadores dos gráficos */
+#historico .history-chart-card:nth-child(3n+1) .history-chart-mark{background:#dce9ff;color:#3977df}
+#historico .history-chart-card:nth-child(3n+2) .history-chart-mark{background:#e9e0ff;color:#8058d6}
+#historico .history-chart-card:nth-child(3n) .history-chart-mark{background:#d9f3e7;color:#328763}
+#historico .history-evolution-bar{background:linear-gradient(180deg,#8b70df,#5c8be7)}
+#historico .history-evolution-bar-wrap{background:repeating-linear-gradient(to bottom,#edf2fc 0 1px,transparent 1px 25%)}
