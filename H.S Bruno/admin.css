@@ -30,3 +30,30 @@ body.dark-mode .toolbar input{background:#263640;color:#E8EEF1;border-color:var(
 body.dark-mode .toolbar input::placeholder{color:#AAB8BE}
 body.dark-mode .toolbar input:focus{border-color:#79AFCB}
 body.dark-mode .empty{color:#AAB8BE}
+
+
+/* CLEAN PREMIUM — refinamento visual do painel administrativo */
+:root { --admin-motion-fast: 160ms; --admin-motion: 240ms; --admin-ease: cubic-bezier(.2,.75,.25,1); }
+body, .sidebar, .topbar, .welcome, .stat-card, .panel, .notice {
+  transition: background-color var(--admin-motion) var(--admin-ease), color var(--admin-motion) var(--admin-ease),
+    border-color var(--admin-motion) var(--admin-ease), box-shadow var(--admin-motion) var(--admin-ease),
+    transform var(--admin-motion) var(--admin-ease);
+}
+button, .nav-link, input, a, tr, .page-section {
+  transition: background-color var(--admin-motion-fast) var(--admin-ease), color var(--admin-motion-fast) var(--admin-ease),
+    border-color var(--admin-motion-fast) var(--admin-ease), box-shadow var(--admin-motion-fast) var(--admin-ease),
+    transform var(--admin-motion-fast) var(--admin-ease), opacity var(--admin-motion-fast) var(--admin-ease);
+}
+.stat-card, .panel { border-radius: 18px; box-shadow: 0 8px 24px rgba(36,68,130,.055); }
+.stat-card:hover, .panel:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(36,68,130,.09); }
+.nav-link { border-radius: 13px; }
+.account button, .theme-toggle { box-shadow: 0 2px 8px rgba(36,68,130,.06); }
+.account button:hover, .theme-toggle:hover { box-shadow: 0 5px 14px rgba(36,68,130,.12); transform: translateY(-1px); }
+button:not(:disabled):active { transform: scale(.985); }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid #1765ed; outline-offset: 3px; }
+.toolbar input:focus { box-shadow: 0 0 0 3px rgba(23,101,237,.10); }
+tbody tr:hover td { background: #edf3ff55; }
+body.dark-mode .stat-card:hover, body.dark-mode .panel:hover { box-shadow: 0 12px 28px rgba(0,0,0,.23); }
+body.dark-mode tbody tr:hover td { background: #263640; }
+@media(max-width:650px) { .stat-card:hover, .panel:hover { transform: none; } }
+@media(prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
