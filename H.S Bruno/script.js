@@ -1443,11 +1443,15 @@ function configurarAcesso() {
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 sessaoAtual = data.session;
-                await carregarProgressoDaConta();
                 atualizarBotaoConta();
                 renderizarPerfilAluno();
                 ocultarAcesso();
-                mostrarToast("Login realizado. Seu progresso foi carregado!");
+                mostrarToast("Login realizado!");
+                // Não manter a tela de login aberta enquanto a consulta do progresso carrega.
+                carregarProgressoDaConta().catch(erro => {
+                    console.error("Erro ao carregar progresso após login:", erro);
+                    mostrarToast("Você entrou, mas não foi possível carregar o progresso agora.");
+                });
             }
         } catch (erro) {
             document.getElementById("authMessage").textContent =
@@ -1541,10 +1545,12 @@ async function iniciarPortal() {
             atualizarResumo();
             mostrarAcesso();
         } else {
-            setTimeout(async () => {
-                await carregarProgressoDaConta();
-                atualizarBotaoConta();
-                ocultarAcesso();
+            atualizarBotaoConta();
+            ocultarAcesso();
+            setTimeout(() => {
+                carregarProgressoDaConta().catch(erro => {
+                    console.error("Erro ao carregar progresso após mudança de sessão:", erro);
+                });
             }, 0);
         }
     });
