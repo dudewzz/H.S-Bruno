@@ -840,7 +840,10 @@ function renderizarQuizDaAula() {
             const resultadosAtuais = lerResultadosQuizzes();
             delete resultadosAtuais[idAula];
             try { localStorage.setItem(chaveQuizzesDoUsuario(), JSON.stringify(resultadosAtuais)); } catch (_) {}
+            const novasAulas = aulasConcluidas.filter(id => id !== idAula);
+            await salvarListaAulas(novasAulas, idAula, false);
             renderizarQuizDaAula();
+            atualizarBotaoProximaAula();
             return;
         }
         const escolhas = quiz.map((_, qIndex) => {
