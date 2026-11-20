@@ -847,8 +847,9 @@ function renderizarQuizDaAula() {
 function configurarProximaAula() {
     const botao = document.getElementById("nextLessonButton");
     if (!botao) return;
-    botao.addEventListener("click", () => {
+    botao.addEventListener("click", async () => {
         if (!moduloAtual) return;
+        await concluirAulaAtual();
         const indiceGlobal = modulos.findIndex(modulo => modulo.id === moduloAtual.id);
         if (aulaAtualIndice + 1 < moduloAtual.aulas.length) {
             selecionarAula(aulaAtualIndice + 1);
@@ -857,7 +858,6 @@ function configurarProximaAula() {
         const proximoModulo = modulos[indiceGlobal + 1];
         if (proximoModulo) {
             abrirModulo(proximoModulo.id);
-            selecionarAula(0);
         } else {
             mostrarToast("Você chegou à última aula. Parabéns por concluir a trilha!");
             navegar("cursos");
