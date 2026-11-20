@@ -357,6 +357,11 @@ function abrirModalModulo(id) {
         checkbox.checked = aulasConcluidas.includes(id);
         checkbox.setAttribute("aria-label", "Marcar " + nomeAula + " como concluída");
         checkbox.addEventListener("change", async () => {
+            if (checkbox.checked && !quizDaAulaFoiConcluido(id)) {
+                checkbox.checked = false;
+                mostrarToast("Esta aula só pode ser marcada após concluir seu quiz.");
+                return;
+            }
             const novas = checkbox.checked
                 ? [...new Set([...aulasConcluidas, id])]
                 : aulasConcluidas.filter(item => item !== id);
@@ -422,7 +427,8 @@ async function salvarListaAulas(novasAulas, idAulaAlterada, foiConcluida) {
     }
 
     const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
-    const listaValida = [...new Set(novasAulas.filter(id => idsValidos.includes(id)))];
+    const resultadosQuiz = lerResultadosQuizzes();
+    const listaValida = [...new Set(novasAulas.filter(id => idsValidos.includes(id) && (resultadosQuiz[id] || !foiConcluida)))];
     const novosModulos = modulos.filter(modulo =>
         modulo.aulas.length > 0 && modulo.aulas.every((_, indice) => listaValida.includes(idDaAula(modulo, indice)))
     ).map(modulo => modulo.id);
@@ -1364,8 +1370,9 @@ async function carregarProgressoDaConta() {
 
     if (data) {
         const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
+        const resultadosQuiz = lerResultadosQuizzes();
         aulasConcluidas = Array.isArray(data.completed_lessons)
-            ? [...new Set(data.completed_lessons.filter(id => idsValidos.includes(id)))]
+            ? [...new Set(data.completed_lessons.filter(id => idsValidos.includes(id) && resultadosQuiz[id]))]
             : [];
         pontuacaoAtual = data.quiz_score ?? null;
     }
