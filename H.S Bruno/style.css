@@ -1179,118 +1179,113 @@ body.dark-mode #historico .history-empty{background:#253647;border-color:#40566f
 @media(prefers-reduced-motion:reduce){#historico .history-overview .panel,#historico .history-activity{transition:none}}
 
 
-/* =====================================================
-   PALETA DE ACENTOS — IDENTIDADE VISUAL COLORIDA
-   Base clara preservada; cores aplicadas em detalhes e estados.
-===================================================== */
-:root{
- --accent-blue:#dce9ff;--accent-blue-strong:#3977df;
- --accent-purple:#e9e0ff;--accent-purple-strong:#8058d6;
- --accent-green:#d9f3e7;--accent-green-strong:#328763;
- --accent-orange:#fff0d5;--accent-orange-strong:#c88329;
- --accent-pink:#ffe1e8;--accent-pink-strong:#c34d75;
- --accent-cyan:#d9f1f8;--accent-cyan-strong:#2e829d;
-}
-/* Navegação e pequenos marcadores */
-.nav-link.active{background:linear-gradient(100deg,var(--accent-blue),#e7eaff);color:#2459b9;box-shadow:inset 3px 0 var(--accent-blue-strong)}
-.nav-link i,.teacher-promo i{background:linear-gradient(135deg,var(--accent-purple-strong),#9b7be7)}
-/* Cards dos módulos: diferenciação por área sem mudar layout */
-.module-card:nth-child(1),.module-card:nth-child(2){border-top:3px solid var(--accent-blue-strong)}
-.module-card:nth-child(3),.module-card:nth-child(4){border-top:3px solid var(--accent-purple-strong)}
-/* Destaques discretos para metas, conquistas e atividades */
-.home-progress-card{background:linear-gradient(135deg,#f0f6ff,#f7f3ff)}
-.profile-achievement:nth-child(4n+1) .profile-achievement-icon{background:var(--accent-green);color:var(--accent-green-strong)}
-.profile-achievement:nth-child(4n+2) .profile-achievement-icon{background:var(--accent-purple);color:var(--accent-purple-strong)}
-.profile-achievement:nth-child(4n+3) .profile-achievement-icon{background:var(--accent-orange);color:var(--accent-orange-strong)}
-.profile-achievement:nth-child(4n) .profile-achievement-icon{background:var(--accent-pink);color:var(--accent-pink-strong)}
-.challenge-card:nth-child(4n+1){--challenge-accent:var(--accent-blue-strong);--challenge-soft:var(--accent-blue)}
-.challenge-card:nth-child(4n+2){--challenge-accent:var(--accent-purple-strong);--challenge-soft:var(--accent-purple)}
-.challenge-card:nth-child(4n+3){--challenge-accent:var(--accent-orange-strong);--challenge-soft:var(--accent-orange)}
-.challenge-card:nth-child(4n){--challenge-accent:var(--accent-green-strong);--challenge-soft:var(--accent-green)}
-.challenge-card .challenge-card-symbol{background:var(--challenge-soft);color:var(--challenge-accent)}
-.challenge-card .challenge-card-top{color:var(--challenge-accent)}
-.challenge-card .challenge-card-progress{accent-color:var(--challenge-accent)}
-
 
 /* =====================================================
-   H.S. BRUNO — PALETA COLORIDA (APLICAÇÃO REAL)
-   Acentos por categoria: azul, lilás, verde, âmbar e rosa
+   H.S. BRUNO — ACENTOS SEMÂNTICOS (CLARO + ESCURO)
+   As cores acompanham a área do curso, não a ordem dos cartões.
 ===================================================== */
 :root{
-  --hs-blue-soft:#e8f0ff;
-  --hs-blue-accent:#477ce0;
-  --hs-lilac-soft:#f0eaff;
-  --hs-lilac-accent:#8964d8;
-  --hs-green-soft:#e4f6ed;
-  --hs-green-accent:#35a77b;
-  --hs-amber-soft:#fff2dc;
-  --hs-amber-accent:#d89535;
-  --hs-rose-soft:#ffe9ef;
-  --hs-rose-accent:#d66d91;
-  --hs-cyan-soft:#e2f5fb;
-  --hs-cyan-accent:#3997b8;
+  --hs-blue-soft:#e8f0ff; --hs-blue-accent:#477ce0;
+  --hs-lilac-soft:#f0eaff; --hs-lilac-accent:#8964d8;
+  --hs-green-soft:#e4f6ed; --hs-green-accent:#35a77b;
+  --hs-amber-soft:#fff2dc; --hs-amber-accent:#d89535;
+  --hs-rose-soft:#ffe9ef; --hs-rose-accent:#d66d91;
+  --hs-cyan-soft:#e2f5fb; --hs-cyan-accent:#3997b8;
 }
 
-/* Cards de módulos: cada área com seu próprio acento */
-.module-card:nth-child(4n+1){--area-soft:var(--hs-blue-soft);--area-accent:var(--hs-blue-accent)}
-.module-card:nth-child(4n+2){--area-soft:var(--hs-lilac-soft);--area-accent:var(--hs-lilac-accent)}
-.module-card:nth-child(4n+3){--area-soft:var(--hs-green-soft);--area-accent:var(--hs-green-accent)}
-.module-card:nth-child(4n){--area-soft:var(--hs-amber-soft);--area-accent:var(--hs-amber-accent)}
-.module-card{border-color:color-mix(in srgb,var(--area-accent,#477ce0) 18%,white);box-shadow:0 8px 24px color-mix(in srgb,var(--area-accent,#477ce0) 9%,transparent)}
-.module-card .primary{background:var(--area-accent,#477ce0);border-color:var(--area-accent,#477ce0)}
-.module-card .module-body h3{color:var(--area-accent,#477ce0)}
+/* Cartões dos módulos — associação consistente por módulo */
+.module-card[data-module-id="hardware-1"],.home-module-card[data-module-id="hardware-1"]{
+  --area-soft:var(--hs-blue-soft);--area-accent:var(--hs-blue-accent);
+}
+.module-card[data-module-id="hardware-2"],.home-module-card[data-module-id="hardware-2"]{
+  --area-soft:var(--hs-cyan-soft);--area-accent:var(--hs-cyan-accent);
+}
+.module-card[data-module-id="software-1"],.home-module-card[data-module-id="software-1"]{
+  --area-soft:var(--hs-lilac-soft);--area-accent:var(--hs-lilac-accent);
+}
+.module-card[data-module-id="software-2"],.home-module-card[data-module-id="software-2"]{
+  --area-soft:var(--hs-green-soft);--area-accent:var(--hs-green-accent);
+}
+.module-card,.home-module-card{
+  border-color:color-mix(in srgb,var(--area-accent) 28%,#fff);
+  box-shadow:0 8px 22px color-mix(in srgb,var(--area-accent) 11%,transparent);
+}
+.module-card::before,.home-module-card::before{
+  background:var(--area-accent);
+}
+.module-card .module-area-tag,.module-card .module-body h3,
+.home-module-card .home-module-body h3{color:var(--area-accent)}
+.module-card .primary,.home-module-card .home-module-button{
+  background:var(--area-accent);border-color:var(--area-accent);
+}
+.home-module-card .home-module-image{
+  background-color:var(--area-soft);
+}
+.home-module-card .home-module-progress i{background:var(--area-accent)}
+.home-module-card .home-module-progress b{color:var(--area-accent)}
 
-/* Cards da página inicial */
-.home-module-card:nth-child(4n+1){--area-soft:var(--hs-blue-soft);--area-accent:var(--hs-blue-accent)}
-.home-module-card:nth-child(4n+2){--area-soft:var(--hs-lilac-soft);--area-accent:var(--hs-lilac-accent)}
-.home-module-card:nth-child(4n+3){--area-soft:var(--hs-green-soft);--area-accent:var(--hs-green-accent)}
-.home-module-card:nth-child(4n){--area-soft:var(--hs-amber-soft);--area-accent:var(--hs-amber-accent)}
-.home-module-card{border-color:color-mix(in srgb,var(--area-accent,#477ce0) 22%,white);box-shadow:0 8px 22px color-mix(in srgb,var(--area-accent,#477ce0) 9%,transparent)}
-.home-module-card .home-module-image{background:var(--area-soft,#e8f0ff)}
-.home-module-card .home-module-body h3{color:var(--area-accent,#477ce0)}
-.home-module-card .home-module-progress>span{background:var(--area-accent,#477ce0)}
-.home-module-card .home-module-button{background:var(--area-accent,#477ce0);border-color:var(--area-accent,#477ce0)}
-
-/* Metas e desempenho */
+/* Progresso e widgets: cor de significado, não só decoração */
 .home-progress-card{background:linear-gradient(135deg,#f0eaff,#f8f5ff);border-color:#dfd2ff}
 .home-progress-ring{--progress-accent:var(--hs-lilac-accent)}
 .home-performance-item:nth-child(1) .performance-icon{background:var(--hs-amber-soft);color:var(--hs-amber-accent)}
 .home-performance-item:nth-child(2) .performance-icon{background:var(--hs-green-soft);color:var(--hs-green-accent)}
 .home-performance-item:nth-child(3) .performance-icon{background:var(--hs-cyan-soft);color:var(--hs-cyan-accent)}
-
-/* Estatísticas do perfil */
 .profile-stat-card:nth-child(1){background:linear-gradient(145deg,#e8f0ff,#f6f9ff);border-color:#d5e3ff}
 .profile-stat-card:nth-child(2){background:linear-gradient(145deg,#e4f6ed,#f6fffa);border-color:#d0efdf}
 .profile-stat-card:nth-child(3){background:linear-gradient(145deg,#fff2dc,#fffaf1);border-color:#f4dfbd}
 .profile-stat-card:nth-child(1)>span{background:var(--hs-blue-soft);color:var(--hs-blue-accent)}
 .profile-stat-card:nth-child(2)>span{background:var(--hs-green-soft);color:var(--hs-green-accent)}
 .profile-stat-card:nth-child(3)>span{background:var(--hs-amber-soft);color:var(--hs-amber-accent)}
-
-/* Medalhas: variação de cor nos ícones */
 .profile-achievement:nth-child(5n+1) .profile-achievement-icon{background:var(--hs-blue-soft);color:var(--hs-blue-accent)}
 .profile-achievement:nth-child(5n+2) .profile-achievement-icon{background:var(--hs-lilac-soft);color:var(--hs-lilac-accent)}
 .profile-achievement:nth-child(5n+3) .profile-achievement-icon{background:var(--hs-green-soft);color:var(--hs-green-accent)}
 .profile-achievement:nth-child(5n+4) .profile-achievement-icon{background:var(--hs-amber-soft);color:var(--hs-amber-accent)}
 .profile-achievement:nth-child(5n) .profile-achievement-icon{background:var(--hs-rose-soft);color:var(--hs-rose-accent)}
-
-/* Desafios: diferenciação de cartões e ícones */
 .challenge-card:nth-child(4n+1){--challenge-accent:var(--hs-blue-accent);--challenge-soft:var(--hs-blue-soft)}
 .challenge-card:nth-child(4n+2){--challenge-accent:var(--hs-lilac-accent);--challenge-soft:var(--hs-lilac-soft)}
-.challenge-card:nth-child(4n+3){--challenge-accent:var(--hs-green-accent);--challenge-soft:var(--hs-green-soft)}
-.challenge-card:nth-child(4n){--challenge-accent:var(--hs-amber-accent);--challenge-soft:var(--hs-amber-soft)}
-.challenge-card{border-color:color-mix(in srgb,var(--challenge-accent) 22%,white);box-shadow:0 8px 22px color-mix(in srgb,var(--challenge-accent) 9%,transparent)}
+.challenge-card:nth-child(4n+3){--challenge-accent:var(--hs-amber-accent);--challenge-soft:var(--hs-amber-soft)}
+.challenge-card:nth-child(4n){--challenge-accent:var(--hs-green-accent);--challenge-soft:var(--hs-green-soft)}
+.challenge-card{border-color:color-mix(in srgb,var(--challenge-accent) 25%,#fff)}
 .challenge-card .challenge-card-symbol{background:var(--challenge-soft);color:var(--challenge-accent)}
+.challenge-card .challenge-card-top{color:var(--challenge-accent)}
 .challenge-card .challenge-card-progress span{background:var(--challenge-accent)}
-
-/* Indicadores do histórico */
 #historico .history-overview .panel:nth-child(1){--history-accent:var(--hs-blue-accent);--history-soft:var(--hs-blue-soft)}
 #historico .history-overview .panel:nth-child(2){--history-accent:var(--hs-green-accent);--history-soft:var(--hs-green-soft)}
 #historico .history-overview .panel:nth-child(3){--history-accent:var(--hs-lilac-accent);--history-soft:var(--hs-lilac-soft)}
 #historico .history-overview .panel:nth-child(4){--history-accent:var(--hs-amber-accent);--history-soft:var(--hs-amber-soft)}
-#historico .history-overview .panel{border-color:color-mix(in srgb,var(--history-accent) 24%,white)}
+#historico .history-overview .panel{border-color:color-mix(in srgb,var(--history-accent) 25%,#fff)}
 #historico .history-overview .panel b{color:var(--history-accent)}
 #historico .history-overview .panel::before{background:var(--history-soft)}
 
-/* Mantém os acentos suaves no modo escuro sem perder legibilidade */
-body.dark-mode .module-card,body.dark-mode .home-module-card,body.dark-mode .challenge-card,
-body.dark-mode .profile-stat-card{border-color:color-mix(in srgb,var(--area-accent,var(--challenge-accent,#8a9fff)) 28%,#26324b)}
+/* Modo escuro: sem fundos pastel claros, com contraste e acentos controlados */
+body.dark-mode .module-card,body.dark-mode .home-module-card{
+  background:#202c35!important;
+  border-color:color-mix(in srgb,var(--area-accent) 45%,#263640)!important;
+  box-shadow:0 5px 18px #0003!important;
+}
+body.dark-mode .module-card::before,body.dark-mode .home-module-card::before{
+  background:var(--area-accent)!important;opacity:1;
+}
+body.dark-mode .module-card .module-area-tag,body.dark-mode .module-card .module-body h3,
+body.dark-mode .home-module-card .home-module-body h3,
+body.dark-mode .home-module-card .home-module-progress b{color:var(--area-accent)!important}
+body.dark-mode .module-card .module-body p{color:#b7c9d9}
+body.dark-mode .module-card .primary,body.dark-mode .home-module-card .home-module-button{
+  background:color-mix(in srgb,var(--area-accent) 28%,#263640)!important;
+  border-color:color-mix(in srgb,var(--area-accent) 50%,#263640)!important;
+  color:#eaf2f6!important;
+}
+body.dark-mode .home-module-card .home-module-image{background-color:#263640}
+body.dark-mode .home-progress-card{background:linear-gradient(135deg,#2b3445,#293342)!important;border-color:#3b4b60!important}
+body.dark-mode .profile-stat-card:nth-child(1){background:#25384a!important;border-color:#405a79!important}
+body.dark-mode .profile-stat-card:nth-child(2){background:#243c35!important;border-color:#3c6253!important}
+body.dark-mode .profile-stat-card:nth-child(3){background:#413629!important;border-color:#665338!important}
+body.dark-mode .profile-stat-card:nth-child(1)>span{background:#2b4058;color:#93baff}
+body.dark-mode .profile-stat-card:nth-child(2)>span{background:#294638;color:#91d8b2}
+body.dark-mode .profile-stat-card:nth-child(3)>span{background:#493a27;color:#e9bd78}
+body.dark-mode .profile-achievement-icon{background:#2d3d4b!important;color:#d7e8f8!important}
+body.dark-mode .challenge-card{background:#202c35!important;border-color:color-mix(in srgb,var(--challenge-accent) 45%,#263640)!important}
+body.dark-mode .challenge-card .challenge-card-symbol{background:color-mix(in srgb,var(--challenge-accent) 25%,#263640)!important;color:color-mix(in srgb,var(--challenge-accent) 80%,#d9e5f2)!important}
+body.dark-mode #historico .history-overview .panel{background:#202c35!important;border-color:color-mix(in srgb,var(--history-accent) 45%,#263640)!important}
+body.dark-mode #historico .history-overview .panel b{color:color-mix(in srgb,var(--history-accent) 80%,#e8eef1)!important}
+body.dark-mode #historico .history-overview .panel::before{background:color-mix(in srgb,var(--history-accent) 22%,#263640)!important}
