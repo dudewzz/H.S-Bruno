@@ -1082,7 +1082,7 @@ function renderizarPergunta() {
         input.value = indiceOriginal;
         input.checked = respostas[indicePergunta] === indiceOriginal;
         // Depois de escolher uma resposta, bloqueia todas as alternativas desta questão.
-        input.disabled = respostas[indicePergunta !== undefined ? indicePergunta : indicePergunta] !== undefined;
+        input.disabled = respostas[indicePergunta] !== undefined;
         input.addEventListener("change", () => {
             if (respostas[indicePergunta] !== undefined) return;
             respostas[indicePergunta] = indiceOriginal;
@@ -1107,8 +1107,7 @@ function renderizarPergunta() {
 
     document.getElementById("quizPrev").disabled = indicePergunta === 0;
     const botaoProximo = document.getElementById("quizNext");
-    const respostaErrada = respostas[indicePergunta] !== undefined && respostas[indicePergunta] !== pergunta.correta;
-    botaoProximo.textContent = respostaErrada ? "Refazer quiz" : indicePergunta === perguntas.length - 1 ? "Finalizar quiz ✓" : "Próxima questão →";
+    botaoProximo.textContent = indicePergunta === perguntas.length - 1 ? "Finalizar quiz ✓" : "Próxima questão →";
 }
 
 async function finalizarQuiz() {
@@ -1169,16 +1168,6 @@ function configurarQuiz() {
         }
         if (respostas[indicePergunta] === undefined) {
             mostrarToast("Selecione uma alternativa para continuar.");
-            return;
-        }
-        const perguntaAtual = perguntas[indicePergunta];
-        if (respostas[indicePergunta] !== perguntaAtual.correta) {
-            indicePergunta = 0;
-            respostas = {};
-            ordemOpcoesQuizGeral = {};
-            delete botao.dataset.resultado;
-            renderizarPergunta();
-            mostrarToast("Resposta incorreta. O quiz foi reiniciado para uma nova tentativa.");
             return;
         }
         if (indicePergunta === perguntas.length - 1) finalizarQuiz();
