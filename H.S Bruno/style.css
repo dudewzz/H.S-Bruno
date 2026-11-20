@@ -909,3 +909,64 @@ body.dark-mode .challenge-answer:has(input:checked){background:#25364a;border-co
 body.dark-mode .challenge-result{background:#203c32;color:#a9e0c2}
 @media(max-width:900px){.history-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.challenge-grid{grid-template-columns:1fr}.history-activity{gap:8px;padding:10px 0}}
+
+
+/* =====================================================
+   CLEAN PREMIUM — refinamento visual (sem alterar funcionalidades)
+===================================================== */
+:root { --hs-motion-fast: 160ms; --hs-motion: 240ms; --hs-ease: cubic-bezier(.2,.75,.25,1); }
+body, .sidebar, .topbar, .panel, .module-card, .home-widget, .home-performance-item,
+.home-progress-card, .home-next-lesson, .home-module-card, .profile-stat-card,
+.challenge-card, .history-activity, .lesson-quiz, .lesson-quiz-question,
+.module-modal, .modal, .auth-card, .auth-panel {
+  transition: background-color var(--hs-motion) var(--hs-ease), color var(--hs-motion) var(--hs-ease),
+    border-color var(--hs-motion) var(--hs-ease), box-shadow var(--hs-motion) var(--hs-ease),
+    transform var(--hs-motion) var(--hs-ease);
+}
+button, .nav-link, .filter, .lesson-quiz-option, .challenge-answer, .module-modal-lesson,
+.home-view-all, a, input, select, textarea {
+  transition: background-color var(--hs-motion-fast) var(--hs-ease), color var(--hs-motion-fast) var(--hs-ease),
+    border-color var(--hs-motion-fast) var(--hs-ease), box-shadow var(--hs-motion-fast) var(--hs-ease),
+    transform var(--hs-motion-fast) var(--hs-ease), opacity var(--hs-motion-fast) var(--hs-ease);
+}
+.module-card, .panel, .home-progress-card, .home-next-lesson, .home-widget,
+.home-performance-item, .profile-stat-card, .challenge-card, .lesson-quiz,
+.history-stat-card, .history-panel {
+  border-radius: 20px;
+  box-shadow: 0 8px 24px #24458b0b, 0 1px 2px #24458b08;
+}
+.module-card:hover, .panel:hover, .home-widget:hover, .home-performance-item:hover,
+.profile-stat-card:hover, .challenge-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px #24458b14, 0 2px 5px #24458b0a;
+}
+button:not(:disabled):active, .nav-link:active, .filter:active, .lesson-quiz-option:active,
+.challenge-answer:active { transform: scale(.985); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+.lesson-quiz-option:focus-within, .challenge-answer:focus-within {
+  outline: 2px solid #1765ed;
+  outline-offset: 3px;
+}
+.nav-link { border-radius: 14px; }
+.nav-link.active { box-shadow: inset 3px 0 #1765ed, 0 3px 10px #1765ed10; }
+.module-card, .challenge-card, .history-activity { overflow: hidden; }
+.module-card img, .module-card .module-image, .home-module-card img { transition: transform 380ms var(--hs-ease), filter 380ms var(--hs-ease); }
+.module-card:hover img, .module-card:hover .module-image, .home-module-card:hover img { transform: scale(1.025); }
+.primary, .secondary, .outline, .dark, .auth-submit, .confirm-accept, .theme-toggle,
+.lesson-navigation button, .challenge-card button { box-shadow: 0 3px 10px #1765ed12; }
+.primary:hover, .auth-submit:hover, .confirm-accept:hover, .lesson-navigation button:hover,
+.challenge-card button:hover { box-shadow: 0 6px 16px #1765ed22; filter: brightness(1.025); }
+.progress-track > span, .track > span, .home-module-progress > span, .home-widget-track > span,
+.challenge-card-progress span { transition: width 700ms var(--hs-ease); }
+.lesson-quiz-option:hover, .challenge-answer:hover { transform: translateY(-1px); }
+.lesson-quiz-option:has(input:checked), .challenge-answer:has(input:checked) { box-shadow: 0 0 0 2px #1765ed14; }
+body.dark-mode .module-card:hover, body.dark-mode .panel:hover, body.dark-mode .home-widget:hover,
+body.dark-mode .home-performance-item:hover, body.dark-mode .profile-stat-card:hover,
+body.dark-mode .challenge-card:hover { box-shadow: 0 12px 28px #00000028; }
+@media (max-width: 650px) {
+  .module-card:hover, .panel:hover, .home-widget:hover, .home-performance-item:hover,
+  .profile-stat-card:hover, .challenge-card:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
