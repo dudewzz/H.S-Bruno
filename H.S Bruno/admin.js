@@ -48,7 +48,7 @@ async function carregarPainel({quiet=false}={}){
 }
 function renderDashboard(allUsers){
   const lessons=students.reduce((s,u)=>s+(u.completed_lessons?.length||0),0);
-  const quizData=students.map(quizStats),totalCompleted=quizData.reduce((s,q)=>s+q.completed,0),allScores=quizData.flatMap(q=>Object.values(q.results).filter(r=>r&&!r.refazendo).flatMap(quizAttempts).map(a=>scorePercent(a.score)));
+  const quizData=students.map(quizStats),lessonQuizCount=quizData.reduce((s,q)=>s+q.completed,0),generalQuizAttempts=students.flatMap(u=>Array.isArray(u.general_quiz_history)?u.general_quiz_history:[]),totalCompleted=lessonQuizCount+generalQuizAttempts.length,allScores=[...quizData.flatMap(q=>Object.values(q.results).filter(r=>r&&!r.refazendo).flatMap(quizAttempts).map(a=>scorePercent(a.score))),...generalQuizAttempts.map(a=>Number(a.score)).filter(Number.isFinite)];
   const avg=allScores.length?Math.round(allScores.reduce((s,n)=>s+n,0)/allScores.length):null;
   const challenges=students.reduce((s,u)=>s+challengeCount(u),0);
   byId("totalUsers").textContent=allUsers.length;byId("totalStudents").textContent=students.length;byId("totalLessons").textContent=lessons;byId("totalLessonQuizzes").textContent=totalCompleted;byId("averageScore").textContent=avg===null?"—":avg+"%";byId("totalChallenges").textContent=challenges;
@@ -72,8 +72,10 @@ function renderStudents(){
  byId("studentsTable").innerHTML=filtered.length?filtered.map(u=>{const q=quizStats(u);return `<tr><td class="student-email">${escapeHtml(u.email)}</td><td>${formatDate(u.created_at)}</td><td>${u.completed_lessons?.length||0}/17</td><td>${q.completed}/17</td><td>${q.average===null?"—":q.average+"%"}</td><td>${challengeCount(u)}/4</td><td>${u.completed_modules?.length||0}/4</td><td>${formatDate(u.updated_at)}</td></tr>`}).join(""):'<tr><td colspan="8" class="empty">Nenhum aluno encontrado.</td></tr>'
 }
 function renderAssessments(){
- const rows=students.flatMap(u=>MODULES.flatMap(m=>m.lessons.map((lesson,index)=>{const id=m.id+"-aula-"+(index+1),r=getQuizResults(u)[id];if(!r||r.refazendo)return null;const attempts=quizAttempts(r),scores=attempts.map(a=>scorePercent(a.score));return{email:u.email,lesson,module:m.title,attempts,scores,date:r.data||attempts.at(-1)?.data}}))).filter(Boolean).sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
- byId("assessmentsTable").innerHTML=rows.length?rows.map(r=>`<tr><td class="student-email">${escapeHtml(r.email)}</td><td>${escapeHtml(r.lesson)}</td><td>${escapeHtml(r.module)}</td><td>${r.attempts.length}</td><td>${r.scores.length?r.scores.at(-1)+"%":"—"}</td><td>${r.scores.length?Math.max(...r.scores)+"%":"—"}</td><td>${formatDate(r.date)}</td></tr>`).join(""):'<tr><td colspan="7" class="empty">Os quizzes ainda não estão sincronizados para o banco de dados.</td></tr>'
+ const rows=students.flatMap(u=>MODULES.flatMap(m=>m.lessons.map((lesson,index)=>{const id=m.id+"-aula-"+(index+1),r=getQuizResults(u)[id];if(!r||r.refazendo)return null;const attempts=quizAttempts(r),scores=attempts.map(a=>scorePercent(a.score));return{email:u.email,lesson,module:m.title,attempts,scores,date:r.data||attempts.at(-1)?.data}}))).filter(Boolean);
+ const generalRows=students.flatMap(u=>(Array.isArray(u.general_quiz_history)?u.general_quiz_history:[]).map((attempt,index)=>({email:u.email,lesson:"Quiz geral · tentativa "+(index+1),module:"Hardware e Software",attempts:[attempt],scores:[Number(attempt.score)].filter(Number.isFinite),date:attempt.data})));
+ const allRows=[...rows,...generalRows].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+ byId("assessmentsTable").innerHTML=allRows.length?allRows.map(r=>`<tr><td class="student-email">${escapeHtml(r.email)}</td><td>${escapeHtml(r.lesson)}</td><td>${escapeHtml(r.module)}</td><td>${r.attempts.length}</td><td>${r.scores.length?r.scores.at(-1)+"%":"—"}</td><td>${r.scores.length?Math.max(...r.scores)+"%":"—"}</td><td>${formatDate(r.date)}</td></tr>`).join(""):'<tr><td colspan="7" class="empty">Ainda não há avaliações sincronizadas.</td></tr>'
 }
 function updateLastRefresh(){let el=byId("lastUpdated");if(el)el.textContent="Dados atualizados: "+lastUpdate.toLocaleTimeString("pt-BR")}
 function configurarAtualizacaoAutomatica(){
