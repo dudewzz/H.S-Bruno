@@ -1393,3 +1393,16 @@ body.dark-mode .performance-row span:last-child{color:#d8e5f5!important}
  .profile-footer{align-items:flex-start!important;flex-direction:column!important}
 }
 @media(max-width:430px){.page#cursos .module-grid{grid-template-columns:1fr!important}}
+
+/* Ajustes de contraste e estados acessíveis após revisão */
+#quizCount{color:#4d6388;font-weight:700;letter-spacing:.15px}
+.answer.selected{border:2px solid #3977df!important;box-shadow:0 0 0 2px rgba(57,119,223,.12)!important;font-weight:600}
+.lesson-actions{gap:12px!important}
+.lesson-actions button{min-height:42px}
+.challenge-submit-row button:disabled{opacity:.48;cursor:not-allowed;filter:saturate(.35)}
+#resetProgress,.destructive-action{color:#96352f!important;border-color:#a94e46!important;background:#fff3f1!important;font-weight:700!important}
+#resetProgress:hover,.destructive-action:hover{background:#ffe4e0!important}
+body.dark-mode #quizCount{color:#c4d5f2!important}
+body.dark-mode .answer.selected{border-color:#8ab7ff!important;background:#2c4763!important;box-shadow:0 0 0 2px rgba(138,183,255,.2)!important;color:#edf5ff!important}
+body.dark-mode #resetProgress,body.dark-mode .destructive-action{color:#ffb8ae!important;border-color:#e28a80!important;background:rgba(194,78,69,.16)!important}
+body.dark-mode #resetProgress:hover,body.dark-mode .destructive-action:hover{background:rgba(194,78,69,.28)!important}
