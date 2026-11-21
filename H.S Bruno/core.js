@@ -447,7 +447,10 @@ function carregarVideoDaAula() {
     fonte.src = caminhoVideo;
     fonte.type = "video/mp4";
     player.appendChild(fonte);
-    player.addEventListener("error", () => {
+    let avisoVideoExibido = false;
+    const exibirAvisoVideo = () => {
+        if (avisoVideoExibido) return;
+        avisoVideoExibido = true;
         const placeholder = document.createElement("div");
         placeholder.className = "video-placeholder";
         const tituloAviso = document.createElement("h3");
@@ -458,7 +461,9 @@ function carregarVideoDaAula() {
         caminho.textContent = caminhoVideo;
         placeholder.append(tituloAviso, descricaoAviso, caminho);
         videoContainer.replaceChildren(placeholder);
-    }, { once: true });
+    };
+    player.addEventListener("error", exibirAvisoVideo, { once: true });
+    fonte.addEventListener("error", exibirAvisoVideo, { once: true });
     videoContainer.appendChild(player);
     renderizarQuizDaAula();
     atualizarBotaoProximaAula();
