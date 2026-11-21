@@ -392,7 +392,7 @@ async function iniciarPortal() {
 
 function quantidadeQuizzesConcluidos(){const results=lerResultadosQuizzes();return modulos.reduce((sum,m)=>sum+m.aulas.filter((_,i)=>Boolean(results[idDaAula(m,i)]&&!results[idDaAula(m,i)].refazendo)).length,0);}
 function quantidadeDesafiosConcluidos(){return modulos.filter(m=>Boolean(resultadosDesafios[m.id]?.completed)).length;}
-function tarefasConcluidasModulo(m){const results=lerResultadosQuizzes(),video=m.aulas.filter((_,i)=>videosAssistidos.includes(idDaAula(m,i))).length,quiz=m.aulas.filter((_,i)=>Boolean(results[idDaAula(m)]&&!results[idDaAula(m)].refazendo)).length,challenge=resultadosDesafios[m.id]?.completed?1:0;return video+quiz+challenge;}
+function tarefasConcluidasModulo(m){const results=lerResultadosQuizzes(),video=m.aulas.filter((_,i)=>videosAssistidos.includes(idDaAula(m,i))).length,quiz=m.aulas.filter((_,i)=>Boolean(results[idDaAula(m,i)]&&!results[idDaAula(m,i)].refazendo)).length,challenge=resultadosDesafios[m.id]?.completed?1:0;return video+quiz+challenge;}
 function totalTarefasModulo(m){return m.aulas.length*2+1;}
 function progressoModulo(m){return Math.round(tarefasConcluidasModulo(m)/totalTarefasModulo(m)*100);}
 function moduloCompleto(m){return tarefasConcluidasModulo(m)===totalTarefasModulo(m);}
