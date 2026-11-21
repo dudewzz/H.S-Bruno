@@ -35,10 +35,16 @@
       <section class="page-section active" id="overview">
         <div class="welcome"><div><span class="eyebrow">CENTRAL DE CONTROLE</span><h2>Bem-vindo à administração.</h2><p>Acompanhe as contas e o desenvolvimento dos alunos no H.S Bruno.</p></div><span class="welcome-icon">▦</span></div>
         <div class="stats-grid">
-          <article class="stat-card"><span>CONTAS CADASTRADAS</span><strong id="totalUsers">—</strong><small>Contas registradas no sistema</small></article>
-          <article class="stat-card"><span>ALUNOS</span><strong id="totalStudents">—</strong><small>Sem contar a conta administradora</small></article>
-          <article class="stat-card"><span>AULAS CONCLUÍDAS</span><strong id="totalLessons">—</strong><small>Soma do progresso dos alunos</small></article>
-          <article class="stat-card"><span>MÉDIA DOS QUIZZES</span><strong id="averageScore">—</strong><small>Entre alunos com pontuação</small></article>
+          <article class="stat-card"><span>CONTAS CADASTRADAS</span><strong id="totalUsers">—</strong><small>Total de contas</small></article>
+          <article class="stat-card"><span>ALUNOS</span><strong id="totalStudents">—</strong><small>Contas não administrativas</small></article>
+          <article class="stat-card"><span>AULAS CONCLUÍDAS</span><strong id="totalLessons">—</strong><small>Concluídas entre todos os alunos</small></article>
+          <article class="stat-card"><span>QUIZZES REALIZADOS</span><strong id="totalLessonQuizzes">—</strong><small>Quizzes individuais sincronizados</small></article>
+          <article class="stat-card"><span>MÉDIA DOS QUIZZES</span><strong id="averageScore">—</strong><small>Média dos resultados sincronizados</small></article>
+          <article class="stat-card"><span>DESAFIOS CONCLUÍDOS</span><strong id="totalChallenges">—</strong><small>Entre todos os módulos</small></article>
+        </div>
+        <div class="admin-detail-grid">
+          <article class="panel"><div class="panel-heading"><div><h3>Desempenho por módulo</h3><p>Quizzes concluídos e média de acertos em cada módulo.</p></div></div><div id="modulePerformance" class="module-performance-list"></div></article>
+          <article class="panel"><div class="panel-heading"><div><h3>Atividade recente</h3><p>Contas com progresso atualizado recentemente.</p></div></div><div id="activitySummary" class="activity-summary"></div></article>
         </div>
         <article class="panel">
           <div class="panel-heading"><div><h3>Alunos recentes</h3><p>Contas que foram cadastradas mais recentemente.</p></div><a href="#students" data-section="students">Ver todos →</a></div>
@@ -47,14 +53,14 @@
       </section>
 
       <section class="page-section" id="students">
-        <div class="section-intro"><span class="eyebrow">CONTAS E APRENDIZADO</span><h2>Alunos cadastrados</h2><p>Consulte o progresso individual de cada conta.</p></div>
+        <div class="section-intro"><span class="eyebrow">CONTAS E APRENDIZADO</span><h2>Alunos cadastrados</h2><p>Consulte o progresso individual, quizzes, desafios e atualização de cada aluno.</p></div>
         <div class="toolbar"><input id="studentSearch" type="search" placeholder="Pesquisar por e-mail..."><span id="studentCount"></span></div>
-        <article class="panel"><div class="table-wrap"><table><thead><tr><th>ALUNO</th><th>DATA DE CADASTRO</th><th>AULAS</th><th>MÓDULOS</th><th>QUIZ</th><th>ÚLTIMA ATIVIDADE</th></tr></thead><tbody id="studentsTable"></tbody></table></div></article>
+        <article class="panel"><div class="table-wrap"><table><thead><tr><th>ALUNO</th><th>CADASTRO</th><th>AULAS</th><th>QUIZZES</th><th>MÉDIA</th><th>DESAFIOS</th><th>MÓDULOS</th><th>ÚLTIMA ATIVIDADE</th></tr></thead><tbody id="studentsTable"></tbody></table></div></article>
       </section>
 
       <section class="page-section" id="assessments">
-        <div class="section-intro"><span class="eyebrow">RESULTADOS</span><h2>Avaliações</h2><p>Últimas pontuações registradas pelos alunos.</p></div>
-        <article class="panel"><div class="table-wrap"><table><thead><tr><th>ALUNO</th><th>PONTUAÇÃO</th><th>ÚLTIMA ATIVIDADE</th></tr></thead><tbody id="assessmentsTable"></tbody></table></div></article>
+        <div class="section-intro"><span class="eyebrow">RESULTADOS</span><h2>Avaliações</h2><p>Detalhamento dos quizzes das aulas sincronizados com o banco de dados.</p></div>
+        <article class="panel"><div class="table-wrap"><table><thead><tr><th>ALUNO</th><th>QUIZ / AULA</th><th>MÓDULO</th><th>TENTATIVAS</th><th>ÚLTIMA NOTA</th><th>MELHOR NOTA</th><th>DATA</th></tr></thead><tbody id="assessmentsTable"></tbody></table></div></article>
       </section>
       <footer>H.S Bruno · Painel administrativo · Dados protegidos pelo Supabase</footer>
     </section>
