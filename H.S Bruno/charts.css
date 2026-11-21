@@ -48,3 +48,13 @@ body.dark-mode #historico .history-activity-bar-track{background:#34465b}
 #historico .history-chart-card:nth-child(3n) .history-chart-mark{background:#d9f3e7;color:#328763}
 #historico .history-evolution-bar{background:linear-gradient(180deg,#8b70df,#5c8be7)}
 #historico .history-evolution-bar-wrap{background:repeating-linear-gradient(to bottom,#edf2fc 0 1px,transparent 1px 25%)}
+
+/* Correções de recorte e respiro nos gráficos do histórico */
+#historico .history-evolution-bars{padding:26px 8px 6px!important;overflow:visible!important}
+#historico .history-evolution-item{overflow:visible!important}
+#historico .history-evolution-bar-wrap{overflow:visible!important;margin-top:8px}
+#historico .history-evolution-bar{margin-top:12px}
+#historico .history-evolution-value{top:-24px!important}
+#historico .history-lesson-chart{padding:12px 10px!important}
+#historico .history-lesson-ring{margin:10px!important}
+#historico .history-lesson-ring::before{inset:14px!important}
