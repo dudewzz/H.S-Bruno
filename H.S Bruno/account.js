@@ -172,9 +172,9 @@ async function carregarProgressoDaConta(){
  const saved=lerDesafiosSalvos();
  resultadosDesafios={...remoteChallenges,...(saved.resultados||{})};
  const remoteChallengeHistory=Array.isArray(data?.challenge_history)?data.challenge_history:[];
- historicoDesafios=[...remoteChallengeHistory,...(Array.isArray(saved.historico)?saved.historico:[])].slice(-50);
+ historicoDesafios=[...new Map([...remoteChallengeHistory,...(Array.isArray(saved.historico)?saved.historico:[])].map(item=>[(item.moduleId||"")+"|"+(item.data||""),item])).values()].slice(-50);
  salvarDesafiosSalvos();
- historicoQuizGeral=Array.isArray(data?.general_quiz_history)&&data.general_quiz_history.length?data.general_quiz_history:lerHistoricoQuizGeral();
+ historicoQuizGeral=[...new Map([...(Array.isArray(data?.general_quiz_history)?data.general_quiz_history:[]),...lerHistoricoQuizGeral()].map(item=>[(item.data||"")+"|"+(item.score??""),item])).values()].slice(-50);salvarHistoricoQuizGeral(historicoQuizGeral);
  if(data){
   const results=lerResultadosQuizzes();
   aulasConcluidas=Array.isArray(data.completed_lessons)?[...new Set(data.completed_lessons.filter(id=>idsValidos.includes(id)&&results[id]&&!results[id].refazendo))]:[];
