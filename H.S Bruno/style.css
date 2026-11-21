@@ -1408,7 +1408,13 @@ body.dark-mode #resetProgress,body.dark-mode .destructive-action{color:#ffb8ae!i
 body.dark-mode #resetProgress:hover,body.dark-mode .destructive-action:hover{background:rgba(194,78,69,.28)!important}
 
 /* Ajuste visual das barras de progresso dos módulos e da próxima aula */
-.home-module-progress{align-items:center}
+.home-module-progress{
+  align-items:center;
+  background:transparent!important;
+  background-color:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+}
 .home-module-progress>span,
 .home-widget-track{
   appearance:none;
