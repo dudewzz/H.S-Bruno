@@ -1289,3 +1289,34 @@ body.dark-mode .challenge-card .challenge-card-symbol{background:color-mix(in sr
 body.dark-mode #historico .history-overview .panel{background:#202c35!important;border-color:color-mix(in srgb,var(--history-accent) 45%,#263640)!important}
 body.dark-mode #historico .history-overview .panel b{color:color-mix(in srgb,var(--history-accent) 80%,#e8eef1)!important}
 body.dark-mode #historico .history-overview .panel::before{background:color-mix(in srgb,var(--history-accent) 22%,#263640)!important}
+
+/* Correções de consistência solicitadas: progresso, porcentagem e CTA */
+.home-module-progress b{
+  flex:0 0 38px;
+  min-width:38px;
+  text-align:right;
+  white-space:nowrap;
+}
+.home-module-button.is-start{
+  background:transparent;
+  border-color:var(--area-accent, #9eb8d6);
+  color:var(--area-accent, #416b91);
+}
+.home-module-button.is-continue{
+  background:var(--area-accent, #416b91);
+  border-color:var(--area-accent, #416b91);
+  color:#fff;
+}
+.home-module-button.is-start:hover{
+  background:color-mix(in srgb,var(--area-accent, #416b91) 9%,transparent);
+}
+body.dark-mode .home-module-button.is-start{
+  background:transparent!important;
+  color:var(--area-accent, #9dbbda)!important;
+  border-color:color-mix(in srgb,var(--area-accent, #9dbbda) 65%,#263640)!important;
+}
+body.dark-mode .home-module-button.is-continue{
+  background:color-mix(in srgb,var(--area-accent, #416b91) 38%,#263640)!important;
+  color:#eaf2f6!important;
+  border-color:color-mix(in srgb,var(--area-accent, #416b91) 60%,#263640)!important;
+}
