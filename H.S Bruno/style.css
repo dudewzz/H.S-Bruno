@@ -1320,3 +1320,76 @@ body.dark-mode .home-module-button.is-continue{
   color:#eaf2f6!important;
   border-color:color-mix(in srgb,var(--area-accent, #416b91) 60%,#263640)!important;
 }
+
+/* Refinamentos de UI/UX — revisão abrangente */
+.home-welcome:after{background:linear-gradient(100deg,rgba(5,18,48,.82) 0%,rgba(10,36,91,.65) 50%,rgba(12,30,74,.28) 100%)!important}
+.home-performance{padding:20px!important;gap:12px!important}
+.home-performance-item{padding:14px 8px!important;gap:12px!important}
+.home-performance-item small,.home-performance-item strong,.home-widget-heading strong{font-style:normal!important}
+.sidebar nav{gap:7px!important}
+.bell{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;font-size:22px!important;background:var(--hs-amber-soft,#fff2cf)!important;color:var(--hs-amber-accent,#a87419)!important}
+.page#cursos .module-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
+.page#cursos .module-card{display:flex;flex-direction:column}
+.page#cursos .module-body .primary{width:auto;align-self:flex-start;min-width:132px;padding:10px 17px!important;border-radius:12px!important}
+.filters .filter{font-weight:700;transition:background .18s,border-color .18s,transform .18s}
+.filters .filter.active{box-shadow:0 3px 10px rgba(36,87,122,.16);transform:translateY(-1px)}
+.performance-row{grid-template-columns:minmax(120px,1fr) minmax(85px,1.15fr) minmax(90px,auto)!important;gap:10px!important}
+.performance-row span:last-child{font-weight:700;color:var(--ink)!important;font-size:12px!important;white-space:nowrap}
+.progress-controls #resetProgress,.destructive-action{border-color:#c76a62!important;color:#a83e37!important;background:rgba(198,78,69,.08)!important}
+.progress-controls #resetProgress:hover,.destructive-action:hover{background:rgba(198,78,69,.16)!important}
+.profile-footer{margin-top:22px;padding:16px 0!important;border-top:1px solid var(--line);align-items:center}
+.profile-achievement:not(.unlocked){opacity:.58;filter:saturate(.35)}
+.profile-achievement.unlocked{border-color:#d5b45e!important;background:linear-gradient(145deg,#fff9e9,#f8f3e8)!important;box-shadow:0 3px 14px rgba(191,149,54,.12)}
+.profile-achievement.unlocked .profile-achievement-icon{box-shadow:0 0 0 3px rgba(201,161,70,.14),0 5px 12px rgba(201,161,70,.15)}
+.profile-avatar-options button.selected{outline:2px solid var(--hs-blue-accent,#245bd8);outline-offset:2px;transform:translateY(-2px)}
+.profile-save-button.is-saved{animation:profileSavedPulse .85s ease}
+@keyframes profileSavedPulse{0%{box-shadow:0 0 0 0 rgba(57,118,95,.25)}55%{box-shadow:0 0 0 7px rgba(57,118,95,.18)}100%{box-shadow:0 0 0 0 rgba(57,118,95,0)}}
+.quiz{max-width:920px!important}
+.quiz-top{display:grid!important;grid-template-columns:auto minmax(140px,1fr);gap:12px!important;align-items:center!important}
+.quiz-top .track{width:100%!important}
+.answer{transition:background .18s,border-color .18s,transform .18s!important}
+.answer:hover:not(:has(input:disabled)){background:var(--hs-blue-soft,#edf3ff);border-color:var(--hs-blue-accent,#4f83dc)}
+.answer.selected{border-color:var(--hs-blue-accent,#4f83dc)!important;background:var(--hs-blue-soft,#eaf1ff)!important}
+#quizPrev:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.2)}
+.challenge-grid{gap:12px!important}
+.challenge-card{padding:18px!important;gap:10px!important}
+.challenge-card button{padding:9px 15px!important;border-radius:12px!important;font-size:12px!important;font-weight:700!important;box-shadow:none!important}
+.challenge-card-meta span,.challenge-status{padding:7px 10px!important;font-size:11px!important}
+.challenge-card-score{align-items:center!important}
+.challenge-card-score strong{font-size:17px!important}
+.challenge-workspace{scroll-margin-top:92px}
+.challenge-workspace-head{align-items:flex-start}
+.challenge-live-progress{gap:10px}
+.challenge-live-progress strong{font-size:13px;white-space:nowrap}
+.challenge-live-track{height:9px;overflow:hidden;border-radius:12px}
+.challenge-question{padding:13px!important;margin:10px 0!important}
+.challenge-answer{padding:12px!important}
+#historico .history-charts{gap:18px!important}
+#historico .history-chart-card{min-width:0;overflow:visible;padding:22px!important}
+#historico .history-evolution-bars{padding:24px 7px 5px!important;overflow:visible!important}
+#historico .history-evolution-bar-wrap{margin-top:7px;overflow:visible!important;border-radius:8px 8px 0 0}
+#historico .history-evolution-bar{margin-top:12px}
+#historico .history-evolution-value{top:-24px!important;font-size:10px!important}
+#historico .history-lesson-chart{padding:10px 8px;gap:22px}
+#historico .history-lesson-ring{margin:8px;flex-shrink:0}
+#historico .history-lesson-ring::before{inset:14px}
+#historico .history-lesson-legend{gap:9px;padding:5px}
+#historico .history-activity-bar-row{gap:12px}
+#historico .history-activity-bar-row strong{font-weight:800}
+.history-activity-bar-row.is-zero .history-activity-bar-track{display:none}
+body.dark-mode .profile-achievement.unlocked{background:linear-gradient(145deg,#3c3628,#2d3032)!important;border-color:#7c693c!important}
+body.dark-mode .profile-achievement:not(.unlocked){opacity:.45}
+body.dark-mode .home-welcome:after{background:linear-gradient(100deg,rgba(3,9,20,.86),rgba(7,26,60,.62),rgba(8,22,50,.28))!important}
+body.dark-mode .answer:hover:not(:has(input:disabled)){background:#2c4056;border-color:#628ab9}
+body.dark-mode .answer.selected{background:#294058!important;border-color:#72a2e5!important}
+body.dark-mode .performance-row span:last-child{color:#d8e5f5!important}
+@media(max-width:700px){
+ .page#cursos .module-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ .page#cursos .module-body .primary{min-width:0;width:auto}
+ .performance-row{grid-template-columns:minmax(0,1fr) minmax(60px,1fr)!important}
+ .performance-row .track{grid-column:1/-1;grid-row:2}
+ .performance-row span:last-child{grid-column:2;grid-row:1}
+ .quiz-top{grid-template-columns:1fr!important}
+ .profile-footer{align-items:flex-start!important;flex-direction:column!important}
+}
+@media(max-width:430px){.page#cursos .module-grid{grid-template-columns:1fr!important}}
