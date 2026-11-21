@@ -42,9 +42,9 @@ async function carregarPainel({quiet=false}={}){
   byId("adminEmail").textContent=userData.user.email||"Administrador";
   const{data,error}=await client.functions.invoke("admin-dashboard");
   if(error||data?.error){if(!quiet)showError(data?.error||"Não foi possível consultar os dados administrativos.");return false}
-  students=(data.users||[]).filter(u=>u.role!=="admin");renderDashboard(data.users||[]);
+  students=(data.users||[]).filter(u=>u.role!=="admin");lastUpdate=new Date();renderDashboard(data.users||[]);
   if(!quiet){byId("loading").hidden=true;byId("dashboard").hidden=false}
-  lastUpdate=new Date();return true
+  return true
 }
 function renderDashboard(allUsers){
   const lessons=students.reduce((s,u)=>s+(u.completed_lessons?.length||0),0);
