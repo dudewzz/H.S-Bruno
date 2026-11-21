@@ -237,10 +237,10 @@ async function salvarListaAulas(novasAulas, idAulaAlterada, foiConcluida) {
 
     const idsValidos = modulos.flatMap(modulo => modulo.aulas.map((_, indice) => idDaAula(modulo, indice)));
     const resultadosQuiz = lerResultadosQuizzes();
-    const listaValida = [...new Set(novasAulas.filter(id => idsValidos.includes(id) && (resultadosQuiz[id] || !foiConcluida)))];
+    const listaValida = [...new Set(novasAulas.filter(id => idsValidos.includes(id) && ((resultadosQuiz[id] && !resultadosQuiz[id].refazendo) || !foiConcluida)))];
     const novosModulos = modulos.filter(modulo => modulo.aulas.every((_, indice) => {
         const id = idDaAula(modulo, indice);
-        return listaValida.includes(id) && videosAssistidos.includes(id) && Boolean(resultadosQuiz[id]);
+        return listaValida.includes(id) && videosAssistidos.includes(id) && Boolean(resultadosQuiz[id] && !resultadosQuiz[id].refazendo);
     }) && Boolean(resultadosDesafios[modulo.id]?.completed)).map(modulo => modulo.id);
     const novasAtividadesSemanais = prepararAtividadeSemanal(idAulaAlterada, foiConcluida);
 
@@ -390,7 +390,8 @@ function renderizarListaAulas(modulo) {
 
 
 function quizDaAulaFoiConcluido(idAula) {
-    return Boolean(lerResultadosQuizzes()[idAula]);
+    const resultado = lerResultadosQuizzes()[idAula];
+    return Boolean(resultado && !resultado.refazendo);
 }
 
 function atualizarBotaoProximaAula() {
