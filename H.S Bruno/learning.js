@@ -6,7 +6,7 @@ function renderizarQuizDaAula() {
     const idAula = idDaAula(moduloAtual, aulaAtualIndice);
     const quiz = quizzesPorAula[idAula] || [];
     const resultados = lerResultadosQuizzes();
-    const jaRespondido = resultados[idAula];
+    const jaRespondido = resultados[idAula] && !resultados[idAula].refazendo ? resultados[idAula] : null;
     container.replaceChildren();
     if (!quiz.length) {
         container.hidden = true;
@@ -74,7 +74,8 @@ function renderizarQuizDaAula() {
         evento.preventDefault();
         if (jaRespondido) {
             const resultadosAtuais = lerResultadosQuizzes();
-            delete resultadosAtuais[idAula];
+            const registroAnterior = resultadosAtuais[idAula] || jaRespondido;
+            resultadosAtuais[idAula] = { ...registroAnterior, refazendo: true };
             try { localStorage.setItem(chaveQuizzesDoUsuario(), JSON.stringify(resultadosAtuais)); } catch (_) {}
             const novasAulas = aulasConcluidas.filter(id => id !== idAula);
             await salvarListaAulas(novasAulas, idAula, false);
