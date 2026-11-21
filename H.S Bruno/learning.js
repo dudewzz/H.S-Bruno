@@ -78,7 +78,13 @@ function renderizarQuizDaAula() {
             resultadosAtuais[idAula] = { ...registroAnterior, refazendo: true };
             try { localStorage.setItem(chaveQuizzesDoUsuario(), JSON.stringify(resultadosAtuais)); } catch (_) {}
             const novasAulas = aulasConcluidas.filter(id => id !== idAula);
-            await salvarListaAulas(novasAulas, idAula, false);
+            const salvo = await salvarListaAulas(novasAulas, idAula, false);
+            if (!salvo) {
+                resultadosAtuais[idAula] = registroAnterior;
+                try { localStorage.setItem(chaveQuizzesDoUsuario(), JSON.stringify(resultadosAtuais)); } catch (_) {}
+                renderizarQuizDaAula();
+                return;
+            }
             atualizarResumo();
             renderizarQuizDaAula();
             atualizarBotaoProximaAula();
