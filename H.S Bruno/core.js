@@ -480,7 +480,8 @@ function salvarDesafiosSalvos(){try{localStorage.setItem(chaveDesafios(),JSON.st
 async function sincronizarDesafiosComBanco(){if(!sessaoAtual?.user?.id)return false;const{error}=await supabaseClient.from("student_progress").upsert({user_id:sessaoAtual.user.id,challenge_results:resultadosDesafios,challenge_history:historicoDesafios,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error)throw error;return true;}
 function chaveHistoricoQuizGeral(){return "hsbruno_quiz_geral_historico_"+(sessaoAtual?.user?.id||"visitante");}
 function lerHistoricoQuizGeral(){try{const v=JSON.parse(localStorage.getItem(chaveHistoricoQuizGeral())||"[]");return Array.isArray(v)?v:[];}catch(_){return [];}}
-function salvarHistoricoQuizGeral(list){historicoQuizGeral=list.slice(-50);try{localStorage.setItem(chaveHistoricoQuizGeral(),JSON.stringify(historicoQuizGeral));}catch(_){mostrarToast("Não foi possível guardar o histórico de avaliações.");}}
+function salvarHistoricoQuizGeral(list){historicoQuizGeral=list.slice(-50);try{localStorage.setItem(chaveHistoricoQuizGeral(),JSON.stringify(historicoQuizGeral));}catch(_){mostrarToast("Não foi possível guardar o histórico de avaliações.");}sincronizarQuizGeralComBanco().catch(erro=>console.warn("Falha ao sincronizar avaliação geral:",erro));}
+async function sincronizarQuizGeralComBanco(){if(!sessaoAtual?.user?.id)return false;const{error}=await supabaseClient.from("student_progress").upsert({user_id:sessaoAtual.user.id,general_quiz_history:historicoQuizGeral,quiz_score:pontuacaoAtual,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error)throw error;return true;}
 function chaveQuizzesDoUsuario() {
     return "hsbruno_quizzes_aulas_" + (sessaoAtual?.user?.id || "visitante");
 }
