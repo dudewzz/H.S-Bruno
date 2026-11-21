@@ -156,33 +156,40 @@ function configurarPerfilAluno() {
 }
 
 async function carregarProgressoDaConta(){
- const idsValidos=modulos.flatMap(m=>m.aulas.map((_,i)=>idDaAula(m,i)));concluidos=[];aulasConcluidas=[];atividadesSemanais=[];pontuacaoAtual=null;videosAssistidos=[...new Set(lerVideosAssistidos().filter(id=>idsValidos.includes(id)))];salvarVideosAssistidos(videosAssistidos);resultadosDesafios={};historicoDesafios=[];historicoQuizGeral=lerHistoricoQuizGeral();
+ const idsValidos=modulos.flatMap(m=>m.aulas.map((_,i)=>idDaAula(m,i)));
+ concluidos=[];aulasConcluidas=[];atividadesSemanais=[];pontuacaoAtual=null;
+ videosAssistidos=[...new Set(lerVideosAssistidos().filter(id=>idsValidos.includes(id)))];salvarVideosAssistidos(videosAssistidos);
+ resultadosDesafios={};historicoDesafios=[];historicoQuizGeral=lerHistoricoQuizGeral();
  if(!sessaoAtual){atualizarResumo();return;}
  const {data,error}=await supabaseClient.from("student_progress").select("completed_lessons,quiz_score,weekly_activity,lesson_quiz_results,challenge_results,challenge_history,general_quiz_history").eq("user_id",sessaoAtual.user.id).maybeSingle();
  if(error){console.error("Erro ao carregar progresso:",error);mostrarToast("Não foi possível carregar seu progresso.");atualizarResumo();return;}
+ const remoteQuizResults=data?.lesson_quiz_results&&typeof data.lesson_quiz_results==="object"?data.lesson_quiz_results:{};
+ const localQuizResults=lerResultadosQuizzes();
+ const mergedQuizResults={...remoteQuizResults,...localQuizResults};
+ try{localStorage.setItem(chaveQuizzesDoUsuario(),JSON.stringify(mergedQuizResults));}catch(_){}
+ if(Object.keys(mergedQuizResults).length)sincronizarQuizzesAulaComBanco().catch(erro=>console.warn("Falha ao sincronizar histórico de quizzes:",erro));
+ const remoteChallenges=data?.challenge_results&&typeof data.challenge_results==="object"?data.challenge_results:{};
+ const saved=lerDesafiosSalvos();
+ resultadosDesafios={...remoteChallenges,...(saved.resultados||{})};
+ const remoteChallengeHistory=Array.isArray(data?.challenge_history)?data.challenge_history:[];
+ historicoDesafios=[...remoteChallengeHistory,...(Array.isArray(saved.historico)?saved.historico:[])].slice(-50);
+ salvarDesafiosSalvos();
+ historicoQuizGeral=Array.isArray(data?.general_quiz_history)&&data.general_quiz_history.length?data.general_quiz_history:lerHistoricoQuizGeral();
  if(data){
-  const remoteQuizResults=data.lesson_quiz_results&&typeof data.lesson_quiz_results==="object"?data.lesson_quiz_results:{};
-  const localQuizResults=lerResultadosQuizzes();
-  const mergedQuizResults={...remoteQuizResults,...localQuizResults};
-  try{localStorage.setItem(chaveQuizzesDoUsuario(),JSON.stringify(mergedQuizResults));}catch(_){}
-  if(Object.keys(mergedQuizResults).length)sincronizarQuizzesAulaComBanco().catch(erro=>console.warn("Falha ao sincronizar histórico de quizzes:",erro));
-  const remoteChallenges=data.challenge_results&&typeof data.challenge_results==="object"?data.challenge_results:{};
-  const saved=lerDesafiosSalvos();
-  resultadosDesafios={...remoteChallenges,...(saved.resultados||{})};
-  const remoteChallengeHistory=Array.isArray(data.challenge_history)?data.challenge_history:[];
-  historicoDesafios=[...remoteChallengeHistory,...(Array.isArray(saved.historico)?saved.historico:[])].slice(-50);
-  salvarDesafiosSalvos();
-  historicoQuizGeral=Array.isArray(data.general_quiz_history)&&data.general_quiz_history.length?data.general_quiz_history:lerHistoricoQuizGeral();
   const results=lerResultadosQuizzes();
   aulasConcluidas=Array.isArray(data.completed_lessons)?[...new Set(data.completed_lessons.filter(id=>idsValidos.includes(id)&&results[id]&&!results[id].refazendo))]:[];
-  videosAssistidos=[...new Set([...videosAssistidos,...aulasConcluidas])];salvarVideosAssistidos(videosAssistidos);pontuacaoAtual=data.quiz_score??null;
-}
- const remote=normalizarAtividadesSemanais(data?.weekly_activity),local=normalizarAtividadesSemanais(lerAtividadeSemanalLocal());atividadesSemanais=normalizarAtividadesSemanais([...remote,...local]);
- const saved=lerDesafiosSalvos();resultadosDesafios=saved.resultados||{};historicoDesafios=Array.isArray(saved.historico)?saved.historico:[];
- if(JSON.stringify(atividadesSemanais)!==JSON.stringify(remote)){const modulesDone=modulos.filter(m=>moduloCompleto(m)).map(m=>m.id);const {error:sync}=await supabaseClient.from("student_progress").upsert({user_id:sessaoAtual.user.id,completed_lessons:aulasConcluidas,completed_modules:modulesDone,weekly_activity:atividadesSemanais,quiz_score:pontuacaoAtual,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(sync)console.warn("Não foi possível sincronizar atividade semanal antiga.",sync);else salvarCopiaLocalAtividadeSemanal(atividadesSemanais);}
+  videosAssistidos=[...new Set([...videosAssistidos,...aulasConcluidas])];salvarVideosAssistidos(videosAssistidos);
+  pontuacaoAtual=data.quiz_score??null;
+ }
+ const remote=normalizarAtividadesSemanais(data?.weekly_activity),local=normalizarAtividadesSemanais(lerAtividadeSemanalLocal());
+ atividadesSemanais=normalizarAtividadesSemanais([...remote,...local]);
+ if(JSON.stringify(atividadesSemanais)!==JSON.stringify(remote)){
+  const modulesDone=modulos.filter(m=>moduloCompleto(m)).map(m=>m.id);
+  const {error:sync}=await supabaseClient.from("student_progress").upsert({user_id:sessaoAtual.user.id,completed_lessons:aulasConcluidas,completed_modules:modulesDone,weekly_activity:atividadesSemanais,quiz_score:pontuacaoAtual,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+  if(sync)console.warn("Não foi possível sincronizar atividade semanal antiga.",sync);else salvarCopiaLocalAtividadeSemanal(atividadesSemanais);
+ }
  atualizarModulosConcluidos();atualizarResumo();
 }
-
 
 function atualizarModoAcesso() {
     const titulo = document.getElementById("authTitle");
