@@ -500,5 +500,19 @@ function salvarResultadoQuizAula(idAula, resultado) {
         localStorage.setItem(chaveQuizzesDoUsuario(), JSON.stringify(resultados));
     } catch (_) {
         mostrarToast("Não foi possível guardar a pontuação deste quiz neste dispositivo.");
+        return;
     }
+    sincronizarQuizzesAulaComBanco().catch(erro => console.warn("Falha ao sincronizar quizzes:", erro));
+}
+
+async function sincronizarQuizzesAulaComBanco() {
+    if (!sessaoAtual?.user?.id) return false;
+    const resultados = lerResultadosQuizzes();
+    const { error } = await supabaseClient.from("student_progress").upsert({
+        user_id: sessaoAtual.user.id,
+        lesson_quiz_results: resultados,
+        updated_at: new Date().toISOString()
+    }, { onConflict: "user_id" });
+    if (error) throw error;
+    return true;
 }
