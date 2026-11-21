@@ -279,7 +279,7 @@ function configurarAcesso() {
 
     document.getElementById("resetProgress").addEventListener("click", async () => {
         if (!sessaoAtual) return mostrarAcesso();
-        const confirmar = await confirmarAcao("Tem certeza de que deseja resetar seu progresso? Os módulos concluídos e a última pontuação serão apagados da sua conta. Essa ação não pode ser desfeita.");
+        const confirmar = await confirmarAcao("Tem certeza de que deseja resetar todo seu progresso? Aulas, quizzes, vídeos assistidos, desafios, histórico de avaliações e meta semanal serão apagados da sua conta e deste dispositivo. Essa ação não pode ser desfeita.");
         if (!confirmar) return;
 
         const { error } = await supabaseClient
@@ -297,7 +297,17 @@ function configurarAcesso() {
         aulasConcluidas = [];
         pontuacaoAtual = null;
         atividadesSemanais = [];
-        try { localStorage.removeItem(chaveAtividadeSemanal()); localStorage.removeItem(chaveQuizzesDoUsuario()); } catch (_) {}
+        videosAssistidos = [];
+        resultadosDesafios = {};
+        historicoDesafios = [];
+        historicoQuizGeral = [];
+        salvarVideosAssistidos([]);
+        salvarDesafiosSalvos();
+        salvarHistoricoQuizGeral([]);
+        try {
+            localStorage.removeItem(chaveAtividadeSemanal());
+            localStorage.removeItem(chaveQuizzesDoUsuario());
+        } catch (_) {}
         atualizarResumo();
         if (moduloAtual) renderizarListaAulas(moduloAtual);
         mostrarToast("Seu progresso foi resetado para 0%.");
